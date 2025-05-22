@@ -15,7 +15,7 @@
     <meta name="author" content="Mukesh">
 
 
-
+    </title>
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
@@ -37,10 +37,10 @@
         <img src="{{ asset('assets/images/banner.png') }}" class="img-fluid"
             alt="Greenlam Industries - Warranty Services Portal for Consumers" />
     </div>
-    <div class="@if (!request()->routeIs('home')) container @else container-fluid @endif">
-
-        {{ $slot }}
-
+    <div class="container">
+        <main class="form-signin text-center my-5">
+            {{ $slot }}
+        </main>
     </div>
 
     <div class="container-fluid">
@@ -98,7 +98,6 @@
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/customjs/common.js') }}"></script>
     {{-- Dynamically include page-specific script if available --}}
-
     @if ($pageScript)
         <script src="{{ asset('assets/customjs/' . $pageScript . '.js') }}"></script>
     @endif
