@@ -1,0 +1,80 @@
+<x-common-layout :pageTitle="$pageTitle" :pageDescription="$pageDescription" :pageScript="$pageScript">
+
+    {{-- <form method="POST" action="{{ route('register') }}">
+        @csrf
+        <input type="text" name="phone_number" placeholder="Enter your phone number" required>
+        <button type="submit">Send OTP</button>
+    </form> --}}
+
+    <main class="form-signin text-center my-5">
+
+        <div class="row align-items-center">
+            <div class="col-md-6 col-lg-6">
+                <form class="signin-left" id="registerForm" method="POST" action="{{ route('registerotp') }}">
+                    @csrf
+                    <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+                    <h2>Kindly register for Greenlam warranty self service portal with Mobile Number Verification.
+                    </h2>
+                    {{-- <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul> --}}
+                    <div class="form-group">
+                        <label for="name">Name*</label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter Your Name*"
+                            name="name">
+
+                        <span class="error-text text-danger" id="name-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailid">Email Id*</label>
+                        <input type="email" class="form-control" id="emailid" name="email"
+                            placeholder="Enter Your Email Id*">
+                        <span class="error-text text-danger" id="email-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address*</label>
+                        <input type="text" class="form-control" name="address" id="address"
+                            placeholder="Enter Your Address*">
+                    </div>
+                    <div class="form-group">
+                        <label for="phonenumber">Phone Number*</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number"
+                            placeholder="Enter Your Phone Number*">
+                        <span class="error-text text-danger" id="phone_number-error"></span>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary custom-btn-signin" type="submit">Get OTP</button>
+                    <p>By providing my phone number, I hereby agree and accept the <a href="#">Terms of
+                            Service</a> and <a href="#">Privacy Policy</a> in use of the Warranty Services
+                        Portal.</p>
+                </form>
+                <!-- OTP Verification Form -->
+                <form id="verifyOtpForm" style="display: none;">
+                    @csrf
+                    <div>
+                        <input type="text" class="form-control" name="otp" placeholder="Enter OTP" required>
+                        <span class="error-text" id="otp-error" style="color: red;"></span>
+                    </div>
+                    <!-- Countdown Timer -->
+                    <p id="countdown-timer" style="color: blue;"></p>
+                    <!-- Success & Error Messages -->
+                    <p id="success-message" style="color: green;"></p>
+                    <p id="error-message" style="color: red;"></p>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary custom-btn-signin"
+                        id="verify-button">Verify
+                        OTP</button>
+                    <button type="button" class="w-100 btn btn-lg btn-primary custom-btn-signin" id="resendOtp"
+                        disabled>Resend OTP</button>
+                </form>
+
+            </div>
+            <div class="col-md-6 col-lg-6 signin-right">
+                <img src="{{ asset('assets/images/sign-up-img.jpg') }}" class="img-fluid"
+                    alt="Greenlam Industries - Warranty Services Portal for Consumers" />
+            </div>
+
+
+    </main>
+
+</x-common-layout>

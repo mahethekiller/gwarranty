@@ -1,0 +1,46 @@
+body{font-family: "Lexend", sans-serif;}
+.top-header .custom-nav-btn{color: #fff; background: #016734; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.top-header .custom-nav-btn:hover{color: #016734; background: #fff; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.home h1{font-size: 30px; font-weight: 600; color: #000;}
+.custom-list{padding: 0px; overflow: auto; margin: 10px 0 25px 0 !important;}
+.custom-list li {display: block; width: 100%; flex-direction: column; float: left; font-weight: 400; padding:5px 0px 5px 20px; line-height: 24px; position: relative; color: #000; font-size: 15px;}
+.custom-list li::before {content: ""; background: url("../images/down-arrow.png") no-repeat; position: absolute; top: 12px; left: 0; width: 12px; height: 12px;}
+.home p{font-size: 30px; font-weight: 600; color: #000; font-size: 15px;}
+.home .custom-nav-btn{color: #fff; background: #016734; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.home .custom-nav-btn:hover{color: #016734; background: #fff; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.home p a{color: #016734;}
+
+.why-register-your-product h2{font-size: 30px; font-weight: 600; color: #000; text-align: center; position: relative; margin-bottom: 50px;}
+.why-register-your-product h2::after {content: ""; border-bottom: solid 5px #000; position: absolute; width: 5%; padding-top: 10px !important; top: 30px !important; left: 50%;
+    transform: translate(-50%, -50%); top: 40px !important;}
+.why-register-your-product .boxes{background: #efefef; padding:30px 10px; text-align: center; position: relative; margin-bottom: 20px;}
+.why-register-your-product .boxes .box-img{position: absolute; left: 50%; transform: translate(-50%, -50%); top: 0px !important;}
+.why-register-your-product .boxes.bg-darken{background: #e3e3e3 !important;}
+.why-register-your-product .boxes h3{font-size: 20px; font-weight: 600; color: #000; text-align: center; position: relative; margin-bottom: 15px; margin-top: 20px;}
+
+
+.footer p{font-size: 12px; text-align: center; margin-bottom: 0px;}
+
+
+
+
+
+
+
+.form-signin{background: #FFFFFF; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 50px; padding: 0px;}
+.form-signin .signin-left{padding: 10%;}
+.form-signin .signin-left h1{font-size: 30px; font-weight: 600; color: #000; text-align: center; position: relative; margin-bottom: 50px;}
+.form-signin .signin-left h1::after {content: ""; border-bottom: solid 5px #000; position: absolute; width: 5%; padding-top: 10px !important; top: 30px !important; left: 50%; transform: translate(-50%, -50%); top: 40px !important;}
+.form-signin .signin-left h2{font-size: 13px; font-weight: 400; color: #000; text-align: center; position: relative; margin-bottom: 30px; margin-top: 30px;}
+.form-signin .signin-btn{color: #fff; background: #016734; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:12px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.form-signin .signin-btn:hover{color: #016734; background: #fff; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.form-signin .signin-left p{font-size: 12px; font-weight: 300; color: #979797; text-align: center; margin-top: 20px;}
+.form-signin .signin-left p a{color: #979797;}
+.form-signin .signin-left .custom-btn-signin{margin-top:15px;  color:#fff; background: #016734; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 50px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.form-signin .signin-left .custom-btn-signin:hover{color: #016734; background: #fff; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 50px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
+.form-signin .signin-left .form-group label{text-align: center; color: #53515b; font-size: 15px; padding-bottom: 5px;}
+.form-signin .signin-left .form-group input{text-align: center; border:1px solid #c1c1c1; border-radius: 50px; padding: 10px;}
+.form-signin .signin-right img{border-radius: 0 50px 50px 0px;}
+.form-signin .signin-left .form-group{margin-bottom:20px;}
+.form-signin .form-control::placeholder {color: #6c757d; opacity: 1; font-weight: 300; font-size: 14px;}
+.form-signin .signin-left .form-group input:focus{background: #fdfdfd; box-shadow: none; border: solid 1px #016734;}
