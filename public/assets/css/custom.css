@@ -1,4 +1,4 @@
-body{font-family: "Lexend", sans-serif;}
+body{font-family: "Lexend", sans-serif !important;}
 .top-header .custom-nav-btn{color: #fff; background: #016734; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
 .top-header .custom-nav-btn:hover{color: #016734; background: #fff; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 24px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #016734;}
 .home h1{font-size: 30px; font-weight: 600; color: #000;}
@@ -22,11 +22,6 @@ body{font-family: "Lexend", sans-serif;}
 .footer p{font-size: 12px; text-align: center; margin-bottom: 0px;}
 
 
-
-
-
-
-
 .form-signin{background: #FFFFFF; box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25); border-radius: 50px; padding: 0px;}
 .form-signin .signin-left{padding: 10%;}
 .form-signin .signin-left h1{font-size: 30px; font-weight: 600; color: #000; text-align: center; position: relative; margin-bottom: 50px;}
@@ -44,3 +39,60 @@ body{font-family: "Lexend", sans-serif;}
 .form-signin .signin-left .form-group{margin-bottom:20px;}
 .form-signin .form-control::placeholder {color: #6c757d; opacity: 1; font-weight: 300; font-size: 14px;}
 .form-signin .signin-left .form-group input:focus{background: #fdfdfd; box-shadow: none; border: solid 1px #016734;}
+
+
+
+
+/*Dashboard*/
+.pc-sidebar.pc-sidebar-custom .m-header {height: auto;}
+
+.pc-sidebar.pc-sidebar-custom .m-header { padding: 16px 24px 16px 10px;  }
+
+.pc-sidebar.pc-sidebar-custom .pc-navbar{padding:0 10px;}
+
+.pc-sidebar.pc-sidebar-custom .pc-navbar .pc-link {color: #000; font-size: 15px; border-radius: 5px; background: #F1F5F7; margin-bottom: 15px; align-items: center; font-family: "Lexend", sans-serif; padding: 10px; display: flex;}
+
+.pc-sidebar.pc-sidebar-custom .pc-navbar .pc-link:hover {background: #F1F5F7; border-left: solid 5px #000; border-radius: 5px;}
+
+.pc-sidebar.pc-sidebar-custom .pc-navbar .pc-link::before {border-radius: 5px !important;}
+
+.pc-sidebar.pc-sidebar-custom .pc-navbar .pc-micon {display: inline !important;}
+
+.pc-sidebar.pc-sidebar-custom .pc-navbar .pc-micon {margin-right: 10px;}
+
+.pc-sidebar.pc-sidebar-custom .pc-micon {height: 29px;}
+
+/*.pc-sidebar.pc-sidebar-custom {width: 320px;}
+
+.pc-sidebar.pc-sidebar-custom .navbar-wrapper {width: 320px;  }
+
+.pc-header-custom{left: 320px !important;}
+
+.pc-container-custom{margin-left: 320px !important;}*/
+
+.pc-container-custom h6{font-size: 22px; color: #000; font-weight: 500;}
+
+.pc-container-custom .custom-form-label{font-size: 22px !important; color: #000; font-weight: 500;}
+
+.custom-btn-blk{background: #000 !important; font-size: 20px; color: #fff !important; text-transform: uppercase; border: none; padding: 5px 20px; border-radius: 5px; width: 100%;}
+
+.custom-btn-blk:hover{background: #333 !important; font-size: 20px; color: #fff !important; text-transform: uppercase; border: none; padding: 5px 20px; border-radius: 5px; width: 100%;}
+
+.custom-btn-grey{background: #707070 !important; font-size: 20px; color: #fff !important; text-transform: uppercase; border: none; padding: 5px 20px; border-radius: 5px; width: 100%;}
+
+.custom-btn-grey:hover{background: #000 !important; font-size: 20px; color: #fff !important; text-transform: uppercase; border: none; padding: 5px 20px; border-radius: 5px; width: 100%;}
+
+
+/*.form-check-input{background: #EAEAEA !important; border: solid 2px #000 !important;}*/
+
+.form-check-input:checked {background-color: #000 !important; border-color: #000 !important;}
+
+#myDivMikasaDoors {display: none;}
+
+.dropdown-user-profile .dropdown-item span{margin-left: 10px;}
+
+.pc-footer-custom{margin-left: 320px !important; text-align: center; font-size: 14px;}
+
+
+
+/*Dashboard*/
