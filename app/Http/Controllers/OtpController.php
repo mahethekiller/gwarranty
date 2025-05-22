@@ -112,6 +112,7 @@ class OtpController extends Controller
                     'password'     => bcrypt('default_password'), // Set a default password, you can update this later
                 ]
             );
+            $user->assignRole('user');
 
             // Log the user in
             Auth::login($user);
