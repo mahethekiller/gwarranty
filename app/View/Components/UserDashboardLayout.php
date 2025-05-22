@@ -4,7 +4,7 @@ namespace App\View\Components;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
-class UserDashboardLayout extends Component
+class UserdashboardLayout extends Component
 {
     /**
      * Create a new component instance.
