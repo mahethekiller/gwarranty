@@ -114,6 +114,7 @@ class OtpController extends Controller
             );
             $user->assignRole('user');
 
+            $user->assignRole('user');
             // Log the user in
             Auth::login($user);
 
