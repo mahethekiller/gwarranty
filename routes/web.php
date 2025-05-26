@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -46,6 +47,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', function () {
         return view('dashboard.user');
     })->name('user.dashboard');
+
+    Route::get('/user/warranty/create', [WarrantyController::class, 'create'])->name('user.warranty.create');
+    Route::get('/user/warranty/modify', [WarrantyController::class, 'index'])->name('user.warranty.modify');
+    Route::get('/user/warranty/certificate', [WarrantyController::class, 'create'])->name('user.warranty.certificate');
 });
 
 require __DIR__ . '/auth.php';
