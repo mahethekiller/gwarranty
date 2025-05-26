@@ -1,5 +1,5 @@
 @props([
-    'pageTitle' => 'Greenlam Industries - Warranty Services Portal for Consumers',
+    'pageTitle' => 'Warranty Registration',
     'pageDescription' => 'Greenlam Industries - Warranty Services Portal for Consumers',
     'pageScript' => null,
 ])
@@ -11,7 +11,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mukesh">
-    <title>Greenlam Industries - Warranty Services Portal for Consumers</title>
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ $pageDescription }}">
+
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
@@ -177,27 +179,7 @@
 
 
 
-    <script>
-        function toggleDiv1(show) {
-            document.getElementById('targetDiv2').style.display = 'none';
-            document.getElementById('targetDiv1').style.display = show ? 'block' : 'none';
-        }
-
-        function toggleDiv2(show) {
-            document.getElementById('targetDiv1').style.display = 'none';
-            document.getElementById('targetDiv2').style.display = show ? 'block' : 'none';
-        }
-
-        function toggleDiv() {
-            const select = document.getElementById("mySelect");
-            const div = document.getElementById("myDivMikasaDoors");
-            if (select.value === "mikasa_doors") {
-                div.style.display = "block";
-            } else {
-                div.style.display = "none";
-            }
-        }
-    </script>
+    <script></script>
 
 
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
@@ -213,6 +195,9 @@
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/pcoded.js') }}"></script>
     <script src="{{ asset('assets/dashboard/feather.min.js') }}"></script>
+    @if ($pageScript)
+        <script src="{{ asset('assets/customjs/' . $pageScript . '.js') }}"></script>
+    @endif
 </body>
 <!-- [Body] end -->
 

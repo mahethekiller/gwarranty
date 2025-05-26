@@ -13,10 +13,11 @@ return new class extends Migration
 
             $table->string('product_type');
             $table->integer('qty_purchased');
-            $table->enum('application', ["Mikasa Floors", "Mikasa Doors", "Mikasa Ply", "Greenlam Clads", "NewMikaFx", "Greenlam Sturdo"]);
+            $table->string('application');
             $table->string('place_of_purchase');
             $table->string('invoice_number');
-            $table->string('upload_invoice');
+            $table->string('invoice_path');
+            $table->string('handover_certificate_path')->nullable()->default(null);
 
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 

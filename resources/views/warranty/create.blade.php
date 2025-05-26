@@ -1,4 +1,4 @@
-<x-userdashboard-layout>
+<x-userdashboard-layout :pageTitle="$pageTitle" :pageDescription="$pageDescription" :pageScript="$pageScript">
     {{-- <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
@@ -34,38 +34,57 @@
     <div class="col-md-12 col-xl-12" id="targetDiv1" style="display: none;">
         <div class="card">
             <div class="card-body">
-                <form action="">
+                <form action="{{ route('user.warranty.store') }}" id="warrantyForm" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
                     <div class="form-group row">
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label for="product_tpye" class="form-label custom-form-label">Product
+                                <label for="product_type" class="form-label custom-form-label">Product
                                     Tpye</label>
-                                <select class="form-select" id="mySelect" onchange="toggleDiv()">
-                                    <option selected>Select Product Type</option>
-                                    <option value="1">Mikasa Floors</option>
-                                    <option value="mikasa_doors">Mikasa Doors</option>
-                                    <option value="3">Mikasa Ply</option>
-                                    <option value="4">Greenlam Clads</option>
-                                    <option value="5">NewMikaFx</option>
-                                    <option value="6">Greenlam Sturdo</option>
+                                <select class="form-select" id="mySelect" name="product_type" onchange="toggleDiv()">
+                                    <option value="" selected>Select Product Type</option>
+                                    <option value="Mikasa Floors">Mikasa Floors</option>
+                                    <option value="Mikasa Doors">Mikasa Doors</option>
+                                    <option value="Mikasa Ply">Mikasa Ply</option>
+                                    <option value="Greenlam Clads">Greenlam Clads</option>
+                                    <option value="NewMikaFx">NewMikaFx</option>
+                                    <option value="Greenlam Sturdo">Greenlam Sturdo</option>
                                 </select>
+                                {{-- <span class="text-danger" id="login-error-phone_number"></span> --}}
+
+                                <span class="text-danger" id="error-product_type" role="alert">
+                                    <strong></strong>
+                                </span>
+
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="qty_purchased" class="form-label custom-form-label">Qty
                                     Purchased</label>
-                                <input class="form-control" id="qty_purchased" type="text"
+                                <input class="form-control" id="qty_purchased" type="text" name="qty_purchased"
                                     placeholder="Enter Qty Purchased">
+                                <span class="text-danger" id="error-qty_purchased" role="alert">
+                                    <strong></strong>
+                                </span>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label for="application_commercial_residential"
-                                    class="form-label custom-form-label">Application
-                                    (Commercial/Residential)</label>
-                                <input class="form-control" id="application_commercial_Residential" type="text"
-                                    placeholder="Enter Application (Commercial/Residential)">
+                                <label for="application" class="form-label custom-form-label">Application
+                                    Type</label>
+
+                                <select class="form-select" id="application" name="application">
+                                    <option selected>Select Product Type</option>
+                                    <option value="Commercial">Commercial</option>
+                                    <option value="Residential">Residential</option>
+
+                                </select>
+                                <span class="text-danger" id="error-application" role="alert">
+                                    <strong></strong>
+                                </span>
+
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -73,41 +92,56 @@
                                 <label for="place_of_purchase" class="form-label custom-form-label">Place
                                     of Purchase</label>
                                 <input class="form-control" id="place_of_purchase" type="text"
-                                    placeholder="Enter Place of Purchase">
+                                    name="place_of_purchase" placeholder="Enter Place of Purchase">
+                                <span class="text-danger" id="error-place_of_purchase" role="alert">
+                                    <strong></strong>
+                                </span>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="invoice_number" class="form-label custom-form-label">Invoice
                                     Number</label>
-                                <input class="form-control" id="invoice_number" type="text"
+                                <input class="form-control" id="invoice_number" type="text" name="invoice_number"
                                     placeholder="Enter Invoice Number">
+                                <span class="text-danger" id="error-invoice_number" role="alert">
+                                    <strong></strong>
+                                </span>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="upload_invoice" class="form-label custom-form-label">Upload
                                     Invoice</label>
-                                <input class="form-control" type="file" id="formFile">
+                                <input class="form-control" type="file" id="upload_invoice"
+                                    name="upload_invoice">
+                                <span class="text-danger" id="error-upload_invoice" role="alert">
+                                    <strong></strong>
+                                </span>
                             </div>
                         </div>
                         <div class="col-lg-4" id="myDivMikasaDoors">
                             <div class="form-group">
-                                <label for="upload_handover_certificate" class="form-label custom-form-label">Upload
+                                <label for="handover_certificate" class="form-label custom-form-label">Upload
                                     Handover
                                     Certificate</label>
-                                <input class="form-control" type="file" id="formFile">
+                                <input class="form-control" type="file" id="handover_certificate"
+                                    name="handover_certificate">
+                                <span class="text-danger" id="error-handover_certificate" role="alert">
+                                    <strong></strong>
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <button class="custom-btn-blk">Submit</button>
+                                <button class="custom-btn-blk" type="submit">Submit</button>
                             </div>
                         </div>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
