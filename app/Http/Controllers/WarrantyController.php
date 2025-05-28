@@ -67,7 +67,7 @@ class WarrantyController extends Controller
         try {
             $warranty->save();
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error registering warranty' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Error registering warranty'], 500);
         }
 
         return response()->json(['message' => 'Warranty registered successfully']);

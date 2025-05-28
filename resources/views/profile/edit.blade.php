@@ -1,29 +1,59 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+<x-userdashboard-layout :pageTitle="$pageTitle" :pageDescription="$pageDescription" :pageScript="$pageScript">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+    <div class="col-md-12 col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <form  id="profileForm" action="{{ route('user.profile.update') }}" method="POST">
+                      @csrf
+                    <div class="form-group row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="name" class="form-label custom-form-label">Name</label>
+                                <input class="form-control" id="name" name="name" type="text" value="{{ Auth::user()->name }}" placeholder="Enter Your Name">
+                                <span class="text-danger" id="error-name"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="email" class="form-label custom-form-label">Email Id</label>
+                                <input class="form-control" id="email" name="email" type="email" value="{{ Auth::user()->email }}" placeholder="Enter Email Id">
+                                <span class="text-danger" id="error-email"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="phone_number" class="form-label custom-form-label">Phone Number</label>
+                                <input class="form-control" id="phone_number" value="{{ Auth::user()->phone_number }}" type="text"
+                                    placeholder="+91-88990 02244" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="form-group">
+                                <label for="address" class="form-label custom-form-label">Address</label>
+                                <input class="form-control" id="address" name="address" value="{{ Auth::user()->address }}" type="text" placeholder="Enter Address">
+                                <span class="text-danger" id="error-address"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="pincode" class="form-label custom-form-label">Pincode</label>
+                                <input class="form-control" id="pincode" value="{{ Auth::user()->pincode }}" name="pincode" type="text" placeholder="Enter Pincode">
+                                <span class="text-danger" id="error-pincode"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <button class="custom-btn-blk" type="submit">Save Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</x-app-layout>
+
+
+</x-userdashboard-layout>

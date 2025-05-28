@@ -1,5 +1,5 @@
 @props([
-    'pageTitle' => 'Warranty Registration',
+    'pageTitle' => 'Dashboard',
     'pageDescription' => 'Greenlam Industries - Warranty Services Portal for Consumers',
     'pageScript' => null,
 ])
@@ -24,51 +24,7 @@
 </head>
 
 <body>
-    <!-- [ Sidebar Menu ] start -->
-    <nav class="pc-sidebar pc-sidebar-custom">
-        <div class="navbar-wrapper">
-            <div class="m-header">
-                <a href="#" class="b-brand text-primary">
-                    <!-- ========   Change your logo from here   ============ -->
-                    <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid logo-lg" alt="logo">
-                </a>
-            </div>
-            <div class="navbar-content">
-                <ul class="pc-navbar">
-                    <li class="pc-item">
-                        <a href="{{ route('dashboard') }}" class="pc-link">
-                            <span class="pc-micon"><img src="{{ asset('assets/images/dashboard.png') }}" /></span>
-                            <span class="pc-mtext">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a href="{{ route('profile.edit') }}" class="pc-link">
-                            <span class="pc-micon"><img src="{{ asset('assets/images/user.png') }}" /></span>
-                            <span class="pc-mtext">My Profile</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a href="{{ route('user.warranty.create') }}" class="pc-link">
-                            <span class="pc-micon"><img src="{{ asset('assets/images/protection.png') }}" /></span>
-                            <span class="pc-mtext">Warranty Registration</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a href="{{ route('user.warranty.modify') }}" class="pc-link">
-                            <span class="pc-micon"><img src="{{ asset('assets/images/edit.png') }}" /></span>
-                            <span class="pc-mtext">Modify Warranty Request</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a href="{{ route('user.warranty.certificate') }}" class="pc-link">
-                            <span class="pc-micon"><img src="{{ asset('assets/images/download.png') }}" /></span>
-                            <span class="pc-mtext">Download Certificates</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    @include('layouts.partials.usersidebar')
     <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
     <header class="pc-header pc-header-custom">
         <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
@@ -95,7 +51,7 @@
                             role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
                             <img src="{{ asset('assets/images/avatar-icon.png') }}" alt="user-image"
                                 class="user-avtar">
-                            <span>Mukesh</span>
+                            <span>{{ Auth::user()->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header">
@@ -105,23 +61,23 @@
                                             class="user-avtar wid-35">
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">Mukesh</h6>
-                                        <span>UI/UX Designer</span>
+                                        <h6 class="mb-1">{{ Auth::user()->name }}</h6>
+                                        {{-- <span>UI/UX Designer</span> --}}
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-content" id="mysrpTabContent">
                                 <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel"
                                     aria-labelledby="drp-t1" tabindex="0">
-                                    <a href="#!" class="dropdown-item">
+                                    <a href="{{ route('profile.edit') }}" class="dropdown-item">
                                         <img src="{{ asset('assets/images/edit-profile.png') }}" />
                                         <span>Edit Profile</span>
                                     </a>
-                                    <a href="#!" class="dropdown-item">
+                                    {{-- <a href="#!" class="dropdown-item">
                                         <img src="{{ asset('assets/images/view-profile.png') }}" />
                                         <span>View Profile</span>
-                                    </a>
-                                    <a href="#!" class="dropdown-item">
+                                    </a> --}}
+                                    <a href="{{ route('logout') }}" class="dropdown-item">
                                         <img src="{{ asset('assets/images/power-off.png') }}" />
                                         <span>Logout</span>
                                     </a>
@@ -149,7 +105,7 @@
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item"><a href="javascript: void(0)">Dashboard</a></li>
                             </ul>
-                            <h1>Warranty Registration</h1>
+                            <h1>{{ $pageTitle }}</h1>
                         </div>
                     </div>
                 </div>

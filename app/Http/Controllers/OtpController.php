@@ -39,6 +39,7 @@ class OtpController extends Controller
             'name'         => 'required|string|max:255',
             'email'        => 'required|email|unique:users,email',
             'phone_number' => 'required|digits:10|unique:users,phone_number',
+            // 'address'      => 'required|string|max:500',
         ]);
 
         $otp       = rand(100000, 999999); // Generate 6-digit OTP
@@ -101,6 +102,7 @@ class OtpController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
+
         if ($otpRecord) {
             // If OTP is correct, create or fetch the user
             $user = User::firstOrCreate(
@@ -109,6 +111,7 @@ class OtpController extends Controller
                     'name'         => $request->name,
                     'email'        => $request->email,
                     'phone_number' => $request->phone_number,
+                    'address'      => $request->address,
                     'password'     => bcrypt('default_password'), // Set a default password, you can update this later
                 ]
             );

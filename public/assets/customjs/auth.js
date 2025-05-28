@@ -65,6 +65,7 @@ $("#verifyOtpForm").on("submit", function (e) {
             otp: $("input[name='otp']").val(),
             name: $("input[name='name']").val(),
             email: $("input[name='email']").val(),
+            address: $("input[name='address']").val(),
         },
         success: function (response) {
             if (response.success) {
