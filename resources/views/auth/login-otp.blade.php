@@ -5,11 +5,11 @@
 
 
 
-    <main class="form-signin text-center my-5">
-        <div class="row align-items-center">
+
+        <div class="row align-items-center form-login-bg">
             <div class="col-md-6 col-lg-6">
                 <form class="signin-left" id="login-form" action="{{ route('login.send.otp') }}" method="POST">
-                    <h1 class="h3 mb-3 fw-normal">Sign In</h1>
+                    <h1 class="h3 mb-3">Sign In</h1>
                     <h2>If you have already registered at our Warranty Services Portal for Consumers, please sign in
                         here.</h2>
 
@@ -19,7 +19,7 @@
 
 
 
-                        <label for="phone">Phone*</label>
+                        <label for="phone">Phone Number*</label>
                         <input type="text" class="form-control" id="phone_number" name="phone_number"
                             placeholder="Enter Your Phone Number*" required>
                         {{-- <input type="text" name="phone_number" id="login-phone" placeholder="Phone"> --}}
@@ -38,23 +38,30 @@
                 </form>
 
                 <div id="login-otp-section" style="display:none;">
-                    <form id="login-verify-form" action="{{ route('login.verify.otp') }}" method="POST">
+                  <div class="signin-left">
+                        <form id="login-verify-form" action="{{ route('login.verify.otp') }}" method="POST">
+                        <h1>Enter OTP</h1>
+                    <h3>A one time password(OTP) has been sent to your mobile.</h3>
                         @csrf
+                       <div class="form-group">
                         <input type="text" name="otp" placeholder="Enter OTP">
-                        <span class="error" id="login-error-otp"></span><br>
-                        <button type="submit">Verify</button>
-                    </form>
-                    <button id="login-resend-btn" disabled>Resend OTP</button>
+                    </div>
                     <div id="login-timer"></div>
+                    <span class="error" id="login-error-otp"></span><br>
+                        <button type="submit" class="custom-btn3">Verify</button>
+                        <button id="login-resend-btn" class="custom-btn2" disabled>Resend OTP</button>
+                    
+                    </form>
+                    </div>
                 </div>
 
 
             </div>
-            <div class="col-md-6 col-lg-6 signin-right">
-                <img src="images/sign-in-img.jpg" class="img-fluid"
+            <div class="col-md-6 col-lg-6 signin-right p-0">
+                <img src="assets/images/sign-in-img.jpg" class="img-fluid"
                     alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </div>
-    </main>
+   
 
 
 </x-common-layout>

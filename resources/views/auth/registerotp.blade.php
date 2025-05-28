@@ -6,13 +6,13 @@
         <button type="submit">Send OTP</button>
     </form> --}}
 
-    <main class="form-signin text-center my-5">
 
-        <div class="row align-items-center">
+
+        <div class="row align-items-center form-login-bg">
             <div class="col-md-6 col-lg-6">
                 <form class="signin-left" id="registerForm" method="POST" action="{{ route('registerotp') }}">
                     @csrf
-                    <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+                    <h1 class="h3 mb-3">Sign Up</h1>
                     <h2>Kindly register for Greenlam warranty self service portal with Mobile Number Verification.
                     </h2>
                     {{-- <ul>
@@ -50,31 +50,34 @@
                         Portal.</p>
                 </form>
                 <!-- OTP Verification Form -->
+                <div class="signin-left">
+                    
                 <form id="verifyOtpForm" style="display: none;">
+                    <h1>Enter OTP</h1>
+                    <h3>A one time password(OTP) has been sent to your mobile.</h3>
                     @csrf
-                    <div>
+                    <div class="form-group">
                         <input type="text" class="form-control" name="otp" placeholder="Enter OTP" required>
-                        <span class="error-text" id="otp-error" style="color: red;"></span>
+                        <span class="error-text" id="otp-error"></span>
                     </div>
                     <!-- Countdown Timer -->
-                    <p id="countdown-timer" style="color: blue;"></p>
+                    <p id="countdown-timer"></p>
                     <!-- Success & Error Messages -->
-                    <p id="success-message" style="color: green;"></p>
-                    <p id="error-message" style="color: red;"></p>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary custom-btn-signin"
+                    <p id="success-message"></p>
+                    <p id="error-message"></p>
+                    <button type="submit" class="custom-btn3"
                         id="verify-button">Verify
                         OTP</button>
-                    <button type="button" class="w-100 btn btn-lg btn-primary custom-btn-signin" id="resendOtp"
+                    <button type="button" class="custom-btn2" id="resendOtp"
                         disabled>Resend OTP</button>
                 </form>
-
+</div>
             </div>
-            <div class="col-md-6 col-lg-6 signin-right">
+            <div class="col-md-6 col-lg-6 signin-right p-0">
                 <img src="{{ asset('assets/images/sign-up-img.jpg') }}" class="img-fluid"
                     alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </div>
 
 
-    </main>
 
 </x-common-layout>

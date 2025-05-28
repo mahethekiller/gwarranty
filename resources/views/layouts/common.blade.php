@@ -33,49 +33,55 @@
             </ul>
         </header>
     </div>
-    <div class="container-fluid">
-        <img src="{{ asset('assets/images/banner.png') }}" class="img-fluid"
-            alt="Greenlam Industries - Warranty Services Portal for Consumers" />
+    <div class="container-fluid p-0">
+        <div class="banner">
+            
+            <figure class="figure">
+  <img src="{{ asset('assets/images/banner.png') }}" class="figure-img" alt="Greenlam Industries - Warranty Services Portal for Consumers" />
+  <h1>Greenlam Industries</h1>
+   <h2>Warranty Services Portal for Consumers</h2>
+</figure>
+            </div>
     </div>
     <div class="container">
-        <main class="form-signin text-center my-5">
+        <main class="form-signin text-left">
             {{ $slot }}
         </main>
     </div>
 
     <div class="container-fluid">
-        <section class="why-register-your-product py-5">
+        <section class="why-register-your-product">
             <div class="row">
                 <h2>Why Register Your Product? </h2>
                 <div class="col-md-3 col-lg-3 mb-3">
                     <div class="boxes">
                         <img class="img-fluid box-img" width="60px"
-                            src="{{ asset('assets/images/For-Your-Convenience.png') }}" alt="">
-                        <h3>For Your Convenience </h3>
+                            src="{{ asset('assets/images/Convenience-icon.png') }}" alt="">
+                        <h3>For Your Convenience</h3>
                         <p>Gain quick and easy access to product manuals, replacement parts, tips and more.</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-lg-3 mb-3">
                     <div class="boxes bg-darken">
                         <img class="img-fluid box-img" width="60px"
-                            src="{{ asset('assets/images/For-Your-Safety.png') }}" alt="">
-                        <h3> For Your Safety</h3>
+                            src="{{ asset('assets/images/Safety-icon.png') }}" alt="">
+                        <h3>For Your Safety</h3>
                         <p>You are certain to be contacted in the unlikely event a safety notification is required.</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-lg-3 mb-3">
                     <div class="boxes">
                         <img class="img-fluid box-img" width="60px"
-                            src="{{ asset('assets/images/Warranty-Service.png') }}" alt="">
-                        <h3> Warranty Service</h3>
+                            src="{{ asset('assets/images/Warranty-icon.png') }}" alt="">
+                        <h3>Warranty Service</h3>
                         <p>Obtain more efficient warranty service in case there is a problem with your product.</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-lg-3 mb-3">
                     <div class="boxes bg-darken">
                         <img class="img-fluid box-img" width="60px"
-                            src="{{ asset('assets/images/Confirmation-Of-Ownership.png') }}" alt="">
-                        <h3> Confirmation Of Ownership</h3>
+                            src="{{ asset('assets/images/Ownership-icon.png') }}" alt="">
+                        <h3>Confirmation Of Ownership</h3>
                         <p>Always have proof of purchase in case of an insurance loss (ex. fire, flood or theft).</p>
                     </div>
                 </div>
