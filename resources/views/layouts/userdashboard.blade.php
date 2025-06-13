@@ -127,7 +127,7 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Copyright © 2025 Greenlam Industries Ltd. </p>
+                    <p class="m-0">Copyright © {{ date('Y') }} Greenlam Industries Ltd. </p>
                 </div>
             </div>
         </div>

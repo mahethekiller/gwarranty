@@ -35,7 +35,7 @@
     </div>
     <div class="container-fluid p-0">
         <div class="banner">
-            
+
             <figure class="figure">
   <img src="{{ asset('assets/images/banner.png') }}" class="figure-img" alt="Greenlam Industries - Warranty Services Portal for Consumers" />
   <h1>Greenlam Industries</h1>
@@ -94,7 +94,7 @@
         <section class="footer py-2">
             <div class="row">
                 <div class="col-md-12 col-lg-12">
-                    <p> Copyright © 2025 Greenlam Industries Ltd. </p>
+                    <p>Copyright © {{ date('Y') }} Greenlam Industries Ltd.</p>
                 </div>
             </div>
         </section>
