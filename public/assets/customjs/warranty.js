@@ -57,6 +57,10 @@ $("#qty_purchased").on("input", function (e) {
     this.value = this.value.replace(/[^0-9]/g, "");
 });
 
+$("#place_of_purchase").on("input", function (e) {
+    this.value = this.value.replace(/[^a-zA-Z]/g, "");
+});
+
 
 $("#handover_certificate").on("change", function () {
     const file = this.files[0];
