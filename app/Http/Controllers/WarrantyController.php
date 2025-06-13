@@ -33,11 +33,14 @@ class WarrantyController extends Controller
         $request->validate([
             'product_type'         => 'required|string',
             'qty_purchased'        => 'required|integer',
-            'application'          => 'required|string',
+            'application'          => in_array(
+                                        $request->input('product_type'), ['Greenlam Clads',
+                                        'Greenlam Sturdo']) ? ['sometimes', 'nullable',
+                                        'string'] : ['required', 'string'],
             'place_of_purchase'    => 'required|string',
             'invoice_number'       => 'required|string',
-            'upload_invoice'       => 'required|file|mimes:jpg,png,pdf|max:2048',
-            'handover_certificate' => 'nullable|file|mimes:jpg,png,pdf|max:2048', // optional field
+            'upload_invoice'       => 'required|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048',
+            'handover_certificate' => 'nullable|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048', // optional field
 
         ]);
 

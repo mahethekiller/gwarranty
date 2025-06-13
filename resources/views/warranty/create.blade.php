@@ -41,8 +41,8 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="product_type" class="form-label custom-form-label">Product
-                                    Tpye</label>
-                                <select class="form-select" id="mySelect" name="product_type" onchange="toggleDiv()">
+                                    type*</label>
+                                <select class="form-select" id="product_type" name="product_type" onchange="toggleDiv()">
                                     <option value="" selected>Select Product Type</option>
                                     <option value="Mikasa Floors">Mikasa Floors</option>
                                     <option value="Mikasa Doors">Mikasa Doors</option>
@@ -61,8 +61,8 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label for="qty_purchased" class="form-label custom-form-label">Qty
-                                    Purchased</label>
+                                <label for="qty_purchased" class="form-label custom-form-label">Quantity
+                                    Purchased*</label>
                                 <input class="form-control" id="qty_purchased" type="text" name="qty_purchased"
                                     placeholder="Enter Qty Purchased">
                                 <span class="text-danger" id="error-qty_purchased" role="alert">
@@ -90,7 +90,7 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="place_of_purchase" class="form-label custom-form-label">Place
-                                    of Purchase</label>
+                                    of Purchase*</label>
                                 <input class="form-control" id="place_of_purchase" type="text"
                                     name="place_of_purchase" placeholder="Enter Place of Purchase">
                                 <span class="text-danger" id="error-place_of_purchase" role="alert">
@@ -101,7 +101,7 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="invoice_number" class="form-label custom-form-label">Invoice
-                                    Number</label>
+                                    Number*</label>
                                 <input class="form-control" id="invoice_number" type="text" name="invoice_number"
                                     placeholder="Enter Invoice Number">
                                 <span class="text-danger" id="error-invoice_number" role="alert">
@@ -112,12 +112,17 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="upload_invoice" class="form-label custom-form-label">Upload
-                                    Invoice</label>
+                                    Invoice* </label>
                                 <input class="form-control" type="file" id="upload_invoice"
                                     name="upload_invoice">
+                                <span class="text-info" role="alert">
+                                    <small>.jpg, .png, .pdf, .doc, .docx. Max size: 2MB</small>
+                                </span>
                                 <span class="text-danger" id="error-upload_invoice" role="alert">
                                     <strong></strong>
                                 </span>
+
+                                <div id="upload_invoice_preview"></div>
                             </div>
                         </div>
                         <div class="col-lg-4" id="myDivMikasaDoors">
@@ -127,6 +132,13 @@
                                     Certificate</label>
                                 <input class="form-control" type="file" id="handover_certificate"
                                     name="handover_certificate">
+                                <span class="text-info" role="alert">
+                                    <small>.jpg, .png, .pdf, .doc, .docx. Max size: 2MB
+
+                                    </small>
+                                </span>
+                                <div id="handover_certificate_preview"></div>
+
                                 <span class="text-danger" id="error-handover_certificate" role="alert">
                                     <strong></strong>
                                 </span>

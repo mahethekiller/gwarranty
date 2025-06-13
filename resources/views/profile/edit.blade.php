@@ -27,6 +27,29 @@
                                     placeholder="+91-88990 02244" disabled>
                             </div>
                         </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="city" class="form-label custom-form-label">City</label>
+                                <input class="form-control" id="city" name="city" value="{{ Auth::user()->city }}" type="text" placeholder="Enter City">
+                                <span class="text-danger" id="error-city"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="state" class="form-label custom-form-label">State</label>
+                                <input class="form-control" id="state" name="state" value="{{ Auth::user()->state }}" type="text" placeholder="Enter State">
+                                <span class="text-danger" id="error-state"></span>
+                            </div>
+                        </div>
+
+<div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="pincode" class="form-label custom-form-label">Pincode</label>
+                                <input class="form-control" id="pincode" value="{{ Auth::user()->pincode }}" name="pincode" type="text" placeholder="Enter Pincode">
+                                <span class="text-danger" id="error-pincode"></span>
+                            </div>
+                        </div>
                         <div class="col-lg-8">
                             <div class="form-group">
                                 <label for="address" class="form-label custom-form-label">Address</label>
@@ -34,13 +57,7 @@
                                 <span class="text-danger" id="error-address"></span>
                             </div>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <label for="pincode" class="form-label custom-form-label">Pincode</label>
-                                <input class="form-control" id="pincode" value="{{ Auth::user()->pincode }}" name="pincode" type="text" placeholder="Enter Pincode">
-                                <span class="text-danger" id="error-pincode"></span>
-                            </div>
-                        </div>
+
                     </div>
                     <div class="form-group row">
 

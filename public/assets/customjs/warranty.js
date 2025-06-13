@@ -12,15 +12,15 @@ function toggleDiv2(show) {
         : "none";
 }
 
-function toggleDiv() {
-    const select = document.getElementById("mySelect");
-    const div = document.getElementById("myDivMikasaDoors");
-    if (select.value === "Mikasa Doors") {
-        div.style.display = "block";
-    } else {
-        div.style.display = "none";
-    }
-}
+// function toggleDiv() {
+//     const select = document.getElementById("mySelect");
+//     const div = document.getElementById("myDivMikasaDoors");
+//     if (select.value === "Mikasa Doors") {
+//         div.style.display = "block";
+//     } else {
+//         div.style.display = "none";
+//     }
+// }
 
 $("#warrantyForm").on("submit", function (e) {
     e.preventDefault();
@@ -49,4 +49,55 @@ $("#warrantyForm").on("submit", function (e) {
             }
         },
     });
+});
+
+
+
+$("#qty_purchased").on("input", function (e) {
+    this.value = this.value.replace(/[^0-9]/g, "");
+});
+
+
+$("#handover_certificate").on("change", function () {
+    const file = this.files[0];
+    const fileURL = URL.createObjectURL(file);
+    const previewLink = document.createElement("a");
+    previewLink.href = fileURL;
+    previewLink.download = file.name;
+    previewLink.innerHTML = "Preview";
+    previewLink.classList.add("btn", "btn-primary", "mt-2", "btn-sm");
+    const previewContainer = document.getElementById("handover_certificate_preview");
+    previewContainer.innerHTML = "";
+    previewContainer.appendChild(previewLink);
+});
+$("#upload_invoice").on("change", function () {
+    const file = this.files[0];
+    const fileURL = URL.createObjectURL(file);
+    const previewLink = document.createElement("a");
+    previewLink.href = fileURL;
+    previewLink.download = file.name;
+    previewLink.innerHTML = "Preview";
+    previewLink.classList.add("btn", "btn-primary", "mt-2", "btn-sm");
+    const previewContainer = document.getElementById("upload_invoice_preview");
+    previewContainer.innerHTML = "";
+    previewContainer.appendChild(previewLink);
+});
+
+
+
+$("#product_type").on("change", function () {
+    const value = $(this).val();
+    const div = document.getElementById("myDivMikasaDoors");
+    if (value === "Greenlam Clads" || value === "Greenlam Sturdo") {
+        $("#application").prop("disabled", true).closest(".form-group").hide();
+    } else {
+        $("#application").prop("disabled", false).closest(".form-group").show();
+    }
+
+
+    if (value === "Mikasa Doors") {
+        div.style.display = "block";
+    } else {
+        div.style.display = "none";
+    }
 });
