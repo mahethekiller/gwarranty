@@ -41,7 +41,7 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="product_type" class="form-label custom-form-label">Product
-                                    type*</label>
+                                    Type*</label>
                                 <select class="form-select" id="product_type" name="product_type" onchange="toggleDiv()">
                                     <option value="" selected>Select Product Type</option>
                                     <option value="Mikasa Floors">Mikasa Floors</option>
