@@ -115,6 +115,7 @@ body{font-family: "Lexend", sans-serif !important;}
 
 .pc-footer-custom{margin-left: 320px !important; text-align: center; font-size: 14px;}
 
-
+.order-status-bg{background:#595959; color:#fff;}
+.order-status-flex{display: flex; align-items: center; justify-content: space-between;}
 
 /*Dashboard*/

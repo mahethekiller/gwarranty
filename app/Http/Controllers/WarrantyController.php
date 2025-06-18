@@ -11,6 +11,13 @@ class WarrantyController extends Controller
     public function index()
     {
         // Logic to retrieve and return all warranties
+
+        return view('warranty.modify',
+            [
+                "pageTitle"       => "Modify Warranty Request",
+                "pageDescription" => "Modify Warranty Request",
+                "pageScript"      => "warranty",
+            ]);
     }
 
     // Show the form for creating a new warranty.
@@ -86,6 +93,13 @@ class WarrantyController extends Controller
     public function edit($id)
     {
         // Logic to show a form for editing an existing warranty
+
+        return view('warranty.edit',
+            [
+                "pageTitle"       => "Warranty Registration",
+                "pageDescription" => "Warranty Registration",
+                "pageScript"      => "warranty",
+            ]);
     }
 
     // Update the specified warranty in storage.
