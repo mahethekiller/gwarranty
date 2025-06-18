@@ -23,6 +23,8 @@ $("#login-form").on("submit", function (e) {
         method: "POST",
         data: $(this).serialize(),
         success: function (res) {
+            // response = JSON.parse(res);
+            $("#temp_otp").html(res.otp);
             $("#login-form").hide();
             $("#login-otp-section").show();
             startLoginOtpTimer();

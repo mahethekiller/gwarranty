@@ -65,6 +65,7 @@ class OtpController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'OTP sent to your phone successfully!',
+            'otp'     => $otp,
         ]);
     }
 
@@ -84,7 +85,7 @@ class OtpController extends Controller
             ['otp' => $otp, 'expires_at' => $expiresAt]
         );
 
-        return response()->json(['success' => true, 'message' => 'OTP sent for login']);
+        return response()->json(['success' => true, 'message' => 'OTP sent for login', 'otp' => $otp]);
     }
 
     // Show OTP verification form
