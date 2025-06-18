@@ -24,7 +24,7 @@ $("#login-form").on("submit", function (e) {
         data: $(this).serialize(),
         success: function (res) {
             // response = JSON.parse(res);
-            $("#temp_otp").html(res.otp);
+            $("#temp_otp").html("OTP: "+res.otp);
             $("#login-form").hide();
             $("#login-otp-section").show();
             startLoginOtpTimer();

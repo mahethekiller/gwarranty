@@ -33,7 +33,7 @@ $("#registerForm").on("submit", function (e) {
         data: $(this).serialize(),
         success: function (response) {
             if (response.success) {
-                $("#temp_otp").html(response.otp);
+                $("#temp_otp").html("OTP: "+response.otp);
                 $("#success-message").text(response.message);
                 $("#registerForm").hide();
                 $("#verifyOtpForm").show();
