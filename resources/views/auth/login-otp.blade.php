@@ -27,6 +27,8 @@
                         {{-- <button type="submit">Send OTP</button> --}}
 
 
+
+
                     </div>
                     <button class="w-100 btn btn-lg btn-primary custom-btn-signin" type="submit">Get OTP</button>
                     <p>By providing my phone number, I hereby agree and accept the <a href="#">Terms of
@@ -40,7 +42,7 @@
                 <div id="login-otp-section" style="display:none;">
                   <div class="signin-left">
                         <form id="login-verify-form" action="{{ route('login.verify.otp') }}" method="POST">
-                        <h1>Enter OTP</h1>
+                        <h1>Enter OTP </h1> <span id="temp_otp" class="text-info"></span>
                     <h3>A one time password(OTP) has been sent to your mobile.</h3>
                         @csrf
                        <div class="form-group">
@@ -50,7 +52,7 @@
                     <span class="error" id="login-error-otp"></span><br>
                         <button type="submit" class="custom-btn3">Verify</button>
                         <button id="login-resend-btn" class="custom-btn2" disabled>Resend OTP</button>
-                    
+
                     </form>
                     </div>
                 </div>
@@ -61,7 +63,7 @@
                 <img src="assets/images/sign-in-img.jpg" class="img-fluid"
                     alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </div>
-   
+
 
 
 </x-common-layout>

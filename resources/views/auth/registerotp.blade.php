@@ -51,9 +51,9 @@
                 </form>
                 <!-- OTP Verification Form -->
                 <div class="signin-left">
-                    
+
                 <form id="verifyOtpForm" style="display: none;">
-                    <h1>Enter OTP</h1>
+                    <h1>Enter OTP</h1><span id="temp_otp" class="text-info"></span>
                     <h3>A one time password(OTP) has been sent to your mobile.</h3>
                     @csrf
                     <div class="form-group">
