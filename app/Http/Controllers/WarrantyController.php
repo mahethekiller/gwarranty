@@ -12,11 +12,16 @@ class WarrantyController extends Controller
     {
         // Logic to retrieve and return all warranties
 
+        $userId = Auth::id();
+        $warranties = Warranty::where('user_id', $userId)->get();
+
+
         return view('warranty.modify',
             [
                 "pageTitle"       => "Modify Warranty Request",
                 "pageDescription" => "Modify Warranty Request",
                 "pageScript"      => "warranty",
+                "warranties"      => $warranties
             ]);
     }
 

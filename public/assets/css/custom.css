@@ -118,4 +118,11 @@ body{font-family: "Lexend", sans-serif !important;}
 .order-status-bg{background:#595959; color:#fff;}
 .order-status-flex{display: flex; align-items: center; justify-content: space-between;}
 
+.paoc-popup-mheading {
+  background: #a4a4a4;
+  padding: 10px;
+}
+.paoc-popup-mheading h5{text-align:center; color:#000; font-size: 20px;}
+
+
 /*Dashboard*/
