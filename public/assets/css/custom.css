@@ -91,9 +91,43 @@ body{font-family: "Lexend", sans-serif !important;}
 
 .pc-container-custom{margin-left: 320px !important;}*/
 
-.pc-container-custom h6{font-size: 22px; color: #000; font-weight: 500;}
+.pc-container-custom h6{font-size: 20px; color: #000; font-weight: 500;}
 
-.pc-container-custom .custom-form-label{font-size: 22px !important; color: #000; font-weight: 500;}
+.upload_invoice_preview{position: absolute; right: 6px;  top: 34px;}
+
+.upload_invoice_preview a{border:none; font-size: 10px;}
+
+#invoice_preview_old a{border:none; font-size: 10px;}
+
+#handover_certificate_preview_old a{border:none; font-size: 10px;}
+
+.btn-primary:focus{box-shadow: none;}
+
+.btn:focus-visible{box-shadow: none;}
+
+.edit-icon-green{background:#1b9e3e; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+
+.edit-icon-green:hover{color:#fff;}
+
+.pending-icon-orange{background:#f8a510; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+
+.pending-icon-orange:hover{color:#fff;}
+
+.success-icon-blue{background:#3399ff; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+
+.success-icon-blue:hover{color:#fff;}
+
+.pending-icon-red{background:#f8a510; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+
+.pending-icon-red:hover{color:#fff;}
+
+.modify-icon-red{background:#e55353; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+
+.modify-icon-red:hover{color:#fff;}
+
+.pc-container-custom .custom-form-label{font-size: 15px !important; color: #000; font-weight: 500;}
+
+.form-control input{font-size:14px !important;}
 
 .custom-btn-blk{background: #000 !important; font-size: 20px; color: #fff !important; text-transform: uppercase; border: none; padding: 5px 20px; border-radius: 5px; width: 100%;}
 
@@ -115,14 +149,14 @@ body{font-family: "Lexend", sans-serif !important;}
 
 .pc-footer-custom{margin-left: 320px !important; text-align: center; font-size: 14px;}
 
-.order-status-bg{background:#595959; color:#fff;}
+.order-status-bg{background:#696969; color:#fff;}
 .order-status-flex{display: flex; align-items: center; justify-content: space-between;}
 
 .paoc-popup-mheading {
-  background: #a4a4a4;
+  background: #696969;
   padding: 10px;
 }
-.paoc-popup-mheading h5{text-align:center; color:#000; font-size: 20px;}
+.paoc-popup-mheading h5{text-align:center; color:#fff; font-size: 20px;}
 
 
 /*Dashboard*/

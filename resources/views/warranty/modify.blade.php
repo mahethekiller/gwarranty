@@ -35,20 +35,22 @@
                                                             <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
                                                                 href="#"
                                                                 data-id="{{ $warranty->id }}"
-                                                                class="badge bg-light-warning border border-warning"><i
-                                                                    class="fa fa-edit"></i></a>
+                                                                class="edit-icon-green"><i
+                                                                    class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @if ($warranty->status == 'pending')
                                                             <span
-                                                                class="badge bg-light-danger border border-danger">Pending</span>
+                                                                class="pending-icon-red"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
                                                         @elseif($warranty->status == 'approved')
                                                             <span
-                                                                class="badge bg-light-success border border-success">Approved</span>
+                                                                class="edit-icon-green"><i
+                                                                    class="fa fa-check"></i>&nbsp;&nbsp;Approved</span>
                                                         @elseif($warranty->status == 'modify')
                                                             <span
-                                                                class="badge bg-light-warning border border-warning">Modify</span>
+                                                                class="modify-icon-red"><i
+                                                                    class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span>
                                                         @endif
 
                                                     </td>

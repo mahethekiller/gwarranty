@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="form-group">
+            <div class="form-group position-relative">
                 <label for="invoice_number" class="form-label custom-form-label">Invoice Number</label>
                 <input class="form-control" id="invoice_number" name="invoice_number" type="text"
                     placeholder="Enter Invoice Number" value="{{ $warranty->invoice_number }}">
@@ -66,13 +66,13 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="form-group">
+            <div class="form-group position-relative">
                 <label for="upload_invoice" class="form-label custom-form-label">Upload Invoice</label>
                 <input class="form-control" type="file" id="upload_invoice" name="upload_invoice">
-                <div id="invoice_preview">
+                <div id="invoice_preview" class="upload_invoice_preview">
 
                 </div>
-                <div id="invoice_preview_old">
+                <div id="invoice_preview_old" >
                     @if ($warranty->invoice_path != null)
                         <a href="/storage/{{ $warranty->invoice_path }}" target="_blank"
                             class="btn btn-primary btn-sm mt-2">View Existing Invoice</a>
@@ -83,11 +83,11 @@
         </div>
         <div class="col-lg-6" id="myDivMikasaDoors"
             style="display: {{ $warranty->product_type == 'Mikasa Doors' ? 'block' : 'none' }}">
-            <div class="form-group">
+            <div class="form-group position-relative">
                 <label for="handover_certificate" class="form-label custom-form-label">Upload Handover
                     Certificate</label>
                 <input class="form-control" type="file" id="handover_certificate" name="handover_certificate">
-                <div id="handover_certificate_preview">
+                <div id="handover_certificate_preview" class="upload_invoice_preview">
 
                 </div>
                 <div id="handover_certificate_preview_old">

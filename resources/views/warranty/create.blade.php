@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <div class="form-group">
+                            <div class="form-group position-relative">
                                 <label for="upload_invoice" class="form-label custom-form-label">Upload
                                     Invoice* </label>
                                 <input class="form-control" type="file" id="upload_invoice"
@@ -122,11 +122,11 @@
                                     <strong></strong>
                                 </span>
 
-                                <div id="upload_invoice_preview"></div>
+                                <div id="upload_invoice_preview" class="upload_invoice_preview"></div>
                             </div>
                         </div>
                         <div class="col-lg-4" id="myDivMikasaDoors">
-                            <div class="form-group">
+                            <div class="form-group position-relative">
                                 <label for="handover_certificate" class="form-label custom-form-label">Upload
                                     Handover
                                     Certificate</label>
@@ -137,7 +137,7 @@
 
                                     </small>
                                 </span>
-                                <div id="handover_certificate_preview"></div>
+                                <div id="handover_certificate_preview" class="upload_invoice_preview"></div>
 
                                 <span class="text-danger" id="error-handover_certificate" role="alert">
                                     <strong></strong>
