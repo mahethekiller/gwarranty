@@ -79,8 +79,8 @@
                     <h5 class="modal-title" id="editWarrantyModelLabel">Modify Warranty Request</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form action="" id="editWarrantyForm">
+                <div class="modal-body" id="editWarrantyModelBody">
+                    {{-- <form action="" id="editWarrantyForm">
                         @csrf
                         <div class="form-group row">
                             <div class="col-lg-6">
@@ -161,7 +161,7 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
                 </div>
             </div>
         </div>

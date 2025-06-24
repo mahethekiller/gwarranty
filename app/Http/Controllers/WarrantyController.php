@@ -101,7 +101,11 @@ class WarrantyController extends Controller
         if ($warranty->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized to access this warranty'], 403);
         }
-        return response()->json($warranty);
+        // return response()->json($warranty);
+
+        return view('warranty.modifymodal', [
+            'warranty' => $warranty,
+        ]);
     }
 
     // Update the specified warranty in storage.
@@ -118,7 +122,7 @@ class WarrantyController extends Controller
             'place_of_purchase'    => 'required|string',
             'invoice_number'       => 'required|string',
             'upload_invoice'       => 'nullable|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048',
-            'handover_certificate' => 'nullable|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048',
+            'handover_certificate' => $request->input('product_type') === 'Mikasa Doors' ? ['required', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'] : ['nullable', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'],
         ]);
 
         $warranty = Warranty::findOrFail($id);
