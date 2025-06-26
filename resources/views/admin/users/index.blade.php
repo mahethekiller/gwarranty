@@ -62,7 +62,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="select_product_type" class="form-label custom-form-label">Product
                                         Type</label>
