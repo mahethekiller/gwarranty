@@ -7,7 +7,7 @@
 
 
         <div class="row align-items-center form-login-bg">
-            <div class="col-md-6 col-lg-6">
+            <div class="col-md-12 col-lg-12">
                 <form class="signin-left" id="login-form" action="{{ route('login.send.otp') }}" method="POST">
                     <h1 class="h3 mb-3">Sign In</h1>
                     <h2>If you have already registered at our Warranty Services Portal for Consumers, please sign in
@@ -58,10 +58,6 @@
                 </div>
 
 
-            </div>
-            <div class="col-md-6 col-lg-6 signin-right p-0">
-                <img src="assets/images/sign-in-img.jpg" class="img-fluid"
-                    alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </div>
 
 

@@ -25,7 +25,7 @@
     <div class="container-fluid">
         <header class="d-flex flex-wrap justify-content-center py-1 border-bottom align-items-center top-header">
             <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto">
-                <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid" width="200px"
+                <img src="{{ asset('assets/images/logo.png') }}" class="img-fluid" width="130px"
                     alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </a>
             <ul class="nav nav-pills">
@@ -37,7 +37,7 @@
         <div class="banner">
 
             <figure class="figure">
-  <img src="{{ asset('assets/images/banner.png') }}" class="figure-img" alt="Greenlam Industries - Warranty Services Portal for Consumers" />
+  <img src="{{ asset('assets/images/banner.png') }}" class="img-fluid" alt="Greenlam Industries - Warranty Services Portal for Consumers" />
   <h1>Greenlam Industries</h1>
    <h2>Warranty Services Portal for Consumers</h2>
 </figure>

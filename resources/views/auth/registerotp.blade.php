@@ -9,7 +9,7 @@
 
 
         <div class="row align-items-center form-login-bg">
-            <div class="col-md-6 col-lg-6">
+            <div class="col-md-12 col-lg-12">
                 <form class="signin-left" id="registerForm" method="POST" action="{{ route('registerotp') }}">
                     @csrf
                     <h1 class="h3 mb-3">Sign Up</h1>
@@ -20,6 +20,8 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul> --}}
+                    <div class="form-group row">
+                    <div class="col-lg-6">
                     <div class="form-group">
                         <label for="name">Name*</label>
                         <input type="text" class="form-control" id="name" placeholder="Enter Your Name*"
@@ -27,27 +29,41 @@
 
                         <span class="error-text text-danger" id="name-error"></span>
                     </div>
-                    <div class="form-group">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
                         <label for="emailid">Email Id*</label>
                         <input type="email" class="form-control" id="emailid" name="email"
                             placeholder="Enter Your Email Id*">
                         <span class="error-text text-danger" id="email-error"></span>
                     </div>
-                    <div class="form-group">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
                         <label for="address">Address*</label>
                         <input type="text" class="form-control" name="address" id="address"
                             placeholder="Enter Your Address*">
                     </div>
-                    <div class="form-group">
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
                         <label for="phonenumber">Phone Number*</label>
                         <input type="text" class="form-control" id="phone_number" name="phone_number"
                             placeholder="Enter Your Phone Number*">
                         <span class="error-text text-danger" id="phone_number-error"></span>
                     </div>
+                    </div>
+                    <div class="col-lg-12 mt-4">
+                        <div class="form-group">
                     <button class="w-100 btn btn-lg btn-primary custom-btn-signin" type="submit">Get OTP</button>
+                    </div>
                     <p>By providing my phone number, I hereby agree and accept the <a href="#">Terms of
                             Service</a> and <a href="#">Privacy Policy</a> in use of the Warranty Services
                         Portal.</p>
+                    </div>
+                    </div>
+                    
+                    
                 </form>
                 <!-- OTP Verification Form -->
                 <div class="signin-left">
@@ -72,10 +88,6 @@
                         disabled>Resend OTP</button>
                 </form>
 </div>
-            </div>
-            <div class="col-md-6 col-lg-6 signin-right p-0">
-                <img src="{{ asset('assets/images/sign-up-img.jpg') }}" class="img-fluid"
-                    alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </div>
 
 
