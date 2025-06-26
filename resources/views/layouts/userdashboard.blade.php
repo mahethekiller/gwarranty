@@ -17,7 +17,12 @@
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+     {{-- <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/css/coreui.min.css" rel="stylesheet"> --}}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css" />
+
 
     <link rel="stylesheet" href="{{ asset('assets/dashboard/style.css') }}" id="main-style-link">
 
@@ -25,7 +30,11 @@
 </head>
 
 <body>
-    @include('layouts.partials.usersidebar')
+    @if(Auth::user()->hasRole('admin'))
+        @include('layouts.partials.adminsidebar')
+    @elseif(Auth::user()->hasRole('user'))
+        @include('layouts.partials.usersidebar')
+    @endif
     <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
     <header class="pc-header pc-header-custom">
         <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
@@ -52,7 +61,9 @@
                             role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
                             <img src="{{ asset('assets/images/avatar-icon.png') }}" alt="user-image"
                                 class="user-avtar">
-                            <span>{{ Auth::user()->name }}</span>
+                            <span>{{ Auth::user()->name }}</span>&nbsp;
+                            <i aria-hidden="true" class="fa fa-angle-down"></i>
+
                         </a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header">
@@ -152,6 +163,17 @@
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/dashboard/pcoded.js') }}"></script>
     <script src="{{ asset('assets/dashboard/feather.min.js') }}"></script>
+
+
+<!-- Bootstrap Select compatible with Bootstrap 5 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker();
+    });
+</script>
+
+    {{-- <script defer src="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/js/coreui.bundle.min.js"></script> --}}
     @if ($pageScript)
         <script src="{{ asset('assets/customjs/' . $pageScript . '.js') }}"></script>
     @endif

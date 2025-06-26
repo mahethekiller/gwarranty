@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserManagement;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ProfileController;
@@ -35,6 +36,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('dashboard.admin');
     })->name('admin.dashboard');
+
+    Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::delete('/admin/profile', [ProfileController::class, 'destroy'])->name('admin.profile.destroy');
+
+    // user management
+    Route::get('/admin/users', [UserManagement::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/user/{user}/edit', [UserManagement::class, 'edit'])->name('admin.users.edit');
+    Route::patch('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
+    Route::post('/admin/users/add', [UserManagement::class, 'store'])->name('admin.users.add');
+
+
+
+
+
 });
 
 Route::middleware(['auth', 'role:editor'])->group(function () {
