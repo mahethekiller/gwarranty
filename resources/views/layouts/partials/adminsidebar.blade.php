@@ -22,6 +22,12 @@
                         </a>
                     </li>
                     <li class="pc-item">
+                        <a href="{{ route('admin.warranty.index') }}" class="pc-link">
+                            <span class="pc-micon"><img src="{{ asset('assets/images/edit.png') }}" /></span>
+                            <span class="pc-mtext">Warranty Management</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
                         <a href="{{ route('admin.profile.edit') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/user.png') }}" /></span>
                             <span class="pc-mtext">My Profile</span>

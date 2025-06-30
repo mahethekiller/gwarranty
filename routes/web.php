@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserManagement;
+use App\Http\Controllers\Admin\WarrantyManagement;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ProfileController;
@@ -53,6 +54,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/user/{user}/edit', [UserManagement::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
     Route::post('/admin/users/add', [UserManagement::class, 'store'])->name('admin.users.add');
+
+    // warranty management
+    Route::get('/admin/warranty', [WarrantyManagement::class, 'index'])->name('admin.warranty.index');
+    Route::get('/admin/warranty/edit/{warranty}', [WarrantyManagement::class, 'edit'])->name('admin.warranty.edit');
+    Route::post('/admin/warranty/update/{warranty}', [WarrantyManagement::class, 'update'])->name('admin.warranty.update');
+    // Route::post('/admin/warranty/add', [UserManagement::class, 'store'])->name('admin.warranty.add');
 });
 
 // ADMIN ROLE

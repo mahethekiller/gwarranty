@@ -17,6 +17,7 @@
                                                 <th>Application Type</th>
                                                 <th>Place of Purchase</th>
                                                 <th>Invoice Number</th>
+                                                <th>Remarks</th>
                                                 <th>Action</th>
                                                 <th>Status</th>
                                             </tr>
@@ -30,6 +31,8 @@
                                                     <td>{{ $warranty->application }}</td>
                                                     <td>{{ $warranty->place_of_purchase }}</td>
                                                     <td>{{ $warranty->invoice_number }}</td>
+                                                    <td>{{ $warranty->remarks }}</td>
+
                                                     <td>
                                                         @if ($warranty->status == 'modify')
                                                             <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"

@@ -109,7 +109,7 @@
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <div class="col-md-12 col-xl-12">
-                                <h4 class="pb-1">User Lists</h4>
+                                <h4 class="pb-1">User List</h4>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped mb-0">
                                         <thead>
