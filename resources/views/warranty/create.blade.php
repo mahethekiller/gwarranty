@@ -44,12 +44,9 @@
                                     Type*</label>
                                 <select class="form-select" id="product_type" name="product_type" onchange="toggleDiv()">
                                     <option value="" selected>Select Product Type</option>
-                                    <option value="Mikasa Floors">Mikasa Floors</option>
-                                    <option value="Mikasa Doors">Mikasa Doors</option>
-                                    <option value="Mikasa Ply">Mikasa Ply</option>
-                                    <option value="Greenlam Clads">Greenlam Clads</option>
-                                    <option value="NewMikaFx">NewMikaFx</option>
-                                    <option value="Greenlam Sturdo">Greenlam Sturdo</option>
+                                    @foreach ($products as $product)
+                                        <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                    @endforeach
                                 </select>
                                 {{-- <span class="text-danger" id="login-error-phone_number"></span> --}}
 

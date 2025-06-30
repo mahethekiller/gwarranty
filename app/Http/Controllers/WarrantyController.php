@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Warranty;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,9 @@ class WarrantyController extends Controller
 
         $userId = Auth::id();
         $warranties = Warranty::where('user_id', $userId)->get();
+        $productNames = Product::pluck('name', 'id'); // returns [id => name]
+
+
 
 
         return view('warranty.modify',
@@ -21,18 +25,22 @@ class WarrantyController extends Controller
                 "pageTitle"       => "Modify Warranty Request",
                 "pageDescription" => "Modify Warranty Request",
                 "pageScript"      => "warranty",
-                "warranties"      => $warranties
+                "warranties"      => $warranties,
+                "productNames"    => $productNames
             ]);
     }
 
     // Show the form for creating a new warranty.
     public function create()
     {
+        $products = Product::all();
+
         return view('warranty.create',
             [
                 "pageTitle"       => "Warranty Registration",
                 "pageDescription" => "Warranty Registration",
                 "pageScript"      => "warranty",
+                "products"        => $products
             ]);
     }
 

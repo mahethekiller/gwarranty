@@ -26,11 +26,18 @@ Route::get('/dashboard', function () {
     return view('dashboard.user');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+// ALL ROLEs
+
 Route::middleware('auth', 'role:admin|user|editor')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/user/profile/save', [ProfileController::class, 'update'])->name('user.profile.update');
 });
+// ALL ROLEs
+
+// ADMIN ROLE
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
@@ -44,20 +51,25 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // user management
     Route::get('/admin/users', [UserManagement::class, 'index'])->name('admin.users.index');
     Route::get('/admin/user/{user}/edit', [UserManagement::class, 'edit'])->name('admin.users.edit');
-    Route::patch('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
+    Route::post('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
     Route::post('/admin/users/add', [UserManagement::class, 'store'])->name('admin.users.add');
-
-
-
-
-
 });
+
+// ADMIN ROLE
+
+
+
+// EDITOR ROLE
 
 Route::middleware(['auth', 'role:editor'])->group(function () {
     Route::get('/editor/dashboard', function () {
         return view('dashboard.editor');
     })->name('editor.dashboard');
 });
+
+// EDITOR ROLE
+
+// USER ROLE
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', function () {
@@ -71,9 +83,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/user/warranty/update/{id}', [WarrantyController::class, 'update'])->name('user.warranty.update');
     Route::get('/user/warranty/certificate', [WarrantyController::class, 'create'])->name('user.warranty.certificate');
 
-
-     Route::post('/user/profile/save', [ProfileController::class, 'update'])->name('user.profile.update');
-
 });
+
+// USER ROLE
 
 require __DIR__ . '/auth.php';
