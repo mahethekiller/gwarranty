@@ -19,9 +19,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-     {{-- <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/css/coreui.min.css" rel="stylesheet"> --}}
+    {{-- <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/css/coreui.min.css" rel="stylesheet"> --}}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 
     <link rel="stylesheet" href="{{ asset('assets/dashboard/style.css') }}" id="main-style-link">
@@ -30,7 +34,7 @@
 </head>
 
 <body>
-    @if(Auth::user()->hasRole('admin'))
+    @if (Auth::user()->hasRole('admin'))
         @include('layouts.partials.adminsidebar')
     @elseif(Auth::user()->hasRole('user'))
         @include('layouts.partials.usersidebar')
@@ -59,8 +63,7 @@
                     <li class="dropdown pc-h-item header-user-profile">
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-                            <img src="{{ asset('assets/images/avatar-icon.png') }}" alt="user-image"
-                                class="user-avtar">
+                            <img src="{{ asset('assets/images/avatar-icon.png') }}" alt="user-image" class="user-avtar">
                             <span>{{ Auth::user()->name }}</span>&nbsp;
                             <i aria-hidden="true" class="fa fa-angle-down"></i>
 
@@ -165,13 +168,16 @@
     <script src="{{ asset('assets/dashboard/feather.min.js') }}"></script>
 
 
-<!-- Bootstrap Select compatible with Bootstrap 5 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.selectpicker').selectpicker();
-    });
-</script>
+    <!-- Bootstrap Select compatible with Bootstrap 5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     {{-- <script defer src="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/js/coreui.bundle.min.js"></script> --}}
     @if ($pageScript)
