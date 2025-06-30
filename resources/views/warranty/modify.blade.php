@@ -12,7 +12,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Submited Date</th>
-                                                <th>Product Tpye</th>
+                                                <th>Product Type</th>
                                                 <th>Quantity</th>
                                                 <th>Application Type</th>
                                                 <th>Place of Purchase</th>
@@ -25,7 +25,7 @@
                                             @foreach ($warranties as $warranty)
                                                 <tr>
                                                     <td>{{ $warranty->created_at->format('d-m-Y') }}</td>
-                                                    <td>{{ $warranty->product_type }}</td>
+                                                    <td>{{ $productNames[$warranty->product_type] ?? 'N/A' }}</td>
                                                     <td>{{ $warranty->qty_purchased }}</td>
                                                     <td>{{ $warranty->application }}</td>
                                                     <td>{{ $warranty->place_of_purchase }}</td>
@@ -33,23 +33,20 @@
                                                     <td>
                                                         @if ($warranty->status == 'modify')
                                                             <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
-                                                                href="#"
-                                                                data-id="{{ $warranty->id }}"
+                                                                href="#" data-id="{{ $warranty->id }}"
                                                                 class="edit-icon-green"><i
                                                                     class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @if ($warranty->status == 'pending')
-                                                            <span
-                                                                class="pending-icon-red"><i class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
+                                                            <span class="pending-icon-red"><i
+                                                                    class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
                                                         @elseif($warranty->status == 'approved')
-                                                            <span
-                                                                class="edit-icon-green"><i
+                                                            <span class="edit-icon-green"><i
                                                                     class="fa fa-check"></i>&nbsp;&nbsp;Approved</span>
                                                         @elseif($warranty->status == 'modify')
-                                                            <span
-                                                                class="modify-icon-red"><i
+                                                            <span class="modify-icon-red"><i
                                                                     class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span>
                                                         @endif
 
@@ -74,7 +71,8 @@
     </div>
 
 
-    <div class="modal fade" id="editWarrantyModel" tabindex="-1" aria-labelledby="editWarrantyModelLabel" aria-hidden="true">
+    <div class="modal fade" id="editWarrantyModel" tabindex="-1" aria-labelledby="editWarrantyModelLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header paoc-popup-mheading">

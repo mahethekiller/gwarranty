@@ -16,13 +16,13 @@ $(document).on('click', '[data-bs-target="#userEditModal"]', function (e) {
                 $('#userEditModalBody').html(response);
 
             }
-
         },
         error: function (xhr) {
-            alert('Error fetching warranty data');
+            alert('Error fetching data');
             console.log(xhr.responseText);
         }
     });
 });
+
 
 

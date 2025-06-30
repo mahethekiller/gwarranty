@@ -159,8 +159,17 @@ class OtpController extends Controller
         }
 
         Auth::login($user);
+
         session()->forget('login_phone_number');
         $otp->delete();
+
+        if ($user->hasRole('admin')) {
+            return response()->json(['success' => true, 'redirect' => route('admin.dashboard')]);
+        }
+
+        if ($user->hasRole('editor')) {
+            return response()->json(['success' => true, 'redirect' => route('editor.dashboard')]);
+        }
 
         return response()->json(['success' => true, 'redirect' => route('dashboard')]);
     }

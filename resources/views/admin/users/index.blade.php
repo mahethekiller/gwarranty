@@ -3,7 +3,8 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.users.add') }}" id="userForm" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.users.add') }}" id="userForm" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
 
                         @if (session()->has('success'))
@@ -54,9 +55,10 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="password_confirmation" class="form-label custom-form-label">Confirm Password</label>
-                                    <input class="form-control" id="password_confirmation" name="password_confirmation" type="password"
-                                        placeholder="Confirm Password">
+                                    <label for="password_confirmation" class="form-label custom-form-label">Confirm
+                                        Password</label>
+                                    <input class="form-control" id="password_confirmation" name="password_confirmation"
+                                        type="password" placeholder="Confirm Password">
                                     <span class="text-danger" id="error-password_confirmation" role="alert">
                                         <strong>{{ $errors->first('password_confirmation') }}</strong>
                                     </span>
@@ -67,11 +69,14 @@
                                     <label for="select_product_type" class="form-label custom-form-label">Product
                                         Type</label>
                                     {{-- {{ print_r($users) }} --}}
-                                    <select class="form-multi-select selectpicker" multiple data-coreui-search="true" name="product_type[]">
+                                    <select class="form-multi-select selectpicker" multiple data-coreui-search="true"
+                                        name="product_type[]">
                                         {{-- <option value="" selected>Select Product Type</option> --}}
 
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}" {{ in_array($product->id, old('product_type', [])) ? 'selected' : '' }}>{{ $product->name }}</option>
+                                            <option value="{{ $product->id }}"
+                                                {{ in_array($product->id, old('product_type', [])) ? 'selected' : '' }}>
+                                                {{ $product->name }}</option>
                                         @endforeach
                                     </select>
                                     <span class="text-danger" id="error-product_type" role="alert">
@@ -114,7 +119,7 @@
                                                 <th>Email</th>
                                                 <th>Phone</th>
                                                 <th>Product Type</th>
-                                                {{-- <th>Password</th> --}}
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -128,20 +133,26 @@
                                                     <td>{{ $user->email }}</td>
                                                     <td>{{ $user->phone_number }}</td>
                                                     @php
-                                                        $userProduct = \App\Models\UserProduct::where(
-                                                            'user_id',
-                                                            $user->id,
-                                                        )->get();
-                                                        $productName = $userProduct
-                                                            ->pluck('product.name')
-                                                            ->implode(', ');
+                                                        $productIds = explode(',', \App\Models\UserProduct::where('user_id', $user->id)->value('product_id'));
+                                                        $productName = \App\Models\Product::whereIn('id', $productIds)->pluck('name')->implode(', ');
                                                     @endphp
 
                                                     <td>{{ $productName }}</td>
                                                     <td>
-                                                        <a href="javascript:void(0)" class="btn btn-primary btn-sm"
+                                                        @if ($user->status === 'active')
+                                                            <span class="badge bg-success">Active</span>
+                                                        @else
+                                                            <span class="badge bg-secondary">Inactive</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0)"
+                                                            class="badge bg-light-warning border border-warning"
                                                             data-bs-toggle="modal" data-bs-target="#userEditModal"
-                                                            data-id="{{ $user->id }}">Edit</a>
+                                                            data-id="{{ $user->id }}"><i
+                                                                class="fa fa-pencil"></i></a>
+
+
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -162,7 +173,8 @@
     </div>
 
 
-    <div class="modal fade" id="userEditModal" tabindex="-1" aria-labelledby="userEditModalLabel" aria-hidden="true">
+    <div class="modal fade" id="userEditModal" tabindex="-1" aria-labelledby="userEditModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header paoc-popup-mheading">
