@@ -1,5 +1,5 @@
 let timer;
-let countdownTime = 300; // 5 minutes in seconds
+let countdownTime = 100; // 5 minutes in seconds
 
 function startCountdown() {
     timer = setInterval(function () {
@@ -36,8 +36,9 @@ $("#registerForm").on("submit", function (e) {
                 $("#temp_otp").html("OTP: "+response.otp);
                 $("#success-message").text(response.message);
                 $("#registerForm").hide();
-                $("#verifyOtpForm").show();
-                countdownTime = 300; // reset countdown time
+                debugger;
+                $("#verifyOtpFormDiv").show();
+                countdownTime = 100; // reset countdown time
                 $("#verify-button").prop("disabled", false); // re-enable button
                 startCountdown(); // start countdown timer
             }
@@ -95,7 +96,7 @@ $("#resendOtp").on("click", function () {
 
             // Reset countdown timer and buttons
             clearInterval(timer);
-            countdownTime = 300;
+            countdownTime = 100;
             $("#resendOtp").prop("disabled", true); // Disable Resend OTP
             $("#verify-button").prop("disabled", false); // Enable verify button
             startCountdown(); // Restart countdown
