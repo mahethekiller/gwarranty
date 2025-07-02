@@ -60,6 +60,23 @@ body{font-family: "Lexend", sans-serif !important;}
 .custom-btn3{color: #fff; background: #707070; border-radius: 5px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #333; cursor: pointer;}
 .custom-btn3:hover{color: #fff; background: #000; border-radius: 5px; padding:10px 30px; text-decoration: none; border:0px; border: solid 1px #333;}
 
+.custom-btn4{color: #fff;
+  background: #333;
+  border-radius: 5px;
+  padding: 10px 30px;
+  text-decoration: none;
+  border: 0px;
+  border: solid 1px #333;
+  font-size: 14px;}
+.custom-btn4:hover{color: #333;
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px 30px;
+  text-decoration: none;
+  border: 0px;
+  border: solid 1px #333;
+  font-size: 14px;}
+
 
 
 /*Dashboard*/
@@ -107,25 +124,80 @@ body{font-family: "Lexend", sans-serif !important;}
 
 .btn:focus-visible{box-shadow: none;}
 
-.edit-icon-green{background:#1b9e3e; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+table.dataTable.no-footer {
+  border: 1px solid #efefef;
+  margin-top: 18px !important;
+  display: inline-table;
+}
+
+.edit-icon-green{background:#1b9e3e; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
 
 .edit-icon-green:hover{color:#fff;}
 
-.pending-icon-orange{background:#f8a510; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+.pending-icon-orange{background:#f8a510; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
 
 .pending-icon-orange:hover{color:#fff;}
 
-.success-icon-blue{background:#3399ff; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+.success-icon-blue{background:#3399ff; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
 
 .success-icon-blue:hover{color:#fff;}
 
-.pending-icon-red{background:#f8a510; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+.pending-icon-red{background:#f8a510; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
 
 .pending-icon-red:hover{color:#fff;}
 
-.modify-icon-red{background:#e55353; color:#fff; border-radius: 5px; padding: 5px 10px; display: inline-flex;  align-items: center;}
+.modify-icon-red{background:#e55353; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
 
 .modify-icon-red:hover{color:#fff;}
+
+.download-icon-red{background:#3879ff; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
+
+.download-icon-red:hover{color:#fff;}
+
+.dropdown.bootstrap-select.show-tick.form-multi-select .btn.dropdown-toggle.bs-placeholder.btn-light{display: block;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    padding-right: 20px;
+}
+
+.dropdown.bootstrap-select.show-tick.form-multi-select {display: inline;}
+
+
+.btn.dropdown-toggle.btn-light{display: block;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    padding-right: 20px;
+}
+
+
+
+a{color:#000;}
+
+a:hover{color:#000;}
 
 .pc-container-custom .custom-form-label{font-size: 14px !important; color: #000; font-weight: 500;}
 

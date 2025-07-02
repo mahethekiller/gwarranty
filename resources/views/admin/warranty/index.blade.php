@@ -40,7 +40,7 @@
                                                         @if ($warranty->invoice_path != null)
                                                             <a href="/storage/{{ $warranty->invoice_path }}"
                                                                 target="_blank"
-                                                                class="badge bg-light-info border border-info"><i
+                                                                class="download-icon-red"><i
                                                                     class="fa fa-download"></i> &nbsp;View</a>
                                                         @endif
                                                     </td>
@@ -48,7 +48,7 @@
                                                         @if ($warranty->handover_certificate_path != null)
                                                             <a href="/storage/{{ $warranty->handover_certificate_path }}"
                                                                 target="_blank"
-                                                                class="badge bg-light-info border border-info"><i
+                                                                class="download-icon-red"><i
                                                                     class="fa fa-download"></i>&nbsp;View</a>
                                                         @endif
                                                     </td>

@@ -6,7 +6,9 @@
                 <h1 class="h3 mb-3">Sign In</h1>
                 @csrf
 
-                <div class="form-group">
+              <div class="row">
+               <div class="col-lg-6">
+                    <div class="form-group mb-0">
                     <label for="email">Email*</label>
                     <input type="email" class="form-control" id="email" name="email"
                         placeholder="Enter Your Email*" required>
@@ -16,8 +18,10 @@
                         @enderror
                     </span><br>
                 </div>
+                </div>
 
-                <div class="form-group">
+                <div class="col-lg-6">
+                <div class="form-group mb-0">
                     <label for="password">Password*</label>
                     <input type="password" class="form-control" id="password" name="password"
                         placeholder="Enter Your Password*" required>
@@ -27,8 +31,10 @@
                         @enderror
                     </span><br>
                 </div>
+                </div>
+                </div>
 
-                <div class="block mt-4">
+                <div class="block mb-4">
                     <label for="remember_me" class="inline-flex items-center">
                         <input id="remember_me" type="checkbox"
                             class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
@@ -36,7 +42,7 @@
                         <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                     </label>
                 </div>
-                <button type="submit" class="custom-btn3">Login</button>
+                <button type="submit" class="custom-btn4">Login</button>
 
                 <div class="flex items-center justify-end mt-4">
                     @if (Route::has('password.request'))
