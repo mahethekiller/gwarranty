@@ -41,7 +41,7 @@
                                                             <a href="/storage/{{ $warranty->invoice_path }}"
                                                                 target="_blank"
                                                                 class="badge bg-light-info border border-info"><i
-                                                                    class="fa fa-download"></i></a>
+                                                                    class="fa fa-download"></i> &nbsp;View</a>
                                                         @endif
                                                     </td>
                                                     <td>
@@ -49,20 +49,23 @@
                                                             <a href="/storage/{{ $warranty->handover_certificate_path }}"
                                                                 target="_blank"
                                                                 class="badge bg-light-info border border-info"><i
-                                                                    class="fa fa-download"></i></a>
+                                                                    class="fa fa-download"></i>&nbsp;View</a>
                                                         @endif
                                                     </td>
 
                                                     <td>
                                                         @if ($warranty->status == 'pending')
-                                                            <span class="pending-icon-red"><i
-                                                                    class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
+                                                            {{-- <span class="pending-icon-red"><i
+                                                                    class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span> --}}
+                                                            <span class="badge bg-warning text-white">Pending</span>
                                                         @elseif($warranty->status == 'approved')
-                                                            <span class="edit-icon-green"><i
-                                                                    class="fa fa-check"></i>&nbsp;&nbsp;Approved</span>
+                                                            {{-- <span class="edit-icon-green"><i
+                                                                    class="fa fa-check"></i>&nbsp;&nbsp;Approved</span> --}}
+                                                            <span class="badge bg-success text-white">Approved</span>
                                                         @elseif($warranty->status == 'modify')
-                                                            <span class="modify-icon-red"><i
-                                                                    class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span>
+                                                            {{-- <span class="modify-icon-red"><i
+                                                                    class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span> --}}
+                                                            <span class="badge bg-danger text-white">Modify</span>
                                                         @endif
 
                                                     </td>
@@ -71,8 +74,8 @@
 
                                                         <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
                                                             href="#" data-id="{{ $warranty->id }}"
-                                                            class="badge bg-light-warning border border-warning"><i
-                                                                class="fa fa-pencil"></i></a>
+                                                            class="pending-icon-red"><i class="fa fa-pencil"></i>
+                                                            &nbsp;Edit</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -93,7 +96,8 @@
 
 
 
-    <div class="modal fade" id="editWarrantyModel" tabindex="-1" aria-labelledby="editWarrantyModelLabel" aria-hidden="true">
+    <div class="modal fade" id="editWarrantyModel" tabindex="-1" aria-labelledby="editWarrantyModelLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header paoc-popup-mheading">
