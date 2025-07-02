@@ -23,39 +23,45 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($warranties as $warranty)
+                                            @if (count($warranties) == 0)
                                                 <tr>
-                                                    <td>{{ $warranty->created_at->format('d-m-Y') }}</td>
-                                                    <td>{{ $productNames[$warranty->product_type] ?? 'N/A' }}</td>
-                                                    <td>{{ $warranty->qty_purchased }}</td>
-                                                    <td>{{ $warranty->application }}</td>
-                                                    <td>{{ $warranty->place_of_purchase }}</td>
-                                                    <td>{{ $warranty->invoice_number }}</td>
-                                                    <td>{{ $warranty->remarks }}</td>
-
-                                                    <td>
-                                                        @if ($warranty->status == 'modify')
-                                                            <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
-                                                                href="#" data-id="{{ $warranty->id }}"
-                                                                class="edit-icon-green"><i
-                                                                    class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($warranty->status == 'pending')
-                                                            <span class="pending-icon-red"><i
-                                                                    class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
-                                                        @elseif($warranty->status == 'approved')
-                                                            <span class="edit-icon-green"><i
-                                                                    class="fa fa-check"></i>&nbsp;&nbsp;Approved</span>
-                                                        @elseif($warranty->status == 'modify')
-                                                            <span class="modify-icon-red"><i
-                                                                    class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span>
-                                                        @endif
-
-                                                    </td>
+                                                    <td colspan="9" class="text-center">No data available</td>
                                                 </tr>
-                                            @endforeach
+                                            @else
+                                                @foreach ($warranties as $warranty)
+                                                    <tr>
+                                                        <td>{{ $warranty->created_at->format('d-m-Y') }}</td>
+                                                        <td>{{ $productNames[$warranty->product_type] ?? 'N/A' }}</td>
+                                                        <td>{{ $warranty->qty_purchased }}</td>
+                                                        <td>{{ $warranty->application }}</td>
+                                                        <td>{{ $warranty->place_of_purchase }}</td>
+                                                        <td>{{ $warranty->invoice_number }}</td>
+                                                        <td>{{ $warranty->remarks }}</td>
+
+                                                        <td>
+                                                            @if ($warranty->status == 'modify')
+                                                                <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
+                                                                    href="#" data-id="{{ $warranty->id }}"
+                                                                    class="edit-icon-green"><i
+                                                                        class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($warranty->status == 'pending')
+                                                                <span class="pending-icon-red"><i
+                                                                        class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
+                                                            @elseif($warranty->status == 'approved')
+                                                                <span class="edit-icon-green"><i
+                                                                        class="fa fa-check"></i>&nbsp;&nbsp;Approved</span>
+                                                            @elseif($warranty->status == 'modify')
+                                                                <span class="modify-icon-red"><i
+                                                                        class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span>
+                                                            @endif
+
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
 
 
 
