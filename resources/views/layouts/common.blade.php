@@ -13,7 +13,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $pageDescription }}">
     <meta name="author" content="Mukesh">
-
+<link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/ico" sizes="16x16">
 
     </title>
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
