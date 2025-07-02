@@ -147,10 +147,10 @@
                                                     </td>
                                                     <td>
                                                         <a href="javascript:void(0)"
-                                                            class="badge bg-light-warning border border-warning"
+                                                            class="pending-icon-red"
                                                             data-bs-toggle="modal" data-bs-target="#userEditModal"
                                                             data-id="{{ $user->id }}"><i
-                                                                class="fa fa-pencil"></i></a>
+                                                                class="fa fa-pencil"></i> &nbsp;Edit</a>
 
 
                                                     </td>
