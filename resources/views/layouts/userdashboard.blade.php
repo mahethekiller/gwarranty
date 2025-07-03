@@ -36,6 +36,17 @@
 </head>
 
 <body>
+
+
+    <div style="display: none;" class="ajax-loader icon-spinner3" id="spinner">
+        <div style="z-index: 9999; border: medium none; margin: 0px; padding: 0px; width: 100%; height: 100%; top: 0px; left: 0px; background-color: rgb(0, 0, 0); opacity: 0.6; cursor: wait; position: fixed;"
+            class="blockUI blockOverlay"></div>
+        <div style="z-index: 9999; position: fixed; padding: 0px; margin: 0px; width: 30%; top: 40%; left: 35%; text-align: center; color: rgb(0, 0, 0); cursor: wait;"
+            class="blockUI blockMsg blockPage">
+            <img alt="Loading" src="{{ asset('assets/images/loader.gif') }}" id="img-spinner">
+        </div>
+    </div>
+
     @if (Auth::user()->hasRole('admin'))
         @include('layouts.partials.adminsidebar')
     @elseif(Auth::user()->hasRole('user'))
@@ -174,11 +185,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('.selectpicker').selectpicker(
-                {
-                    width: '100%'
-                }
-            );
+            $('.selectpicker').selectpicker({
+                width: '100%'
+            });
         });
     </script>
 

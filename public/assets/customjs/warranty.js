@@ -25,6 +25,8 @@ function toggleDiv2(show) {
 $("#warrantyForm").on("submit", function (e) {
     e.preventDefault();
 
+    $("#spinner").show();
+
     var formData = new FormData(this);
 
     let errorFields = ['#error-product_type', '#error-qty_purchased', '#error-application',
@@ -45,10 +47,12 @@ $("#warrantyForm").on("submit", function (e) {
             $("#errorMessages").addClass("d-none").html("");
         },
         success: function (response) {
+            $("#spinner").hide();
             alert("Warranty registered successfully");
             $("#warrantyForm")[0].reset();
         },
         error: function (xhr) {
+            $("#spinner").hide();
             let errors = xhr.responseJSON.errors;
             for (let field in errors) {
                 console.log(errors[field][0]);
