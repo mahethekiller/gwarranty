@@ -111,8 +111,12 @@ class WarrantyController extends Controller
         }
         // return response()->json($warranty);
 
+        //  $productNames = Product::pluck('name', 'id'); // returns [id => name]
+        $products = Product::all();
+
         return view('warranty.modifymodal', [
             'warranty' => $warranty,
+            'products' => $products,
         ]);
     }
 
@@ -130,7 +134,7 @@ class WarrantyController extends Controller
             'place_of_purchase'    => 'required|string',
             'invoice_number'       => 'required|string',
             'upload_invoice'       => 'nullable|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048',
-            'handover_certificate' => ($request->input('product_type') === 'Mikasa Doors' && Warranty::findOrFail($id)->handover_certificate_path === null) ? ['required', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'] : ['nullable', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'],
+            'handover_certificate' => ($request->input('product_type') === '2' && Warranty::findOrFail($id)->handover_certificate_path === null) ? ['required', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'] : ['nullable', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'],
         ]);
 
         $warranty = Warranty::findOrFail($id);
