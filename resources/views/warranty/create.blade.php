@@ -42,7 +42,7 @@
                             <div class="form-group">
                                 <label for="product_type" class="form-label custom-form-label">Product
                                     Type*</label>
-                                <select class="form-select" id="product_type" name="product_type" onchange="toggleDiv()">
+                                <select class="form-select" id="product_type" name="product_type" >
                                     <option value="" selected>Select Product Type</option>
                                     @foreach ($products as $product)
                                         <option value="{{ $product->id }}">{{ $product->name }}</option>

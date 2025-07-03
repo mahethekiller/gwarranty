@@ -92,14 +92,14 @@ $("#upload_invoice").on("change", function () {
 $("#product_type").on("change", function () {
     const value = $(this).val();
     const div = document.getElementById("myDivMikasaDoors");
-    if (value === "Greenlam Clads" || value === "Greenlam Sturdo") {
+    if (value === "4" || value === "6") {   //"Greenlam Clads"  "Greenlam Sturdo"
         $("#application").prop("disabled", true).closest(".form-group").hide();
     } else {
         $("#application").prop("disabled", false).closest(".form-group").show();
     }
 
 
-    if (value === "Mikasa Doors") {
+    if (value === "2") {
         div.style.display = "block";
     } else {
         div.style.display = "none";
