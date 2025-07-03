@@ -27,6 +27,14 @@ $("#warrantyForm").on("submit", function (e) {
 
     var formData = new FormData(this);
 
+    let errorFields = ['#error-product_type', '#error-qty_purchased', '#error-application',
+            '#error-place_of_purchase', '#error-invoice_number', '#error-upload_invoice',
+            '#error-handover_certificate'
+        ];
+        errorFields.forEach(field => {
+            $(field).text('');
+        });
+
     $.ajax({
         url: $(this).attr("action"),
         type: "POST",
@@ -124,28 +132,7 @@ $(document).on('click', '[data-bs-target="#editWarrantyModel"]', function (e) {
             }else{
                 $('#editWarrantyModelBody').html(response);
             }
-            // $('#editWarrantyModel #product_type').val(response.product_type);
-            // $('#editWarrantyModel #qty_purchased').val(response.qty_purchased);
-            // $('#editWarrantyModel #application').val(response.application).trigger('change');
-            // $('#editWarrantyModel #place_of_purchase').val(response.place_of_purchase);
-            // $('#editWarrantyModel #invoice_number').val(response.invoice_number);
 
-            // // Display links to existing files if they exist
-            // if (response.invoice_path) {
-            //     $('#editWarrantyModel #invoice_preview').html(
-            //         '<a href="/storage/' + response.invoice_path + '" target="_blank" class="btn btn-primary btn-sm mt-2">View Existing Invoice</a>'
-            //     );
-            // } else {
-            //     $('#editWarrantyModel #invoice_preview').html('');
-            // }
-
-            // if (response.handover_certificate_path) {
-            //     $('#editWarrantyModel #handover_certificate_preview').html(
-            //         '<a href="/storage/' + response.handover_certificate_path + '" target="_blank" class="btn btn-primary btn-sm mt-2">View Existing Handover Certificate</a>'
-            //     );
-            // } else {
-            //     $('#editWarrantyModel #handover_certificate_preview').html('');
-            // }
         },
         error: function (xhr) {
             alert('Error fetching warranty data');

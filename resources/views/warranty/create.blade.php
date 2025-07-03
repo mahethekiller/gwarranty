@@ -115,11 +115,12 @@
                                 <span class="text-info" role="alert">
                                     <small>.jpg, .png, .pdf, .doc, .docx. Max size: 2MB</small>
                                 </span>
-                                <span class="text-danger" id="error-upload_invoice" role="alert">
+                                <br>
+                                <span class="text-danger" style="font-size: 12px;" id="error-upload_invoice" role="alert">
                                     <strong></strong>
                                 </span>
 
-                                <div id="upload_invoice_preview" class="upload_invoice_preview"></div>
+                                <div  id="upload_invoice_preview"  class="upload_invoice_preview"></div>
                             </div>
                         </div>
                         <div class="col-lg-4" id="myDivMikasaDoors">
@@ -134,9 +135,11 @@
 
                                     </small>
                                 </span>
-                                <div id="handover_certificate_preview" class="upload_invoice_preview"></div>
+                                <br>
 
-                                <span class="text-danger" id="error-handover_certificate" role="alert">
+                                <div  id="handover_certificate_preview" class="upload_invoice_preview"></div>
+
+                                <span class="text-danger" style="font-size: 12px;" id="error-handover_certificate" role="alert">
                                     <strong></strong>
                                 </span>
                             </div>
