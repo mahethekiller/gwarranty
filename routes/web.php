@@ -57,9 +57,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // EDITOR ROLE
 
 Route::middleware(['auth', 'role:editor'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('dashboard.editor');
-    })->name('editor.dashboard');
+
 });
 
 // EDITOR ROLE
@@ -85,6 +83,13 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 // ADMIN AND EDITOR ROLE
 
 Route::middleware(['auth', 'role:admin|editor'])->group(function () {
+
+
+     Route::get('/admin/dashboard', function () {
+        return view('dashboard.admin');
+    })->name('admin.dashboard');
+
+
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
     Route::delete('/admin/profile', [ProfileController::class, 'destroy'])->name('admin.profile.destroy');
@@ -94,6 +99,9 @@ Route::middleware(['auth', 'role:admin|editor'])->group(function () {
     Route::get('/admin/warranty/edit/{warranty}', [WarrantyManagement::class, 'edit'])->name('admin.warranty.edit');
     Route::post('/admin/warranty/update/{warranty}', [WarrantyManagement::class, 'update'])->name('admin.warranty.update');
     // Route::post('/admin/warranty/add', [UserManagement::class, 'store'])->name('admin.warranty.add');
+
+
+
 
 });
 

@@ -168,7 +168,7 @@ class OtpController extends Controller
         }
 
         if ($user->hasRole('editor')) {
-            return response()->json(['success' => true, 'redirect' => route('editor.dashboard')]);
+            return response()->json(['success' => true, 'redirect' => route('admin.dashboard')]);
         }
 
         return response()->json(['success' => true, 'redirect' => route('dashboard')]);
