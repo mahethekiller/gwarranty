@@ -25,6 +25,11 @@ Route::middleware('guest')->group(function () {
         return redirect()->route('admin.login');
     })->name('login');
 
+
+    Route::get('admin', function () {
+        return redirect()->route('admin.login');
+    })->name('admin');
+
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
