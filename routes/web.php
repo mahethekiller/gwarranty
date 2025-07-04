@@ -27,7 +27,6 @@ Route::get('/dashboard', function () {
     return view('dashboard.user');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
 // ALL ROLEs
 
 Route::middleware('auth', 'role:admin|user|editor')->group(function () {
@@ -45,33 +44,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         return view('dashboard.admin');
     })->name('admin.dashboard');
 
-    Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
-    Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
-    Route::delete('/admin/profile', [ProfileController::class, 'destroy'])->name('admin.profile.destroy');
-
     // user management
     Route::get('/admin/users', [UserManagement::class, 'index'])->name('admin.users.index');
     Route::get('/admin/user/{user}/edit', [UserManagement::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
     Route::post('/admin/users/add', [UserManagement::class, 'store'])->name('admin.users.add');
 
-    // warranty management
-    Route::get('/admin/warranty', [WarrantyManagement::class, 'index'])->name('admin.warranty.index');
-    Route::get('/admin/warranty/edit/{warranty}', [WarrantyManagement::class, 'edit'])->name('admin.warranty.edit');
-    Route::post('/admin/warranty/update/{warranty}', [WarrantyManagement::class, 'update'])->name('admin.warranty.update');
-    // Route::post('/admin/warranty/add', [UserManagement::class, 'store'])->name('admin.warranty.add');
 });
 
 // ADMIN ROLE
 
-
-
 // EDITOR ROLE
 
 Route::middleware(['auth', 'role:editor'])->group(function () {
-    Route::get('/editor/dashboard', function () {
+    Route::get('/admin/dashboard', function () {
         return view('dashboard.editor');
-    })->name('editor.dashboard');
+    })->name('admin.dashboard');
 });
 
 // EDITOR ROLE
@@ -93,5 +81,22 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 });
 
 // USER ROLE
+
+// ADMIN AND EDITOR ROLE
+
+Route::middleware(['auth', 'role:admin|editor'])->group(function () {
+    Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::delete('/admin/profile', [ProfileController::class, 'destroy'])->name('admin.profile.destroy');
+
+    // warranty management
+    Route::get('/admin/warranty', [WarrantyManagement::class, 'index'])->name('admin.warranty.index');
+    Route::get('/admin/warranty/edit/{warranty}', [WarrantyManagement::class, 'edit'])->name('admin.warranty.edit');
+    Route::post('/admin/warranty/update/{warranty}', [WarrantyManagement::class, 'update'])->name('admin.warranty.update');
+    // Route::post('/admin/warranty/add', [UserManagement::class, 'store'])->name('admin.warranty.add');
+
+});
+
+// ADMIN AND EDITOR ROLE
 
 require __DIR__ . '/auth.php';

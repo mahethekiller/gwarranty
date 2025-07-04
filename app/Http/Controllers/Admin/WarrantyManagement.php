@@ -17,8 +17,11 @@ class WarrantyManagement extends Controller
         if (Auth::user()->hasRole('admin')) {
             $warranties = Warranty::all();
         } else {
-            $productIds = UserProduct::where('user_id', $userId)->pluck('product_id')->toArray();
+            // $productIds = UserProduct::where('user_id', $userId)->pluck('product_id')->toArray();
+            $productIds = UserProduct::where('user_id', $userId)->value('product_id');
+            $productIds = explode(',', $productIds); // convert to array
             $warranties = Warranty::whereIn('product_type', $productIds)->get();
+            // dd($warranties);
         }
         $productNames = Product::pluck('name', 'id'); // returns [id => name]
 
@@ -71,10 +74,11 @@ class WarrantyManagement extends Controller
 
         $warranty = Warranty::findOrFail($id);
 
-
         // Update the warranty status and remarks
         $warranty->status  = $request->input('status');
         $warranty->remarks = $request->input('remarks');
+        $warranty->modified_by = Auth::id();
+        $warranty->checked_by = Auth::id();
         $warranty->save();
 
         return response()->json(['message' => 'Warranty updated successfully']);

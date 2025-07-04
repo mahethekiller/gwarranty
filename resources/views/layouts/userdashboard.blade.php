@@ -47,10 +47,12 @@
         </div>
     </div>
 
-    @if (Auth::user()->hasRole('admin'))
+    @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('editor'))
         @include('layouts.partials.adminsidebar')
     @elseif(Auth::user()->hasRole('user'))
         @include('layouts.partials.usersidebar')
+    {{-- @elseif(Auth::user()->hasRole('editor'))
+        @include('layouts.partials.editorsidebar') --}}
     @endif
     <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
     <header class="pc-header pc-header-custom">

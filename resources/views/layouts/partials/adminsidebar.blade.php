@@ -16,12 +16,6 @@
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('admin.users.index') }}" class="pc-link">
-                            <span class="pc-micon"><img src="{{ asset('assets/images/user.png') }}" /></span>
-                            <span class="pc-mtext">User Management</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
                         <a href="{{ route('admin.warranty.index') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/edit.png') }}" /></span>
                             <span class="pc-mtext">Warranty Management</span>
@@ -33,6 +27,16 @@
                             <span class="pc-mtext">My Profile</span>
                         </a>
                     </li>
+
+
+                     @if (auth()->user()->hasRole('admin'))
+                    <li class="pc-item">
+                        <a href="{{ route('admin.users.index') }}" class="pc-link">
+                            <span class="pc-micon"><img src="{{ asset('assets/images/user.png') }}" /></span>
+                            <span class="pc-mtext">User Management</span>
+                        </a>
+                    </li>
+                    @endif
 
 
                 </ul>
