@@ -59,7 +59,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:editor'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('dashboard.editor');
-    })->name('admin.dashboard');
+    })->name('editor.dashboard');
 });
 
 // EDITOR ROLE
