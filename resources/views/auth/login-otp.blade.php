@@ -50,8 +50,8 @@
                     </div>
                     <div id="login-timer"></div>
                     <span class="error" id="login-error-otp"></span><br>
-                        <button type="submit" class="custom-btn3">Verify</button>
-                        <button id="login-resend-btn" class="custom-btn2" disabled>Resend OTP</button>
+                        <button type="submit" class="custom-btn2">Verify</button>
+                        <button id="login-resend-btn" class="custom-btn3" disabled>Resend OTP</button>
 
                     </form>
                     </div>
