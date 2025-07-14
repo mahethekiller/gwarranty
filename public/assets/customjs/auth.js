@@ -86,14 +86,14 @@ $("#verifyOtpForm").on("submit", function (e) {
 // Resend OTP
 $("#resendOtp").on("click", function () {
     $.ajax({
-        url: "{{ route('resend.otp') }}",
+        url: "/resend-otp",
         type: "POST",
         data: {
             phone_number: $("input[name='phone_number']").val(),
         },
         success: function (response) {
             $("#success-message").text(response.message);
-
+debugger
             // Reset countdown timer and buttons
             clearInterval(timer);
             countdownTime = 100;

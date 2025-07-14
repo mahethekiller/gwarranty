@@ -26,3 +26,30 @@ $('#profileForm').on('submit', function(e) {
         }
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const stateSelect = document.getElementById('state');
+    const citySelect = document.getElementById('city');
+
+    stateSelect.addEventListener('change', function () {
+        const selectedState = this.value;
+
+        // Clear city dropdown
+        citySelect.innerHTML = '<option value="">Select City</option>';
+
+        if (selectedState) {
+            fetch(`/get-cities/${encodeURIComponent(selectedState)}`)
+                .then(response => response.json())
+                .then(cities => {
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        citySelect.appendChild(option);
+                    });
+                });
+        }
+    });
+});
+

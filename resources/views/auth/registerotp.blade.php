@@ -21,7 +21,7 @@
                     @endforeach
                 </ul> --}}
                 <div class="form-group row">
-                    <div class="col-lg-6">
+                    {{-- <div class="col-lg-6">
                         <div class="form-group">
                             <label for="name">Name*</label>
                             <input type="text" class="form-control" id="name" placeholder="Enter Your Name*"
@@ -44,8 +44,8 @@
                             <input type="text" class="form-control" name="address" id="address"
                                 placeholder="Enter Your Address*">
                         </div>
-                    </div>
-                    <div class="col-lg-6">
+                    </div> --}}
+                    <div class="col-lg-12">
                         <div class="form-group">
                             <label for="phonenumber">Phone Number*</label>
                             <input type="text" class="form-control" id="phone_number" name="phone_number"

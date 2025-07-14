@@ -9,6 +9,8 @@ use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/get-cities/{state}', [ProfileController::class, 'getCitiesAjax']);
+
 
 // OTP Routes
 Route::get('registerotp', [OtpController::class, 'showRegisterForm'])->name('registerotp');
@@ -64,7 +66,7 @@ Route::middleware(['auth', 'role:editor'])->group(function () {
 
 // USER ROLE
 
-Route::middleware(['auth', 'role:user'])->group(function () {
+Route::middleware(['auth', 'role:user','profile.updated'])->group(function () {
     Route::get('/user/dashboard', function () {
         return view('dashboard.user');
     })->name('user.dashboard');

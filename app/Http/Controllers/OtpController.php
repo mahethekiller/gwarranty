@@ -36,8 +36,8 @@ class OtpController extends Controller
         // echo "hi";
         // exit;
         $request->validate([
-            'name'         => 'required|string|max:255',
-            'email'        => 'required|email|unique:users,email',
+            // 'name'         => 'required|string|max:255',
+            // 'email'        => 'required|email|unique:users,email',
             'phone_number' => 'required|digits:10|unique:users,phone_number',
             // 'address'      => 'required|string|max:500',
         ]);
@@ -103,7 +103,6 @@ class OtpController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
-
         if ($otpRecord) {
             // If OTP is correct, create or fetch the user
             $user = User::firstOrCreate(
@@ -125,11 +124,11 @@ class OtpController extends Controller
             // Delete the OTP record to prevent reuse
             $otpRecord->delete();
 
-            // Redirect response
+            // Redirect response based on profile update status
             return response()->json([
                 'success'      => true,
-                'message'      => 'OTP verified successfully! Redirecting to your dashboard...',
-                'redirect_url' => route('dashboard'),
+                'message'      => 'OTP verified successfully! Redirecting...',
+                'redirect_url' => $user->profile_updated ? route('dashboard') : route('profile.edit'),
             ]);
         } else {
             return response()->json([
@@ -171,7 +170,13 @@ class OtpController extends Controller
             return response()->json(['success' => true, 'redirect' => route('admin.dashboard')]);
         }
 
-        return response()->json(['success' => true, 'redirect' => route('dashboard')]);
+        // return response()->json(['success' => true, 'redirect' => route('dashboard')]);
+
+        return response()->json([
+            'success'  => true,
+            'message'  => 'OTP verified successfully! Redirecting...',
+            'redirect' => $user->profile_updated ? route('dashboard') : route('profile.edit'),
+        ]);
     }
 
     // Resend OTP Logic

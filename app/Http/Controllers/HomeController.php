@@ -10,11 +10,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home',
+        return view('loginregisterhome',
             [
                 'pageTitle'       => 'Greenlam Industries - Warranty Services Portal for Consumers',
                 'pageDescription' => 'Greenlam Industries - Warranty Services Portal for Consumers',
-                'pageScript'      => "home",
+                'pageScript'      => "login",
             ]
         );
     }

@@ -11,8 +11,7 @@
     <div class="col-md-12 col-xl-12">
         <div class="card">
             <div class="card-body">
-                <label for="builder_contractor" class="form-label custom-form-label">Bought it for
-                    yourself (Builder/Contractor?)</label>
+                <label for="builder_contractor" class="form-label custom-form-label">Have you bought the product by yourself or from any builder/ contractor?</label>
                 <div class="form-group row">
                     <div class="col-lg-12">
                         <div class="form-check form-check-inline">
