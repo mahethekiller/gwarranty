@@ -8,18 +8,22 @@
                         <div class="col-md-12 col-xl-12">
                             <div class="card">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped p-0">
+                                    {{-- {{ dd($warranties) }} --}}
+
+                                    <table id="warrantyTable" class="table table-bordered table-striped p-0">
                                         <thead>
                                             <tr>
-                                                <th>Submited Date</th>
-                                                <th>Product Type</th>
-                                                <th>Quantity</th>
-                                                <th>Application Type</th>
+                                                <th>Date</th>
+                                                <th>Dealer</th>
+                                                <th>Dealer City</th>
                                                 <th>Place of Purchase</th>
                                                 <th>Invoice Number</th>
+                                                <th>Invoice</th>
                                                 <th>Remarks</th>
-                                                <th>Action</th>
+                                                <th>Products</th>
                                                 <th>Status</th>
+                                                <th>Action</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -28,48 +32,94 @@
                                                     <td colspan="9" class="text-center">No data available</td>
                                                 </tr>
                                             @else
-                                                @foreach ($warranties as $warranty)
+                                                @foreach ($warranties as $index => $warranty)
                                                     <tr>
-                                                        <td>{{ $warranty->created_at->format('d-m-Y') }}</td>
-                                                        <td>{{ $productNames[$warranty->product_type] ?? 'N/A' }}</td>
-                                                        <td>{{ $warranty->qty_purchased }}</td>
-                                                        <td>{{ $warranty->application }}</td>
+                                                        <td>{{ $warranty->created_at->format('d-M-Y') }}</td>
+                                                        <td>{{ $warranty->dealer_name ?? 'N/A' }}</td>
+                                                        <td>{{ $warranty->dealer_city ?? 'N/A' }}</td>
                                                         <td>{{ $warranty->place_of_purchase }}</td>
                                                         <td>{{ $warranty->invoice_number }}</td>
-                                                        <td>{{ $warranty->remarks }}</td>
-
                                                         <td>
-                                                            @if ($warranty->status == 'modify')
-                                                                <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
-                                                                    href="#" data-id="{{ $warranty->id }}"
-                                                                    class="edit-icon-green"><i
-                                                                        class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a>
+                                                            @if ($warranty->upload_invoice)
+                                                                <a href="/storage/{{ $warranty->upload_invoice }}"
+                                                                    target="_blank" class="download-icon-red">
+                                                                    <i class="fa fa-download"></i>&nbsp;View
+                                                                </a>
                                                             @endif
+                                                        </td>
+                                                        <td>{{ $warranty->remarks }}</td>
+                                                        <td>
+                                                            <!-- View Products Button -->
+                                                            <a href="#" class="view-icon-red view-products-btn"
+                                                                data-products='@json($warranty->products)'
+                                                                data-title="Products for Warranty #{{ $index + 1 }}">
+                                                                <i class="fa fa-eye"></i> &nbsp; Products
+                                                            </a>
                                                         </td>
                                                         <td>
                                                             @if ($warranty->status == 'pending')
-                                                                <span class="pending-icon-red"><i
-                                                                        class="fa fa-clock-o"></i>&nbsp;&nbsp;Pending</span>
+                                                                <span class="badge bg-warning text-white">Pending</span>
                                                             @elseif($warranty->status == 'approved')
-                                                                <span class="edit-icon-green"><i
-                                                                        class="fa fa-check"></i>&nbsp;&nbsp;Approved</span>
+                                                                <span
+                                                                    class="badge bg-success text-white">Approved</span>
                                                             @elseif($warranty->status == 'modify')
-                                                                <span class="modify-icon-red"><i
-                                                                        class="fa fa-pencil"></i>&nbsp;&nbsp;Modify</span>
+                                                                <span class="badge bg-danger text-white">Modify</span>
                                                             @endif
-
                                                         </td>
+                                                        <td>
+
+                                                            @if ($warranty->status == 'modify')
+                                                                <a data-bs-toggle="modal"
+                                                                    data-bs-target="#editWarrantyModel" href="#"
+                                                                    data-id="{{ $warranty->id }}"
+                                                                    class="edit-icon-green">
+                                                                    <i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit
+                                                                </a>
+                                                            @endif
+                                                        </td>
+
                                                     </tr>
                                                 @endforeach
                                             @endif
-
-
-
-
-
                                         </tbody>
                                     </table>
+
+                                    <!-- Products Modal -->
+                                    <div class="modal fade" id="productsModal" tabindex="-1"
+                                        aria-labelledby="productsModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="productsModalLabel">Products</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-bordered table-striped mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Product Name</th>
+                                                                <th>Quantity</th>
+                                                                <th>Application Type</th>
+                                                                <th>Handover Certificate</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="productsModalBody">
+                                                            <!-- Rows will be added dynamically -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    {{-- Pagination links --}}
+                                    <div class="mt-3">
+                                        {{ $warranties->links() }}
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -89,88 +139,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="editWarrantyModelBody">
-                    {{-- <form action="" id="editWarrantyForm">
-                        @csrf
-                        <div class="form-group row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="product_type" class="form-label custom-form-label">Product Type</label>
-                                    <select class="form-select" id="product_type" name="product_type">
-                                        <option value="" selected="">Select Product Type</option>
-                                        <option value="Mikasa Floors">Mikasa Floors</option>
-                                        <option value="Mikasa Doors">Mikasa Doors</option>
-                                        <option value="Mikasa Ply">Mikasa Ply</option>
-                                        <option value="Greenlam Clads">Greenlam Clads</option>
-                                        <option value="NewMikaFx">NewMikaFx</option>
-                                        <option value="Greenlam Sturdo">Greenlam Sturdo</option>
-                                    </select>
-                                    <span class="text-danger" id="error-product_type" role="alert"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="qty_purchased" class="form-label custom-form-label">Qty</label>
-                                    <input class="form-control" id="qty_purchased" name="qty_purchased" type="text"
-                                        placeholder="Enter Qty Purchased">
-                                        <span class="text-danger" id="error-qty_purchased" role="alert"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="application" class="form-label custom-form-label">Application Type</label>
-                                    <select class="form-select" id="application" name="application">
-                                        <option selected="">Select Application Type</option>
-                                        <option value="Commercial">Commercial</option>
-                                        <option value="Residential">Residential</option>
-                                    </select>
-                                    <span class="text-danger" id="error-application" role="alert"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="place_of_purchase" class="form-label custom-form-label">Place of
-                                        Purchase</label>
-                                    <input class="form-control" id="place_of_purchase" name="place_of_purchase" type="text"
-                                        placeholder="Enter Place of Purchase">
-                                        <span class="text-danger" id="error-place_of_purchase" role="alert"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="invoice_number" class="form-label custom-form-label">Invoice
-                                        Number</label>
-                                    <input class="form-control" id="invoice_number" name="invoice_number" type="text"
-                                        placeholder="Enter Invoice Number">
-                                        <span class="text-danger" id="error-invoice_number" role="alert"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="upload_invoice" class="form-label custom-form-label">Upload
-                                        Invoice</label>
-                                    <input class="form-control" type="file" id="upload_invoice" name="upload_invoice">
-                                    <div id="invoice_preview"></div>
-                                    <span class="text-danger" id="error-upload_invoice" role="alert"></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="upload_handover_certificate" class="form-label custom-form-label">Upload
-                                        Handover Certificate</label>
-                                    <input class="form-control" type="file" id="upload_handover_certificate" name="upload_handover_certificate">
-                                    <div id="handover_certificate_preview"></div>
-                                    <span class="text-danger" id="error-handover_certificate" role="alert"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <button class="custom-btn-blk">Submit</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form> --}}
+
                 </div>
             </div>
         </div>

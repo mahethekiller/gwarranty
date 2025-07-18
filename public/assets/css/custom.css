@@ -154,6 +154,10 @@ table.dataTable.no-footer {
 
 .download-icon-red:hover{color:#fff;}
 
+.view-icon-red{background:#fc682d; color:#fff; border-radius: 3px; padding: 3px 8px; display: inline-flex;  align-items: center; font-size: 10px;}
+
+.view-icon-red:hover{color:#fff;}
+
 .dropdown.bootstrap-select.show-tick.form-multi-select .btn.dropdown-toggle.bs-placeholder.btn-light{display: block;
   width: 100%;
   padding: 0.65rem 0.75rem;
@@ -212,7 +216,7 @@ a:hover{color:#000;}
 .custom-btn-grey:hover{background: #000 !important; font-size: 20px; color: #fff !important; border: none; padding: 5px 20px; border-radius: 5px; width: 100%;}
 
 .form-control:focus {border-color: #333 !important;}
-  
+
 
 /*.form-check-input{background: #EAEAEA !important; border: solid 2px #000 !important;}*/
 
@@ -254,7 +258,7 @@ a:hover{color:#000;}
 
 
 @media only screen  and (min-device-width: 375px)  and (max-device-width: 667px){
-     
+
 .form-login-bg{width:100%; margin:0px auto;}
 
 }

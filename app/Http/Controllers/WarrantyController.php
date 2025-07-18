@@ -3,8 +3,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Warranty;
+use App\Models\WarrantyProduct;
+use App\Models\WarrantyRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class WarrantyController extends Controller
 {
@@ -13,12 +16,11 @@ class WarrantyController extends Controller
     {
         // Logic to retrieve and return all warranties
 
-        $userId = Auth::id();
-        $warranties = Warranty::where('user_id', $userId)->get();
+        $userId     = Auth::id();
+        $warranties = WarrantyRegistration::with(['products.product'])
+            ->where('user_id', $userId)
+            ->paginate(10);
         $productNames = Product::pluck('name', 'id'); // returns [id => name]
-
-
-
 
         return view('warranty.modify',
             [
@@ -26,7 +28,7 @@ class WarrantyController extends Controller
                 "pageDescription" => "Modify Warranty Request",
                 "pageScript"      => "warranty",
                 "warranties"      => $warranties,
-                "productNames"    => $productNames
+                "productNames"    => $productNames,
             ]);
     }
 
@@ -40,7 +42,7 @@ class WarrantyController extends Controller
                 "pageTitle"       => "Warranty Registration",
                 "pageDescription" => "Warranty Registration",
                 "pageScript"      => "warranty",
-                "products"        => $products
+                "products"        => $products,
             ]);
     }
 
@@ -48,52 +50,67 @@ class WarrantyController extends Controller
     public function store(Request $request)
     {
 
-        // echo "hello";exit;
-        // Validate the request data
-        $request->validate([
-            'product_type'         => 'required|string',
-            'qty_purchased'        => 'required|integer',
-            'application'          => in_array(
-                                        $request->input('product_type'), ['Greenlam Clads',
-                                        'Greenlam Sturdo']) ? ['sometimes', 'nullable',
-                                        'string'] : ['required', 'string'],
-            'place_of_purchase'    => 'required|string',
-            'invoice_number'       => 'required|string',
-            'upload_invoice'       => 'required|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048',
-            'handover_certificate' => 'nullable|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048', // optional field
+        $validated = $request->validate([
+            'dealer_name'            => 'required|string|max:255',
+            'dealer_city'            => 'required|string|max:255',
+            'place_of_purchase'      => 'required|string|max:255',
+            'invoice_number'         => 'required|string|max:255',
+            'upload_invoice'         => 'required|file|mimes:jpg,png,pdf,doc,docx|max:2048',
 
+            'product_type.*'         => 'required|integer|exists:products,id',
+            'qty_purchased.*'        => 'required|integer|min:1',
+            'application.*'          => 'nullable|string',
+            'handover_certificate.*' => 'nullable|file|mimes:jpg,png,pdf,doc,docx|max:2048',
         ]);
 
-        // Handle file uploads
+        // Save dealer details
+        $registration                    = new WarrantyRegistration();
+        $registration->dealer_name       = $validated['dealer_name'];
+        $registration->dealer_city       = $validated['dealer_city'];
+        $registration->place_of_purchase = $validated['place_of_purchase'];
+        $registration->invoice_number    = $validated['invoice_number'];
+        $registration->user_id           = Auth::id();
+
         $dateTimeString = strtotime(date('Y-m-d H:i:s'));
 
+        // Save invoice file
         if ($request->hasFile('upload_invoice')) {
-            $invoiceFileName = 'invoice_' . Auth::user()->id . '_' . $dateTimeString . '.' . $request->file('upload_invoice')->getClientOriginalExtension();
-            $invoicePath     = $request->file('upload_invoice')->storeAs('invoices', $invoiceFileName, 'public');
+            $file        = $request->file('upload_invoice');
+            $filename    = 'invoice_' . Auth::user()->id . '_' . $dateTimeString . '.' . $request->file('upload_invoice')->getClientOriginalExtension();
+            $invoicePath = $request->file('upload_invoice')->storeAs('invoices', $filename, 'public');
+            // $filename = time().'_'.$file->getClientOriginalName();
+            // $file->move(public_path('uploads/invoices'), $filename);
+            $registration->upload_invoice = $invoicePath;
         }
 
-        if ($request->hasFile('handover_certificate')) {
-            $handoverFileName = 'handover_certificate_' . Auth::user()->id . '_' . $dateTimeString . '.' . $request->file('handover_certificate')->getClientOriginalExtension();
-            $handoverPath     = $request->file('handover_certificate')->storeAs('handover_certificates', $handoverFileName, 'public');
+        $registration->save();
+
+        // Save each product row
+        $productTypes         = $validated['product_type'];
+        $quantities           = $validated['qty_purchased'];
+        $applications         = $validated['application'];
+        $handoverCertificates = $request->file('handover_certificate');
+
+        foreach ($productTypes as $index => $productType) {
+            $product                           = new WarrantyProduct();
+            $product->warranty_registration_id = $registration->id;
+            $product->product_type             = $productType;
+            $product->qty_purchased            = $quantities[$index];
+            $product->application_type         = $applications[$index] ?? null;
+
+            // Save handover certificate if uploaded
+            if (isset($handoverCertificates[$index])) {
+                $handoverFile = $handoverCertificates[$index];
+                $filename     = 'invoice_' . Auth::user()->id . '_' . $dateTimeString . '.' . $handoverFile->getClientOriginalExtension();
+                $handoverPath = $handoverFile->storeAs('handover_certificates', $filename, 'public');
+                $product->handover_certificate = $handoverPath;
+            }
+
+            $product->save();
         }
 
-        // Store the data in the database
-        $warranty                            = new Warranty();
-        $warranty->product_type              = $request->input('product_type');
-        $warranty->qty_purchased             = $request->input('qty_purchased');
-        $warranty->application               = $request->input('application');
-        $warranty->place_of_purchase         = $request->input('place_of_purchase');
-        $warranty->invoice_number            = $request->input('invoice_number');
-        $warranty->invoice_path              = $invoicePath ?? null;
-        $warranty->handover_certificate_path = $handoverPath ?? null;
-        $warranty->user_id                   = Auth::user()->id;
-        try {
-            $warranty->save();
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error registering warranty'], 500);
-        }
+        return response()->json(['success' => true, 'message' => 'Warranty registered successfully']);
 
-        return response()->json(['message' => 'Warranty registered successfully']);
     }
 
     // Display the specified warranty.
@@ -105,7 +122,7 @@ class WarrantyController extends Controller
     // Show the form for editing the specified warranty.
     public function edit($id)
     {
-        $warranty = Warranty::findOrFail($id);
+        $warranty = WarrantyRegistration::with('products')->findOrFail($id);
         if ($warranty->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized to access this warranty'], 403);
         }
@@ -122,57 +139,65 @@ class WarrantyController extends Controller
 
     // Update the specified warranty in storage.
     public function update(Request $request, $id)
-    {
-        // Validate the request data
-        $request->validate([
-            'product_type'         => 'required|string',
-            'qty_purchased'        => 'required|integer',
-            'application'          => in_array(
-                                        $request->input('product_type'), ['Greenlam Clads',
-                                        'Greenlam Sturdo']) ? ['sometimes', 'nullable',
-                                        'string'] : ['required', 'string'],
-            'place_of_purchase'    => 'required|string',
-            'invoice_number'       => 'required|string',
-            'upload_invoice'       => 'nullable|file|mimes:jpg,png,pdf,jpeg,doc,docx|max:2048',
-            'handover_certificate' => ($request->input('product_type') === '2' && Warranty::findOrFail($id)->handover_certificate_path === null) ? ['required', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'] : ['nullable', 'file', 'mimes:jpg,png,pdf,jpeg,doc,docx', 'max:2048'],
-        ]);
+{
+    $warranty = WarrantyRegistration::findOrFail($id);
 
-        $warranty = Warranty::findOrFail($id);
-        if ($warranty->user_id !== Auth::id()) {
-            return response()->json(['message' => 'Unauthorized to update this warranty'], 403);
+    // Validate fields here (like in create)
+
+    $warranty->dealer_name = $request->dealer_name;
+    $warranty->dealer_city = $request->dealer_city;
+    $warranty->place_of_purchase = $request->place_of_purchase;
+    $warranty->invoice_number = $request->invoice_number;
+    $warranty->status            = 'pending'; // Reset status to pending after modification
+
+    $dateTimeString = now()->format('Ymd_His');
+
+    // Update invoice file
+    if ($request->hasFile('upload_invoice')) {
+        // Optional: Delete old file
+        if ($warranty->upload_invoice && Storage::disk('public')->exists($warranty->upload_invoice)) {
+            Storage::disk('public')->delete($warranty->upload_invoice);
         }
 
-        // Handle file uploads if provided
-        $dateTimeString = strtotime(date('Y-m-d H:i:s'));
-
-        if ($request->hasFile('upload_invoice')) {
-            $invoiceFileName = 'invoice_' . Auth::user()->id . '_' . $dateTimeString . '.' . $request->file('upload_invoice')->getClientOriginalExtension();
-            $invoicePath     = $request->file('upload_invoice')->storeAs('invoices', $invoiceFileName, 'public');
-            $warranty->invoice_path = $invoicePath;
-        }
-
-        if ($request->hasFile('handover_certificate')) {
-            $handoverFileName = 'handover_certificate_' . Auth::user()->id . '_' . $dateTimeString . '.' . $request->file('handover_certificate')->getClientOriginalExtension();
-            $handoverPath     = $request->file('handover_certificate')->storeAs('handover_certificates', $handoverFileName, 'public');
-            $warranty->handover_certificate_path = $handoverPath;
-        }
-
-        // Update the warranty data
-        $warranty->product_type              = $request->input('product_type');
-        $warranty->qty_purchased             = $request->input('qty_purchased');
-        $warranty->application               = $request->input('application');
-        $warranty->place_of_purchase         = $request->input('place_of_purchase');
-        $warranty->invoice_number            = $request->input('invoice_number');
-        $warranty->status                    = 'pending'; // Reset status to pending after modification
-
-        try {
-            $warranty->save();
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error updating warranty'], 500);
-        }
-
-        return response()->json(['message' => 'Warranty updated successfully']);
+        $file = $request->file('upload_invoice');
+        $filename = 'invoice_' . Auth::id() . '_' . $dateTimeString . '.' . $file->getClientOriginalExtension();
+        $invoicePath = $file->storeAs('invoices', $filename, 'public');
+        $warranty->upload_invoice = $invoicePath;
     }
+
+    $warranty->save();
+
+    // Delete old products
+    $warranty->products()->delete();
+
+    // Save new products
+    $productTypes = $request->product_type;
+    $quantities = $request->qty_purchased;
+    $applications = $request->application;
+    $handoverCertificates = $request->file('handover_certificate');
+
+    foreach ($productTypes as $index => $productType) {
+        $product = new WarrantyProduct();
+        $product->warranty_registration_id = $warranty->id;
+        $product->product_type = $productType;
+        $product->qty_purchased = $quantities[$index];
+        $product->application_type = $applications[$index] ?? null;
+
+        // Save handover file
+        if (isset($handoverCertificates[$index])) {
+            $handoverFile = $handoverCertificates[$index];
+
+            $handoverFilename = 'handover_' . Auth::id() . '_' . $dateTimeString . '_' . $index . '.' . $handoverFile->getClientOriginalExtension();
+            $handoverPath = $handoverFile->storeAs('handover_certificates', $handoverFilename, 'public');
+
+            $product->handover_certificate = $handoverPath;
+        }
+
+        $product->save();
+    }
+
+    return response()->json(['message' => 'Warranty updated successfully']);
+}
 
     // Remove the specified warranty from storage.
     public function destroy($id)

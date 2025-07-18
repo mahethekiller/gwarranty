@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\UserProduct;
 use App\Models\Warranty;
+use App\Models\WarrantyRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,12 +16,29 @@ class WarrantyManagement extends Controller
         // Code to list warranties
         $userId = Auth::id();
         if (Auth::user()->hasRole('admin')) {
-            $warranties = Warranty::all();
+            // $warranties = Warranty::all();
+
+            $warranties = WarrantyRegistration::with(['products.product'])
+                // ->paginate(2);
+                ->get();
+
         } else {
             // $productIds = UserProduct::where('user_id', $userId)->pluck('product_id')->toArray();
-            $productIds = UserProduct::where('user_id', $userId)->value('product_id');
-            $productIds = explode(',', $productIds); // convert to array
-            $warranties = Warranty::whereIn('product_type', $productIds)->get();
+            $productIds = UserProduct::where('user_id', $userId)
+                ->value('product_id');
+
+            $productIds = array_filter(array_map('trim', explode(',', $productIds)));
+
+            $warranties = WarrantyRegistration::with(['products.product'])
+                ->where('user_id', $userId)
+                ->whereHas('products', function ($query) use ($productIds) {
+                    $query->whereIn('product_type', $productIds);
+                })
+                ->paginate(10);
+
+            // $productIds = UserProduct::where('user_id', $userId)->value('product_id');
+            // $productIds = explode(',', $productIds); // convert to array
+            // $warranties = Warranty::whereIn('product_type', $productIds)->get();
             // dd($warranties);
         }
         $productNames = Product::pluck('name', 'id'); // returns [id => name]
@@ -53,7 +71,7 @@ class WarrantyManagement extends Controller
 
     public function edit($id)
     {
-        $warranty = Warranty::findOrFail($id);
+        $warranty = WarrantyRegistration::findOrFail($id);
 
         // return response()->json($warranty);
 
@@ -72,13 +90,13 @@ class WarrantyManagement extends Controller
             'remarks' => 'required|string',
         ]);
 
-        $warranty = Warranty::findOrFail($id);
+        $warranty = WarrantyRegistration::findOrFail($id);
 
         // Update the warranty status and remarks
-        $warranty->status  = $request->input('status');
-        $warranty->remarks = $request->input('remarks');
+        $warranty->status      = $request->input('status');
+        $warranty->remarks     = $request->input('remarks');
         $warranty->modified_by = Auth::id();
-        $warranty->checked_by = Auth::id();
+        $warranty->checked_by  = Auth::id();
         $warranty->save();
 
         return response()->json(['message' => 'Warranty updated successfully']);
