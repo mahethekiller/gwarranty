@@ -104,7 +104,7 @@
 
                                     {{-- Pagination links --}}
                                     <div class="mt-3">
-                                        {{-- {{ $warranties->links() }} --}}
+                                        {{ $warranties->links() }}
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
 
     <div class="modal fade" id="editWarrantyModel" tabindex="-1" aria-labelledby="editWarrantyModelLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header paoc-popup-mheading">
                     <h5 class="modal-title" id="editWarrantyModelLabel">Edit Warranty</h5>

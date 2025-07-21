@@ -203,7 +203,7 @@ $(document).on("click", '[data-bs-target="#editWarrantyModel"]', function (e) {
 
 $(document).ready(function () {
     // Initialize DataTable
-    $('#warrantyTable').DataTable();
+    // $('#warrantyTable').DataTable();
 
     // Open modal with product details
     $(document).on('click', '.view-products-btn', function () {
@@ -241,6 +241,30 @@ $(document).ready(function () {
 
         // Show modal
         $('#productsModal').modal('show');
+    });
+});
+
+
+
+$(document).ready(function () {
+    const stateSelect = $('#dealer_state');
+    const citySelect = $('#dealer_city');
+
+    stateSelect.on('change', function () {
+        const selectedState = $(this).val();
+
+        // Clear city dropdown
+        citySelect.html('<option value="">Select City</option>');
+
+        if (selectedState) {
+            $.get(`/get-cities/${encodeURIComponent(selectedState)}`)
+                .then(cities => {
+                    cities.forEach(city => {
+                        const option = $('<option>').val(city).text(city);
+                        citySelect.append(option);
+                    });
+                });
+        }
     });
 });
 

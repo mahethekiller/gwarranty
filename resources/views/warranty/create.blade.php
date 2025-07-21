@@ -53,24 +53,33 @@
 
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label for="dealer_city" class="form-label custom-form-label">Dealer City</label>
-                                <input class="form-control" id="dealer_city" type="text" name="dealer_city"
-                                    placeholder="Enter Dealer City">
-                                <span class="text-danger" id="error-dealer_city" role="alert"></span>
+                                <label for="dealer_state" class="form-label custom-form-label">Dealer State</label>
+                                <select class="form-control" id="dealer_state" name="dealer_state">
+                                    <option value="">Select State</option>
+                                    @foreach (config('constants.states') as $state)
+                                        <option value="{{ $state }}">
+                                            {{ $state }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="text-danger" id="error-dealer_state"></span>
                             </div>
                         </div>
 
                         <div class="col-lg-4">
                             <div class="form-group">
-                                <label for="place_of_purchase" class="form-label custom-form-label">Place
-                                    of Purchase*</label>
-                                <input class="form-control" id="place_of_purchase" type="text"
-                                    name="place_of_purchase" placeholder="Enter Place of Purchase">
-                                <span class="text-danger" id="error-place_of_purchase" role="alert">
-                                    <strong></strong>
-                                </span>
+                                <label for="dealer_city" class="form-label custom-form-label">Dealer City</label>
+                                <select class="form-control" id="dealer_city" name="dealer_city">
+                                    <option value="">Select City</option>
+
+                                </select>
+                                <span class="text-danger" id="error-dealer_city"></span>
                             </div>
                         </div>
+
+
+
+
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label for="invoice_number" class="form-label custom-form-label">Invoice

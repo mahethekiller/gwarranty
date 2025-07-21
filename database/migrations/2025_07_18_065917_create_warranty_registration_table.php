@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->string('dealer_name');
             $table->string('dealer_city');
-            $table->string('place_of_purchase');
+            // $table->string('place_of_purchase');
             $table->string('invoice_number');
             $table->string('upload_invoice'); // store filename
             $table->timestamps();

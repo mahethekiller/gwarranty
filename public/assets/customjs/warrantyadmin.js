@@ -25,7 +25,11 @@ $(document).on("click", '[data-bs-target="#editWarrantyModel"]', function (e) {
 
 $(document).ready(function () {
      // Initialize DataTable
-    $('#warrantyTable').DataTable();
+    $('#warrantyTable').DataTable(
+        {
+            "order": [[ 0, "asc" ]]
+        }
+    );
 
     // Handle View Products button click
     $(document).on('click', '.view-products-btn', function () {
