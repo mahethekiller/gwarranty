@@ -83,7 +83,10 @@
                                             @endif
                                         </tbody>
                                     </table>
-
+{{-- Pagination links --}}
+                                    <div class="mt-3">
+                                        {{ $warranties->links() }}
+                                    </div>
                                     <!-- Products Modal -->
                                     <div class="modal fade" id="productsModal" tabindex="-1"
                                         aria-labelledby="productsModalLabel" aria-hidden="true">
@@ -114,10 +117,7 @@
                                     </div>
 
 
-                                    {{-- Pagination links --}}
-                                    <div class="mt-3">
-                                        {{ $warranties->links() }}
-                                    </div>
+
                                 </div>
 
                             </div>
