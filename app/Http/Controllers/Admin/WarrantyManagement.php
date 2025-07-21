@@ -15,6 +15,7 @@ class WarrantyManagement extends Controller
     {
         // Code to list warranties
         $userId = Auth::id();
+        $productIds = [];
         if (Auth::user()->hasRole('admin')) {
             // $warranties = Warranty::all();
 
@@ -30,12 +31,17 @@ class WarrantyManagement extends Controller
 
             $productIds = array_filter(array_map('trim', explode(',', $productIds)));
 
+            // dd($productIds);
+
             $warranties = WarrantyRegistration::with(['products.product'])
-                ->where('user_id', $userId)
+                // ->where('user_id', $userId)
                 ->whereHas('products', function ($query) use ($productIds) {
                     $query->whereIn('product_type', $productIds);
                 })->orderBy('id', 'desc')
                 ->paginate(10);
+
+                // dd($query->toSql(), $query->getBindings());
+            // dd($warranties);
 
             // $productIds = UserProduct::where('user_id', $userId)->value('product_id');
             // $productIds = explode(',', $productIds); // convert to array
@@ -51,6 +57,7 @@ class WarrantyManagement extends Controller
                 "pageScript"      => "warrantyadmin",
                 "warranties"      => $warranties,
                 "productNames"    => $productNames,
+                "productIds"      => $productIds
             ]);
 
     }
@@ -129,8 +136,12 @@ class WarrantyManagement extends Controller
 
             if ($warrantyProduct) {
 
-                if($request->product_status[$index]=='pending' || $request->product_status[$index]=='modify') {
-                    $warrantyStatus='modify';
+                $hasPendingOrModify = WarrantyProduct::where('warranty_registration_id', $id)
+                    ->whereIn('product_status', ['pending', 'modify'])
+                    ->exists();
+
+                if ($hasPendingOrModify) {
+                    $warrantyStatus = 'modify';
                 }
 
                 $warrantyProduct->total_quantity = $request->total_quantity[$index];

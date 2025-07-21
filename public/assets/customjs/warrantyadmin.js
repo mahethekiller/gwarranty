@@ -55,6 +55,14 @@ $(document).ready(function () {
                                    </a>`
                                 : 'N/A'}
                         </td>
+                        <td>${product.remarks || 'N/A'}</td>
+                        <td>
+                            <span class="badge rounded-pill ${
+                                product.product_status === 'pending' ?
+                                'bg-warning' : product.product_status === 'modify' ?
+                                'bg-danger' : product.product_status === 'approved' ?
+                                'bg-success' : 'bg-secondary'} text-white">${product.product_status?.toUpperCase() || 'N/A'}</span>
+                        </td>
                     </tr>
                 `;
             });

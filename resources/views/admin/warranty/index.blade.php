@@ -16,13 +16,12 @@
                                                 <th>S. No.</th>
                                                 <th>Submitted Date</th>
                                                 <th>Dealer</th>
-                                                <th>Dealer City</th>
-                                                <th>Place of Purchase</th>
+                                                <th>Dealer State & City</th>
                                                 <th>Invoice Number</th>
                                                 <th>Invoice</th>
-                                                <th>Remarks</th>
-                                                <th>Products</th>
-                                                <th>Status</th>
+                                                {{-- <th>Remarks</th> --}}
+                                                <th>Products Status</th>
+                                                {{-- <th>Status</th> --}}
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -32,8 +31,7 @@
                                                     <td>{{ $key + 1 }}</td>
                                                     <td>{{ $warranty->created_at->format('d-m-Y') }}</td>
                                                     <td>{{ $warranty->dealer_name ?? 'N/A' }}</td>
-                                                    <td>{{ $warranty->dealer_city ?? 'N/A' }}</td>
-                                                    <td>{{ $warranty->place_of_purchase ?? 'N/A' }}</td>
+                                                    <td>{{ $warranty->dealer_state ?? '--' }} > {{ $warranty->dealer_city ?? '--' }}</td>
                                                     <td>{{ $warranty->invoice_number }}</td>
                                                     <td>
                                                         @if ($warranty->upload_invoice)
@@ -43,15 +41,24 @@
                                                             </a>
                                                         @endif
                                                     </td>
-                                                    <td>{{ $warranty->remarks ?? 'N/A' }}</td>
+                                                    {{-- <td>{{ $warranty->remarks ?? 'N/A' }}</td> --}}
                                                     <td>
-                                                        <a href="#" class="view-icon-red view-products-btn"
-                                                            data-products='@json($warranty->products)'
-                                                            data-title="Products for Warranty #{{ $key + 1 }}">
-                                                            <i class="fa fa-eye"></i> &nbsp; Products
-                                                        </a>
+
+
+                                                        @php
+                                                            $products = $warranty->products->pluck('id')->toArray();
+                                                            $allApproved = \App\Models\WarrantyProduct::whereIn('id', $products)->whereIn('product_type', $productIds)->where('product_status', '!=', 'approved')->doesntExist();
+                                                        @endphp
+
+
+                                                            <a href="#" class="view-icon-red view-products-btn {{ $allApproved ? 'bg-success' : '' }}"
+                                                                data-products='@json($warranty->products)'
+                                                                data-title="Products for Warranty #{{ $key + 1 }}">
+                                                                <i class="fa fa-eye"></i> &nbsp; View
+                                                            </a>
+
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         @if ($warranty->status == 'pending')
                                                             <span class="badge bg-warning text-white">Pending</span>
                                                         @elseif($warranty->status == 'approved')
@@ -59,7 +66,7 @@
                                                         @elseif($warranty->status == 'modify')
                                                             <span class="badge bg-danger text-white">Modify</span>
                                                         @endif
-                                                    </td>
+                                                    </td> --}}
                                                     <td>
                                                         <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
                                                             href="#" data-id="{{ $warranty->id }}"
@@ -90,6 +97,8 @@
                                                                 <th>Quantity</th>
                                                                 <th>Application Type</th>
                                                                 <th>Handover Certificate</th>
+                                                                <th>Remarks</th>
+                                                                <th>Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="productsModalBody">
@@ -104,7 +113,7 @@
 
                                     {{-- Pagination links --}}
                                     <div class="mt-3">
-                                        {{ $warranties->links() }}
+                                        {{-- {{ $warranties->links() }} --}}
                                     </div>
                                 </div>
                             </div>

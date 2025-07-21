@@ -32,15 +32,15 @@
     <div class="form-group row">
 
         <div class="col-lg-12">
-            <table class="table table-bordered">
+            <table class="table table-bordered ">
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Quantity Purchased</th>
-                        <th>Application Type</th>
-                        <th>Total Quantity</th>
+                        <th width="10%">Quantity</th>
+                        <th width="10%">Application Type</th>
+                        <th width="10%">Total Quantity</th>
                         <th>Status</th>
-                        <th>Remarks</th>
+                        <th width="30%">Remarks</th>
                     </tr>
                 </thead>
 
@@ -53,7 +53,7 @@
 
                                 <p>{{ $product->product->name }}</p>
                             </td>
-                            <td>
+                            <td >
 
                                 <p>{{ $product->qty_purchased }}</p>
                             </td>
@@ -75,12 +75,12 @@
                                 <p>
                                 <div class="form-group">
                                     <select class="form-control" name="product_status[{{ $index }}]">
-                                        <option value="pending" {{ $product->status == 'pending' ? 'selected' : '' }}>
+                                        <option value="pending" {{ $product->product_status == 'pending' ? 'selected' : '' }}>
                                             Pending</option>
-                                        <option value="modify" {{ $product->status == 'modify' ? 'selected' : '' }}>
+                                        <option value="modify" {{ $product->product_status == 'modify' ? 'selected' : '' }}>
                                             Modify</option>
                                         <option value="approved"
-                                            {{ $product->status == 'approved' ? 'selected' : '' }}>
+                                            {{ $product->product_status == 'approved' ? 'selected' : '' }}>
                                             Approved</option>
                                     </select>
                                 </div>

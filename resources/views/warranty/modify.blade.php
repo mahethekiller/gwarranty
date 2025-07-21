@@ -15,12 +15,11 @@
                                             <tr>
                                                 <th>Date</th>
                                                 <th>Dealer</th>
-                                                <th>Dealer City</th>
-                                                <th>Place of Purchase</th>
+                                                <th>Dealer State & City</th>
                                                 <th>Invoice Number</th>
                                                 <th>Invoice</th>
-                                                <th>Remarks</th>
-                                                <th>Products</th>
+                                                {{-- <th>Remarks</th> --}}
+                                                <th>Products & Remarks</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
 
@@ -36,8 +35,7 @@
                                                     <tr>
                                                         <td>{{ $warranty->created_at->format('d-M-Y') }}</td>
                                                         <td>{{ $warranty->dealer_name ?? 'N/A' }}</td>
-                                                        <td>{{ $warranty->dealer_city ?? 'N/A' }}</td>
-                                                        <td>{{ $warranty->place_of_purchase }}</td>
+                                                        <td>{{ $warranty->dealer_state ?? 'N/A' }} >{{ $warranty->dealer_city ?? 'N/A' }}</td>
                                                         <td>{{ $warranty->invoice_number }}</td>
                                                         <td>
                                                             @if ($warranty->upload_invoice)
@@ -47,13 +45,13 @@
                                                                 </a>
                                                             @endif
                                                         </td>
-                                                        <td>{{ $warranty->remarks }}</td>
+                                                        {{-- <td>{{ $warranty->remarks }}</td> --}}
                                                         <td>
                                                             <!-- View Products Button -->
                                                             <a href="#" class="view-icon-red view-products-btn"
                                                                 data-products='@json($warranty->products)'
                                                                 data-title="Products for Warranty #{{ $index + 1 }}">
-                                                                <i class="fa fa-eye"></i> &nbsp; Products
+                                                                <i class="fa fa-eye"></i> &nbsp; View
                                                             </a>
                                                         </td>
                                                         <td>
@@ -105,6 +103,8 @@
                                                                 <th>Quantity</th>
                                                                 <th>Application Type</th>
                                                                 <th>Handover Certificate</th>
+                                                                <th>Remarks</th>
+                                                                <th>Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="productsModalBody">

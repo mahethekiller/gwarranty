@@ -1,66 +1,86 @@
 <form id="editWarrantyForm" data-warranty-id="{{ $warranty->id }}" enctype="multipart/form-data">
     @csrf
 
+    <h5 class="mb-3">Dealer Details</h5>
+    <table class="table table-bordered table-striped mb-3">
+        <thead>
+            <tr>
+                <th>Dealer Name</th>
+                <th>Dealer City</th>
+                <th>Dealer State</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $warranty->dealer_name }}</td>
+                <td>{{ $warranty->dealer_city }}</td>
+                <td>{{ $warranty->dealer_state }}</td>
+            </tr>
+        </tbody>
+    </table>
     <div class="row">
-        <div class="col-md-6 mb-3">
-            <label for="dealer_name">Dealer Name</label>
-            <input type="text" class="form-control" name="dealer_name" value="{{ $warranty->dealer_name }}">
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="dealer_city">Dealer City</label>
-            <input type="text" class="form-control" name="dealer_city" value="{{ $warranty->dealer_city }}">
-        </div>
-        <div class="col-md-6 mb-3">
-            <label for="place_of_purchase">Place of Purchase</label>
-            <input type="text" class="form-control" name="place_of_purchase" value="{{ $warranty->place_of_purchase }}">
-        </div>
-        <div class="col-md-6 mb-3">
+
+        <div class="col-md-6 mb-6">
             <label for="invoice_number">Invoice Number</label>
             <input type="text" class="form-control" name="invoice_number" value="{{ $warranty->invoice_number }}">
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-6">
             <label for="upload_invoice">Upload Invoice</label>
             <input type="file" class="form-control" name="upload_invoice">
             @if ($warranty->upload_invoice)
-                <a href="{{ asset('uploads/invoices/' . $warranty->upload_invoice) }}" target="_blank" class="btn btn-sm btn-secondary mt-2">View Existing</a>
+                <a href="{{ asset('storage/' . $warranty->upload_invoice) }}" target="_blank"
+                    class="download-icon-red">View Existing</a>
             @endif
         </div>
     </div>
 
     <h5>Products</h5>
     <div id="editProducts">
-        @foreach($warranty->products as $index => $product)
-            <div class="border rounded p-3 mb-2">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Product Type</label>
-                        <select class="form-select" name="product_type[]">
-                            @foreach ($products as $p)
-                                <option value="{{ $p->id }}" {{ $p->id == $product->product_type ? 'selected' : '' }}>{{ $p->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Quantity Purchased</label>
-                        <input type="number" class="form-control" name="qty_purchased[]" value="{{ $product->qty_purchased }}">
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <label>Application Type</label>
-                        <select class="form-select" name="application[]">
-                            <option value="Commercial" {{ $product->application_type == 'Commercial' ? 'selected' : '' }}>Commercial</option>
-                            <option value="Residential" {{ $product->application_type == 'Residential' ? 'selected' : '' }}>Residential</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <label>Upload Handover Certificate</label>
-                        <input type="file" class="form-control" name="handover_certificate[]">
-                        @if ($product->handover_certificate)
-                            <a href="{{ asset('uploads/handover_certificates/' . $product->handover_certificate) }}" target="_blank" class="btn btn-sm btn-secondary mt-2">View Existing</a>
-                        @endif
+        @foreach ($warranty->products as $index => $product)
+            @if ($product->product_status != 'approved' && $product->product_status != 'pending')
+
+<input type="hidden" name="product_id[]" value="{{ $product->id }}">
+
+                <div class="border rounded p-3 mb-2">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Product Type {{ $product->product_status }}</label>
+                            <select class="form-select" id="product_type" name="product_type[]">
+                                @foreach ($products as $p)
+                                    <option value="{{ $p->id }}"
+                                        {{ $p->id == $product->product_type ? 'selected' : '' }}>{{ $p->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Quantity Purchased</label>
+                            <input type="number" class="form-control" name="qty_purchased[]"
+                                value="{{ $product->qty_purchased }}">
+                        </div>
+                        <div class="col-md-6 mt-2 application-wrapper">
+                            <label>Application Type</label>
+                            <select class="form-select" name="application[]">
+                                <option value="Commercial"
+                                    {{ $product->application_type == 'Commercial' ? 'selected' : '' }}>Commercial
+                                </option>
+                                <option value="Residential"
+                                    {{ $product->application_type == 'Residential' ? 'selected' : '' }}>Residential
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mt-2 handover-wrapper">
+                            <label>Upload Handover Certificate</label>
+                            <input type="file" class="form-control" name="handover_certificate[]">
+                            @if ($product->handover_certificate)
+                                <a href="{{ asset('uploads/handover_certificates/' . $product->handover_certificate) }}"
+                                    target="_blank" class="download-icon-red">View Existing</a>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         @endforeach
     </div>
 
@@ -72,46 +92,86 @@
 
 
 <script>
-    $("#product_type").on("change", function () {
-    const value = $(this).val();
-    const div = document.getElementById("myDivMikasaDoors");
-    if (value === "4" || value === "6") {   //"Greenlam Clads"  "Greenlam Sturdo"
-        $("#application").prop("disabled", true).closest(".form-group").hide();
-    } else {
-        $("#application").prop("disabled", false).closest(".form-group").show();
-    }
+    // Handle product_type change for dynamically loaded edit form
+    $(document).on('change', '#editWarrantyModel select[name="product_type[]"]', function() {
+        let selectedValue = $(this).val();
+        let $row = $(this).closest('.border'); // Each product is wrapped in .border
 
+        // Show/Hide Upload Handover Certificate div
+        if (selectedValue == 2) {
+            $row.find('.handover-wrapper').show();
+        } else {
+            $row.find('.handover-wrapper').hide();
+        }
 
-    if (value === "2") {
-        div.style.display = "block";
-    } else {
-        div.style.display = "none";
-    }
-});
-
-    // Handle edit warranty form submission
-    $(document).on("submit", "#editWarrantyForm", function (e) {
-    e.preventDefault();
-    let warrantyId = $(this).data("warranty-id");
-    let formData = new FormData(this);
-
-    $.ajax({
-        url: "/user/warranty/update/" + warrantyId,
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            alert(response.message);
-            $("#editWarrantyModel").modal("hide");
-            location.reload(); // or update table dynamically
-        },
-        error: function (xhr) {
-            alert("Failed to update warranty");
-            console.log(xhr.responseText);
+        // Show/Hide Application Type div
+        if (selectedValue == 4 || selectedValue == 6) {
+            $row.find('.application-wrapper').hide();
+        } else {
+            $row.find('.application-wrapper').show();
         }
     });
-});
+
+    // Trigger show/hide logic on initial load for all product rows
+    function applyProductTypeConditions() {
+        $('#editWarrantyModel select[name="product_type[]"]').each(function() {
+            let selectedValue = $(this).val();
+            let $row = $(this).closest('.border');
+
+            // Show/Hide Upload Handover Certificate div
+            if (selectedValue == 2) {
+                $row.find('.handover-wrapper').show();
+            } else {
+                $row.find('.handover-wrapper').hide();
+            }
+
+            // Show/Hide Application Type div
+            if (selectedValue == 4 || selectedValue == 6) {
+                $row.find('.application-wrapper').hide();
+            } else {
+                $row.find('.application-wrapper').show();
+            }
+        });
+    }
+
+
+
+
+    // Handle edit warranty form submission
+    $(document).on("submit", "#editWarrantyForm", function(e) {
+        e.preventDefault();
+        let warrantyId = $(this).data("warranty-id");
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: "/user/warranty/update/" + warrantyId,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(response.message);
+                $("#editWarrantyModel").modal("hide");
+                location.reload(); // or update table dynamically
+            },
+            error: function(xhr) {
+
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    $.each(errors, function(field, messages) {
+                        let fieldName = field.replace(/\.\d+/g,
+                        ''); // remove index for arrays
+                        $(`#error-${fieldName}`).text(messages[0]);
+                    });
+                } else {
+                    alert('Failed to update warranty');
+                }
+
+                alert("Failed to update warranty");
+                console.log(xhr.responseText);
+            }
+        });
+    });
 
 
     $("#handover_certificate").on("change", function() {

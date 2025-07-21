@@ -189,7 +189,9 @@ $(document).on("click", '[data-bs-target="#editWarrantyModel"]', function (e) {
             if (response.message) {
                 alert(response.message);
             } else {
+
                 $("#editWarrantyModelBody").html(response);
+                applyProductTypeConditions();
             }
         },
         error: function (xhr) {
@@ -220,8 +222,8 @@ $(document).ready(function () {
                 rows += `
                     <tr>
                         <td>${product.product?.name || 'N/A'}</td>
-                        <td>${product.qty_purchased || 'N/A'}</td>
-                        <td>${product.application_type || 'N/A'}</td>
+                        <td>${product.qty_purchased || 'N/A'} </td>
+                        <td>${product.product_type === 4 || product.product_type === 6 ? 'N/A' : product.application_type || 'N/A'}</td>
                         <td>
                             ${product.handover_certificate
                                 ? `<a href="/storage/${product.handover_certificate}" target="_blank" class="download-icon-red">
@@ -229,6 +231,15 @@ $(document).ready(function () {
                                    </a>`
                                 : 'N/A'}
                         </td>
+                        <td>${product.remarks || 'N/A'}</td>
+                        <td>
+                            <span class="badge rounded-pill ${
+                                product.product_status === 'pending' ?
+                                'bg-warning' : product.product_status === 'modify' ?
+                                'bg-danger' : product.product_status === 'approved' ?
+                                'bg-success' : 'bg-secondary'} text-white">${product.product_status?.toUpperCase() || 'N/A'}</span>
+                        </td>
+
                     </tr>
                 `;
             });
