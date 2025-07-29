@@ -199,6 +199,21 @@ return [
                 107 => 'Yelamanchili',
                 108 => 'Yeleswaram',
                 109 => 'Yerragondapalem',
+                110 => 'Adoni',
+                111 => 'Allagadda',
+                112 => 'Atmakur',
+                113 => 'Banaganapalli',
+                114 => 'Betamcherla',
+                115 => 'Chejerla',
+                116 => 'Dhone',
+                117 => 'Kodmur',
+                118 => 'Koilkuntla',
+                119 => 'Kurnool',
+                120 => 'Mantralayam',
+                121 => 'Nandikotkur',
+                122 => 'Nandyal',
+                123 => 'Veldurthi',
+                124 => 'Yemmiganur',
             ],
             'Arunachal Pradesh'   => [
                 0 => 'Along',
@@ -1766,6 +1781,9 @@ return [
                 301 => 'Yawal',
                 302 => 'Yeola',
                 303 => 'Yeotmal',
+                304 => 'Umri',
+                305 => 'Parli Vaijnath',
+                306 => 'Mudkhed',
             ],
             'Manipur'             => [
                 0  => 'Bishnupur',
@@ -2028,6 +2046,8 @@ return [
                 56 => 'Tanda Urmar',
                 57 => 'Taran Taran',
                 58 => 'Zira',
+                59 => 'Dirba',
+                60 => 'Patran',
             ],
             'Rajasthan'           => [
                 0   => 'Ahore',
@@ -2755,6 +2775,7 @@ return [
                 207 => 'Utraula',
                 208 => 'Varanasi',
                 209 => 'Zamania',
+
             ],
             'Uttarakhand'         => [
                 0  => 'Bageshwar',
@@ -2790,6 +2811,7 @@ return [
                 30 => 'Udham Singh Nagar',
                 31 => 'Ukhimath',
                 32 => 'Uttarkashi',
+                210 => 'Tanakpur',
             ],
             'West Bengal'         => [
                 0  => 'Adra',
