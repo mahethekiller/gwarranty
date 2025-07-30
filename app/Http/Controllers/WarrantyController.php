@@ -49,6 +49,31 @@ class WarrantyController extends Controller
     public function store(Request $request)
     {
 
+        $messages = [
+            'dealer_name.required' => 'The dealer name is required.',
+            'dealer_name.max'      => 'The dealer name must not be greater than 255 characters.',
+            'dealer_city.required' => 'The dealer city is required.',
+            'dealer_city.max'      => 'The dealer city must not be greater than 255 characters.',
+            // 'place_of_purchase.required' => 'The place of purchase is required.',
+            // 'place_of_purchase.max'      => 'The place of purchase must not be greater than 255 characters.',
+            'invoice_number.required' => 'The invoice number is required.',
+            'invoice_number.max'      => 'The invoice number must not be greater than 255 characters.',
+            'upload_invoice.required' => 'An invoice file is required.',
+            'upload_invoice.mimes'    => 'Invoice file must be an image (jpg, png), PDF, DOC or DOCX.',
+            'upload_invoice.max'      => 'Invoice file must not be greater than 10MB.',
+            'dealer_state.required'  => 'The dealer state is required.',
+            'dealer_state.max'       => 'The dealer state must not be greater than 255 characters.',
+            'product_type.*.required' => 'The product type is required.',
+            'product_type.*.exists'   => 'The product type does not exist.',
+            'qty_purchased.*.required' => 'The quantity purchased is required.',
+            'qty_purchased.*.min'      => 'The quantity purchased must be at least 1.',
+            'application.*.nullable'  => 'The application is nullable.',
+            'application.*.string'    => 'The application must be a string.',
+            'handover_certificate.*.nullable' => 'The handover certificate is nullable.',
+            'handover_certificate.*.mimes'    => 'Handover certificate file must be an image (jpg, png), PDF, DOC or DOCX.',
+            'handover_certificate.*.max'      => 'Handover certificate file must not be greater than 10MB.',
+        ];
+
         $validated = $request->validate([
             'dealer_name'            => 'required|string|max:255',
             'dealer_city'            => 'required|string|max:255',
@@ -62,7 +87,7 @@ class WarrantyController extends Controller
             'handover_certificate.*' => 'nullable|file|mimes:jpg,png,pdf,doc,docx|max:10048',
             'dealer_state'           => 'required|string|max:255',
 
-        ]);
+        ], $messages);
 
         // Save dealer details
         $registration               = new WarrantyRegistration();

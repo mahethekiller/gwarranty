@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/get-cities/{state}', [ProfileController::class, 'getCitiesAjax']);
+Route::get('/admin/get-branch-email', [UserManagement::class, 'getBranchEmail'])->name('get.branch.email');
+
 
 
 // OTP Routes
@@ -31,7 +33,7 @@ Route::get('/dashboard', function () {
 
 // ALL ROLEs
 
-Route::middleware('auth', 'role:admin|user|editor')->group(function () {
+Route::middleware('auth', 'role:admin|user|branch_admin|country_admin')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -56,13 +58,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 // ADMIN ROLE
 
-// EDITOR ROLE
+// branch_admin ROLE
 
-Route::middleware(['auth', 'role:editor'])->group(function () {
+Route::middleware(['auth', 'role:branch_admin'])->group(function () {
 
 });
 
-// EDITOR ROLE
+// branch_admin ROLE
 
 // USER ROLE
 
@@ -84,7 +86,7 @@ Route::middleware(['auth', 'role:user','profile.updated'])->group(function () {
 
 // ADMIN AND EDITOR ROLE
 
-Route::middleware(['auth', 'role:admin|editor'])->group(function () {
+Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(function () {
 
 
      Route::get('/admin/dashboard', function () {

@@ -100,7 +100,7 @@ $("#warrantyForm").on("submit", function (e) {
                 let errors = xhr.responseJSON.errors;
                 $.each(errors, function (field, messages) {
                     let fieldName = field.replace(/\.\d+/g, ''); // remove index for arrays
-                    $(`#error-${fieldName}`).text(messages[0]);
+                    $(`#error-messages`).text(messages[0]);
                 });
             } else {
                 alert('An unexpected error occurred.');

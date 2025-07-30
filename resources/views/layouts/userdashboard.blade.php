@@ -47,11 +47,11 @@
         </div>
     </div>
 
-    @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('editor'))
+    @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('branch_admin'))
         @include('layouts.partials.adminsidebar')
     @elseif(Auth::user()->hasRole('user'))
         @include('layouts.partials.usersidebar')
-    {{-- @elseif(Auth::user()->hasRole('editor'))
+    {{-- @elseif(Auth::user()->hasRole('branch_admin'))
         @include('layouts.partials.editorsidebar') --}}
     @endif
     <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
@@ -195,6 +195,11 @@
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        var baseurl = "{{ url('/') }}";
+        var adminurl = "{{ url('/admin') }}";
+    </script>
 
     {{-- <script defer src="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/js/coreui.bundle.min.js"></script> --}}
     @if ($pageScript)

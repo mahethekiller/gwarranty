@@ -182,7 +182,8 @@
 
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row" >
+                        <span class="text-danger" id="error-messages" role="alert"></span>
                     </div>
 
                     <div class="form-group row">

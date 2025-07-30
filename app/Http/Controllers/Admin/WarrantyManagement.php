@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BranchEmail;
 use App\Models\Product;
 use App\Models\UserProduct;
 use App\Models\WarrantyProduct;
@@ -24,30 +25,36 @@ class WarrantyManagement extends Controller
             // ->paginate(2);
                 ->get();
 
-        } else {
+        } else if (Auth::user()->hasRole('country_admin')) {
             // $productIds = UserProduct::where('user_id', $userId)->pluck('product_id')->toArray();
-            $productIds = UserProduct::where('user_id', $userId)
+            $productId = UserProduct::where('user_id', $userId)
                 ->value('product_id');
 
-            $productIds = array_filter(array_map('trim', explode(',', $productIds)));
-
-            // dd($productIds);
 
             $warranties = WarrantyRegistration::with(['products.product'])
                 // ->where('user_id', $userId)
-                ->whereHas('products', function ($query) use ($productIds) {
-                    $query->whereIn('product_type', $productIds);
+                ->whereHas('products', function ($query) use ($productId) {
+                    $query->where('product_type', $productId);
                 })->orderBy('id', 'desc')
                 ->paginate(10);
 
-                // dd($query->toSql(), $query->getBindings());
-            // dd($warranties);
 
-            // $productIds = UserProduct::where('user_id', $userId)->value('product_id');
-            // $productIds = explode(',', $productIds); // convert to array
-            // $warranties = Warranty::whereIn('product_type', $productIds)->get();
-            // dd($warranties);
+        }else if (Auth::user()->hasRole('branch_admin')) {
+
+            $cities = BranchEmail::where('commercial_email', Auth::user()->email)->pluck('city')->toArray();
+            $states = BranchEmail::where('commercial_email', Auth::user()->email)->pluck('state')->toArray();
+
+
+            $warranties = WarrantyRegistration::with(['products.product'])
+                ->whereIn('dealer_city', $cities)
+                ->whereIn('dealer_state', $states)
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+
         }
+
+
+
         $productNames = Product::pluck('name', 'id'); // returns [id => name]
 
         return view('admin.warranty.index',
@@ -80,19 +87,26 @@ class WarrantyManagement extends Controller
     public function edit($id)
     {
         $warranty = WarrantyRegistration::findOrFail($id);
+        $remarks = $warranty->remarks()->with('user')->latest()->get();
         if (Auth::user()->hasRole('admin')) {
             $warrantyProducts = WarrantyProduct::with('product')->where('warranty_registration_id', $id)->get();
-        } elseif (Auth::user()->hasRole('editor')) {
+        } elseif (Auth::user()->hasRole('country_admin')) {
             $userProducts     = UserProduct::where('user_id', Auth::id())->value('product_id');
             $userProducts     = explode(',', $userProducts);
             $warrantyProducts = WarrantyProduct::with('product')->where('warranty_registration_id', $id)->whereIn('product_type', $userProducts)->get();
+        }else if (Auth::user()->hasRole('branch_admin')) {
+            $warrantyProducts = WarrantyProduct::with('product')->where('warranty_registration_id', $id)->get();
         }
 
         // return response()->json($warranty);
 
-        return view('admin.warranty.editmodal', [
+        return view('admin.warranty.edit', [
             'warranty'         => $warranty,
             'warrantyProducts' => $warrantyProducts,
+            'remarks'          => $remarks,
+            'pageTitle'        => 'Warranty Management',
+            'pageDescription'  => 'Warranty Management',
+            'pageScript'       => 'warrantyadmin',
         ]);
     }
 

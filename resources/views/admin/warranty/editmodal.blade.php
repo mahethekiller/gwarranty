@@ -5,32 +5,6 @@
 
     <div class="form-group row">
 
-
-        {{-- <div class="col-lg-12">
-            <div class="form-group">
-                <label for="remarks" class="form-label custom-form-label">Overall Remarks</label>
-                <textarea class="form-control" id="remarks" name="remarks" placeholder="Enter Remarks">{{ $warranty->remarks }}</textarea>
-                <span class="text-danger" id="error-remarks" role="alert"></span>
-            </div>
-        </div>
-        <div class="col-lg-12">
-            <div class="form-group">
-                <label for="status" class="form-label custom-form-label">Status</label>
-                <select class="form-control" id="status" name="status">
-                    <option value="pending" {{ $warranty->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="modify" {{ $warranty->status == 'modify' ? 'selected' : '' }}>Modify</option>
-                    <option value="approved" {{ $warranty->status == 'approved' ? 'selected' : '' }}>Approved</option>
-                </select>
-                <span class="text-danger" id="error-status" role="alert"></span>
-            </div>
-        </div> --}}
-
-
-    </div>
-
-
-    <div class="form-group row">
-
         <div class="col-lg-12">
             <table class="table table-bordered ">
                 <thead>

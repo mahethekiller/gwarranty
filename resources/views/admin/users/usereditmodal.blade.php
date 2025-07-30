@@ -15,6 +15,39 @@
         </div>
         <div class="col-lg-6">
             <div class="form-group">
+                <label for="role" class="form-label custom-form-label">Role</label>
+                <select class="form-control" id="role" name="role">
+                    <option value="" selected>Select Role</option>
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->name }}" data-role-name="{{ $role->name }}"
+                            {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                            {{ $role->display_name }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="text-danger" id="error-role" role="alert">
+                    <strong>{{ $errors->first('role') }}</strong>
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-6" id="branch_name_div">
+            <div class="form-group">
+                <label for="branch_name" class="form-label custom-form-label">Branch Name</label>
+                <select class="form-control" id="branch_name" name="branch_name">
+                    <option value="" selected>Select Branch Name</option>
+                    @foreach ($branchNames as $branchName)
+                        <option value="{{ $branchName }}" {{ old('branch_name') == $branchName ? 'selected' : '' }}>
+                            {{ $branchName }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="text-danger" id="error-branch_name" role="alert">
+                    <strong>{{ $errors->first('branch_name') }}</strong>
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
                 <label for="email" class="form-label custom-form-label">Enter Email Id</label>
                 <input class="form-control" id="email" name="email" type="text"
                     value="{{ old('email', $user->email) }}" readonly>
@@ -43,14 +76,15 @@
                 </span>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6" id="product-type-wrapper"
+            style="display: {{ $user->hasRole('country_admin') ? 'block' : 'none' }}">
             <div class="form-group">
                 <label for="product_type" class="form-label custom-form-label">Product Type</label>
                 <br>
-                <select class="form-multi-select2 selectpicker" multiple name="product_type[]" style="width: 100%">
+                <select class="form-control" name="product_type" style="width: 100%">
+                    <option value="" selected>Select Product Type</option>
                     @foreach ($products as $product)
-                        <option value="{{ $product->id }}"
-                            {{ in_array($product->id, $product_ids) ? 'selected' : '' }}>
+                        <option value="{{ $product->id }}" {{ $product->id == $product_id ? 'selected' : '' }}>
                             {{ $product->name }}</option>
                     @endforeach
                 </select>
@@ -64,8 +98,10 @@
             <div class="form-group">
                 <label for="status" class="form-label custom-form-label">Status</label>
                 <select class="form-control" id="status" name="status">
-                    <option value="active" {{ old('status', $user->status) == 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="inactive" {{ old('status', $user->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="active" {{ old('status', $user->status) == 'active' ? 'selected' : '' }}>Active
+                    </option>
+                    <option value="inactive" {{ old('status', $user->status) == 'inactive' ? 'selected' : '' }}>
+                        Inactive</option>
                 </select>
                 <span class="text-danger" id="modalerror-status" role="alert">
                     <strong>{{ $errors->first('status') }}</strong>
@@ -93,7 +129,8 @@
         var user_id = $('#user_id').val();
 
         // Reset error fields
-        let errorFields = ['#modalerror-name', '#modalerror-email', '#modalerror-phone_number', '#modalerror-password',
+        let errorFields = ['#modalerror-name', '#modalerror-email', '#modalerror-phone_number',
+            '#modalerror-password',
             '#modalerror-product_type'
         ];
         errorFields.forEach(field => {
@@ -123,5 +160,71 @@
                 }
             }
         });
+    });
+
+
+
+    function toggleProductType() {
+        var selectedRole = $("#role option:selected").data("role-name");
+
+        if (selectedRole === "country_admin") {
+            $("#product-type-wrapper").show();
+        } else {
+            $("#product-type-wrapper").hide();
+        }
+    }
+
+    function toggleBranchNameDiv() {
+        var selectedRole = $("#role option:selected").data("role-name");
+
+        if (selectedRole === "branch_admin") {
+            $("#branch_name_div").show();
+        } else {
+            $("#email").prop("readonly", false).val("");
+            $("#branch_name_div").hide();
+        }
+    }
+
+    $(document).ready(function() {
+        toggleProductType(); // on page load
+        toggleBranchNameDiv();
+        $("#role").on("change", function() {
+            toggleProductType();
+            toggleBranchNameDiv();
+        });
+    });
+
+    $("#branch_name").on("change", function() {
+        var branchName = $(this).val();
+
+        if (branchName) {
+            $.ajax({
+                url: adminurl + "/get-branch-email",
+                method: "GET",
+                data: {
+                    branch_name: branchName
+                },
+                success: function(response) {
+                    $("#email").val(response.email || "");
+                    $("#email").prop("readonly", true);
+
+
+                    if (response.exists) {
+                        $("#error-email").text("A user with this branch email already exists!");
+                        $("#email").addClass("is-invalid");
+                    } else {
+                        $("#email").removeClass("is-invalid");
+                        $("#error-email").text("");
+                    }
+                },
+                error: function() {
+                    $("#email").val("");
+                    $("#email").removeClass("is-invalid");
+                },
+            });
+        } else {
+            $("#email").val("");
+            $("#email").removeClass("is-invalid");
+        }
     });
 </script>

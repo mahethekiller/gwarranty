@@ -23,4 +23,9 @@ class WarrantyRegistration extends Model
     {
         return $this->hasMany(WarrantyProduct::class, 'warranty_registration_id');
     }
+
+    public function remarks()
+    {
+        return $this->hasMany(WarrantyRemark::class);
+    }
 }

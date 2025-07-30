@@ -23,6 +23,41 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="role" class="form-label custom-form-label">Role</label>
+                                    <select class="form-control" id="role" name="role">
+                                        <option value="" selected>Select Role</option>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->name }}" data-role-name="{{ $role->name }}"
+                                                {{ old('role') == $role->name ? 'selected' : '' }}>
+                                                {{ $role->display_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger" id="error-role" role="alert">
+                                        <strong>{{ $errors->first('role') }}</strong>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6" id="branch_name_div">
+                                <div class="form-group">
+                                    <label for="branch_name" class="form-label custom-form-label">Branch Name</label>
+                                    <select class="form-control" id="branch_name" name="branch_name">
+                                        <option value="" selected>Select Branch Name</option>
+                                        @foreach ($branchNames as $branchName)
+                                            <option value="{{ $branchName }}" {{ old('branch_name') == $branchName ? 'selected' : '' }}>
+                                                {{ $branchName }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger" id="error-branch_name" role="alert">
+                                        <strong>{{ $errors->first('branch_name') }}</strong>
+                                    </span>
+                                </div>
+                            </div>
+
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="email" class="form-label custom-form-label">Email Id</label>
@@ -64,18 +99,19 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+
+                            <div class="col-lg-6" id="product-type-wrapper">
                                 <div class="form-group">
                                     <label for="select_product_type" class="form-label custom-form-label">Product
                                         Type</label>
                                     {{-- {{ print_r($users) }} --}}
-                                    <select class="form-multi-select selectpicker" multiple data-coreui-search="true"
-                                        name="product_type[]">
-                                        {{-- <option value="" selected>Select Product Type</option> --}}
+                                    <select class="form-control"
+                                        name="product_type">
+                                        <option value="" selected>Select Product Type</option>
 
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}"
-                                                {{ in_array($product->id, old('product_type', [])) ? 'selected' : '' }}>
+                                                {{ old('product_type') == $product->id ? 'selected' : '' }}>
                                                 {{ $product->name }}</option>
                                         @endforeach
                                     </select>
@@ -116,6 +152,7 @@
                                             <tr>
                                                 <th>S. No.</th>
                                                 <th>Name</th>
+                                                <th>Role</th>
                                                 <th>Email</th>
                                                 <th>Phone</th>
                                                 <th>Product Type</th>
@@ -130,11 +167,19 @@
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
                                                     <td>{{ $user->name }}</td>
+                                                    <td> {{ $user->roles->pluck('display_name')->implode(', ') }}</td>
                                                     <td>{{ $user->email }}</td>
                                                     <td>{{ $user->phone_number }}</td>
                                                     @php
-                                                        $productIds = explode(',', \App\Models\UserProduct::where('user_id', $user->id)->value('product_id'));
-                                                        $productName = \App\Models\Product::whereIn('id', $productIds)->pluck('name')->implode(', ');
+                                                        $productIds = explode(
+                                                            ',',
+                                                            \App\Models\UserProduct::where('user_id', $user->id)->value(
+                                                                'product_id',
+                                                            ),
+                                                        );
+                                                        $productName = \App\Models\Product::whereIn('id', $productIds)
+                                                            ->pluck('name')
+                                                            ->implode(', ');
                                                     @endphp
 
                                                     <td>{{ $productName }}</td>
@@ -146,8 +191,7 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="javascript:void(0)"
-                                                            class="pending-icon-red"
+                                                        <a href="javascript:void(0)" class="pending-icon-red"
                                                             data-bs-toggle="modal" data-bs-target="#userEditModal"
                                                             data-id="{{ $user->id }}"><i
                                                                 class="fa fa-pencil"></i> &nbsp;Edit</a>
@@ -162,6 +206,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
 
                         </div>

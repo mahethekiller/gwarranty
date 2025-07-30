@@ -68,11 +68,16 @@
                                                         @endif
                                                     </td> --}}
                                                     <td>
-                                                        <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
-                                                            href="#" data-id="{{ $warranty->id }}"
+                                                        <a
+                                                            href="{{ route('admin.warranty.edit', $warranty->id) }}"
                                                             class="pending-icon-red">
                                                             <i class="fa fa-pencil"></i>&nbsp;Edit
                                                         </a>
+                                                        {{-- <a data-bs-toggle="modal" data-bs-target="#editWarrantyModel"
+                                                            href="#" data-id="{{ $warranty->id }}"
+                                                            class="pending-icon-red">
+                                                            <i class="fa fa-pencil"></i>&nbsp;Edit
+                                                        </a> --}}
                                                     </td>
                                                 </tr>
                                             @endforeach
