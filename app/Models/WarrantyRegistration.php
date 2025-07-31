@@ -28,4 +28,16 @@ class WarrantyRegistration extends Model
     {
         return $this->hasMany(WarrantyRemark::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(WarrantyLog::class, 'warranty_id')->latest();
+    }
+
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BranchEmail;
 use App\Models\Product;
 use App\Models\UserProduct;
+use App\Models\WarrantyLog;
 use App\Models\WarrantyProduct;
 use App\Models\WarrantyRegistration;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class WarrantyManagement extends Controller
     public function index(Request $request)
     {
         // Code to list warranties
-        $userId = Auth::id();
+        $userId     = Auth::id();
         $productIds = [];
         if (Auth::user()->hasRole('admin')) {
             // $warranties = Warranty::all();
@@ -30,20 +31,17 @@ class WarrantyManagement extends Controller
             $productId = UserProduct::where('user_id', $userId)
                 ->value('product_id');
 
-
             $warranties = WarrantyRegistration::with(['products.product'])
-                // ->where('user_id', $userId)
+            // ->where('user_id', $userId)
                 ->whereHas('products', function ($query) use ($productId) {
                     $query->where('product_type', $productId);
                 })->orderBy('id', 'desc')
                 ->paginate(10);
 
-
-        }else if (Auth::user()->hasRole('branch_admin')) {
+        } else if (Auth::user()->hasRole('branch_admin')) {
 
             $cities = BranchEmail::where('commercial_email', Auth::user()->email)->pluck('city')->toArray();
             $states = BranchEmail::where('commercial_email', Auth::user()->email)->pluck('state')->toArray();
-
 
             $warranties = WarrantyRegistration::with(['products.product'])
                 ->whereIn('dealer_city', $cities)
@@ -52,8 +50,6 @@ class WarrantyManagement extends Controller
                 ->paginate(10);
 
         }
-
-
 
         $productNames = Product::pluck('name', 'id'); // returns [id => name]
 
@@ -64,7 +60,7 @@ class WarrantyManagement extends Controller
                 "pageScript"      => "warrantyadmin",
                 "warranties"      => $warranties,
                 "productNames"    => $productNames,
-                "productIds"      => $productIds
+                "productIds"      => $productIds,
             ]);
 
     }
@@ -86,15 +82,15 @@ class WarrantyManagement extends Controller
 
     public function edit($id)
     {
-        $warranty = WarrantyRegistration::findOrFail($id);
-        $remarks = $warranty->remarks()->with('user')->latest()->get();
+        $warranty = WarrantyRegistration::with('logs', 'logs.user')->findOrFail($id);
+        $remarks  = $warranty->remarks()->with('user')->latest()->get();
         if (Auth::user()->hasRole('admin')) {
             $warrantyProducts = WarrantyProduct::with('product')->where('warranty_registration_id', $id)->get();
         } elseif (Auth::user()->hasRole('country_admin')) {
             $userProducts     = UserProduct::where('user_id', Auth::id())->value('product_id');
             $userProducts     = explode(',', $userProducts);
             $warrantyProducts = WarrantyProduct::with('product')->where('warranty_registration_id', $id)->whereIn('product_type', $userProducts)->get();
-        }else if (Auth::user()->hasRole('branch_admin')) {
+        } else if (Auth::user()->hasRole('branch_admin')) {
             $warrantyProducts = WarrantyProduct::with('product')->where('warranty_registration_id', $id)->get();
         }
 
@@ -125,25 +121,25 @@ class WarrantyManagement extends Controller
             'product_remarks.*' => 'required|string|max:500',
         ],
             [
-                'total_quantity.required'   => 'Please enter total quantity for all products.',
-                'total_quantity.array'      => 'Invalid total quantity.',
-                'total_quantity.*.required' => 'Please enter total quantity for all products.',
-                'total_quantity.*.integer'  => 'Invalid total quantity.',
-                'total_quantity.*.min'      => 'Total quantity should be at least 1.',
-                'product_status.required'   => 'Please select status for all products.',
-                'product_status.array'      => 'Invalid status selection.',
-                'product_status.*.required' => 'Please select status for all products.',
-                'product_status.*.in'       => 'Invalid status selection.',
-                'product_remarks.array'     => 'Invalid remarks.',
-                'product_remarks.*.string'  => 'Invalid remarks.',
-                'product_remarks.*.max'     => 'Remarks should not be more than 500 characters.',
+                'total_quantity.required'    => 'Please enter total quantity for all products.',
+                'total_quantity.array'       => 'Invalid total quantity.',
+                'total_quantity.*.required'  => 'Please enter total quantity for all products.',
+                'total_quantity.*.integer'   => 'Invalid total quantity.',
+                'total_quantity.*.min'       => 'Total quantity should be at least 1.',
+                'product_status.required'    => 'Please select status for all products.',
+                'product_status.array'       => 'Invalid status selection.',
+                'product_status.*.required'  => 'Please select status for all products.',
+                'product_status.*.in'        => 'Invalid status selection.',
+                'product_remarks.array'      => 'Invalid remarks.',
+                'product_remarks.*.string'   => 'Invalid remarks.',
+                'product_remarks.*.max'      => 'Remarks should not be more than 500 characters.',
                 'product_remarks.*.required' => 'Please enter remarks for all products.',
                 // 'product_remarks.required'  => 'Please enter remarks for all products.',
             ]);
 
         // Loop through and update each product
 
-        $warrantyStatus='approved';
+        $warrantyStatus = 'approved';
 
         foreach ($request->product_id as $index => $pid) {
             $warrantyProduct = WarrantyProduct::find($pid);
@@ -159,12 +155,11 @@ class WarrantyManagement extends Controller
                 }
 
                 $warrantyProduct->total_quantity = $request->total_quantity[$index];
-                $warrantyProduct->product_status         = $request->product_status[$index];
+                $warrantyProduct->product_status = $request->product_status[$index];
                 $warrantyProduct->remarks        = $request->product_remarks[$index] ?? null;
                 $warrantyProduct->save();
             }
         }
-
 
         $warranty = WarrantyRegistration::findOrFail($id);
 
@@ -173,8 +168,6 @@ class WarrantyManagement extends Controller
         $warranty->modified_by = Auth::id();
         $warranty->checked_by  = Auth::id();
         $warranty->save();
-
-
 
         // return redirect()->back()->with('success', 'Warranty products updated successfully.');
 
@@ -186,4 +179,79 @@ class WarrantyManagement extends Controller
     {
         // Code to delete a specific warranty
     }
+
+    public function updateProduct(Request $request, $id)
+    {
+        $validations=[
+            'total_quantity'            => 'required|numeric|min:1',
+            'product_remarks'           => 'nullable|string|max:500',
+            'product_name'              => 'nullable|string|max:255',
+            'warranty_years'            => 'nullable|string|max:50',
+            'date_of_issuance'          => 'nullable|date',
+            'invoice_date'              => 'nullable|date',
+            'execution_agency'          => 'nullable|string|max:255',
+            'handover_certificate_date' => 'nullable|date',
+            'product_code'              => 'nullable|string|max:255',
+            'surface_treatment_type'    => 'nullable|string|max:255',
+            'product_thickness'         => 'nullable|string|max:255',
+            'project_location'          => 'nullable|string|max:255',
+            'branch_name'               => 'nullable|string|max:255'
+        ];
+
+        if (Auth::user()->hasRole('country_admin')) {
+            $validations['country_admin_status'] = 'required|in:pending,modify,approved';
+        } elseif (Auth::user()->hasRole('branch_admin')) {
+            $validations['branch_admin_status'] = 'required|in:pending,modify,approved';
+        }
+        // dd($request);
+
+        $validated = $request->validate( $validations);
+
+        $product  = WarrantyProduct::findOrFail($id);
+        $warranty = $product->registration; // assumes a belongsTo relation in WarrantyProduct
+
+        $fieldsToLog = [
+            'total_quantity' => $validated['total_quantity'],
+            // 'product_status' => $validated['product_status'],
+            'remarks'        => $validated['product_remarks'], // renamed from product_remarks to remarks
+            'product_name'   => $validated['product_name'],
+            'warranty_years' => $validated['warranty_years'],
+            'branch_name' => $validated['branch_name'],
+            // 'date_of_issuance' => $validated['date_of_issuance'],
+            'invoice_date' => $validated['invoice_date'],
+            'execution_agency' => $validated['execution_agency'],
+            'handover_certificate_date' => $validated['handover_certificate_date'],
+            'product_code' => $validated['product_code'],
+            'surface_treatment_type' => $validated['surface_treatment_type'],
+            'product_thickness' => $validated['product_thickness'],
+            'project_location' => $validated['project_location'],
+        ];
+
+        if (Auth::user()->hasRole('country_admin')) {
+            $fieldsToLog['country_admin_status'] = $validated['country_admin_status'];
+        } elseif (Auth::user()->hasRole('branch_admin')) {
+            $fieldsToLog['branch_admin_status'] = $validated['branch_admin_status'];
+        }
+
+        foreach ($fieldsToLog as $field => $newValue) {
+            $oldValue = $product->$field;
+
+            if ($oldValue != $newValue) {
+                WarrantyLog::create([
+                    'warranty_id' => $warranty->id,
+                    'field'       => $field,
+                    'old_value'   => $oldValue,
+                    'new_value'   => $newValue,
+                    'updated_by'  => Auth::id(),
+                ]);
+
+                $product->$field = $newValue;
+            }
+        }
+
+        $product->save();
+
+        return response()->json(['message' => 'Saved successfully.']);
+    }
+
 }

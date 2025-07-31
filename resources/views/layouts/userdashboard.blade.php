@@ -11,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mukesh">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDescription }}">
 
@@ -47,7 +49,7 @@
         </div>
     </div>
 
-    @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('branch_admin'))
+    @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('branch_admin') || Auth::user()->hasRole('country_admin'))
         @include('layouts.partials.adminsidebar')
     @elseif(Auth::user()->hasRole('user'))
         @include('layouts.partials.usersidebar')

@@ -14,6 +14,7 @@ class WarrantyProduct extends Model
         'qty_purchased',
         'application_type',
         'handover_certificate',
+        'remarks',
     ];
 
     /**
@@ -23,6 +24,8 @@ class WarrantyProduct extends Model
     {
         return $this->belongsTo(WarrantyRegistration::class, 'warranty_registration_id');
     }
+
+
 
     /**
      * A warranty product belongs to a product.
