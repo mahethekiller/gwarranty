@@ -107,6 +107,9 @@ Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(func
     Route::put('/admin/warranty/update/product/{id}', [WarrantyManagement::class, 'updateProduct'])->name('admin.warranty.updateproduct');
 
 
+    Route::put('/admin/warranty/update/status/{id}', [WarrantyManagement::class, 'updateCountryAdminStatus'])->name('updatecountryadminstatus');
+
+
 
 
 

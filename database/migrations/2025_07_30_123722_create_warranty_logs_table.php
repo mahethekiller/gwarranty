@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('warranty_id'); // Link to WarrantyRegistration
             $table->string('field');
             $table->text('old_value')->nullable();
-            $table->text('new_value');
+            $table->text('new_value')->nullable();
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();
 

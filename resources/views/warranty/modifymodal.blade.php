@@ -38,9 +38,8 @@
     <h5>Products</h5>
     <div id="editProducts">
         @foreach ($warranty->products as $index => $product)
-            @if ($product->product_status != 'approved' && $product->product_status != 'pending')
-
-<input type="hidden" name="product_id[]" value="{{ $product->id }}">
+            @if ($product->branch_admin_status == 'modify')
+                <input type="hidden" name="product_id[]" value="{{ $product->id }}">
 
                 <div class="border rounded p-3 mb-2">
                     <div class="row">
@@ -160,7 +159,7 @@
                     let errors = xhr.responseJSON.errors;
                     $.each(errors, function(field, messages) {
                         let fieldName = field.replace(/\.\d+/g,
-                        ''); // remove index for arrays
+                            ''); // remove index for arrays
                         $(`#error-${fieldName}`).text(messages[0]);
                     });
                 } else {

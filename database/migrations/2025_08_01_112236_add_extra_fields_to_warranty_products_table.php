@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::table('warranty_products', function (Blueprint $table) {
             //
-            $table->string('branch_name')->nullable()->after('product_name');
-            $table->enum('branch_admin_status', ['pending', 'modify', 'approved'])->default('pending')->nullable()->after('product_status');
-            $table->enum('country_admin_status', ['pending', 'rejected', 'approved'])->default('pending')->nullable()->after('product_status');
+            $table->text('country_admin_remarks')->nullable()->after('country_admin_status');
+            $table->text('branch_admin_remarks')->nullable()->after('country_admin_status');
 
         });
     }
@@ -27,9 +26,8 @@ return new class extends Migration
     {
         Schema::table('warranty_products', function (Blueprint $table) {
             //
-            $table->dropColumn('branch_name');
-            $table->dropColumn('branch_admin_status');
-            $table->dropColumn('country_admin_status');
+            $table->dropColumn('country_admin_remarks');
+            $table->dropColumn('branch_admin_remarks');
         });
     }
 };

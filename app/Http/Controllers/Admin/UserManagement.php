@@ -74,22 +74,21 @@ class UserManagement extends Controller
     {
 
         $user_products = UserProduct::where('user_id', $user->id)->first();
-        $product_id = $user_products ? $user_products->product_id : '';
+        $product_id    = $user_products ? $user_products->product_id : '';
 
         // $user_role = $user->roles->first()->name;
         $roles       = Role::whereNotIn('name', ['user'])->get();
-         $branchNames = BranchEmail::select('branch_name')->distinct()->pluck('branch_name');
-
+        $branchNames = BranchEmail::select('branch_name')->distinct()->pluck('branch_name');
 
         // $user->product_type = Product::whereIn('id', $product_ids)->pluck('name')->toArray();
 
         $products = Product::all();
         return view('admin.users.usereditmodal', [
-            'user'         => $user,
-            'products'     => $products,
-            'product_id'   => $product_id,
-            'roles'        => $roles,
-            'branchNames'  => $branchNames
+            'user'        => $user,
+            'products'    => $products,
+            'product_id'  => $product_id,
+            'roles'       => $roles,
+            'branchNames' => $branchNames,
         ]);
     }
 
@@ -98,9 +97,10 @@ class UserManagement extends Controller
         $request->validate([
             'name'         => 'required|string|max:255',
             'email'        => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password'     => 'nullable|string|min:8',
             'phone_number' => 'required|string|digits:10|unique:users,phone_number,' . $user->id,
-            'product_type' => 'required|array',
+            'role'         => ['required', Rule::in(Role::pluck('name')->toArray())],
+            'password'     => 'nullable|string|min:8',
+            'product_type' => $request->role == 'country_admin' ? 'required' : 'nullable',
             'status'       => ['required', Rule::in(['active', 'inactive'])], // assuming 'active' and 'inactive' are the possible enum values
         ]);
 
@@ -117,11 +117,22 @@ class UserManagement extends Controller
 
         $user->update($updateData);
 
-        $user_product = UserProduct::where('user_id', $user->id)->first();
-        $product_ids  = $request->product_type;
-        $user_product->update([
-            'product_id' => implode(',', $product_ids),
-        ]);
+
+
+        if ($request->role == 'country_admin') {
+            $user_product = UserProduct::where('user_id', $user->id)->first();
+            $product_ids = $request->product_type;
+            if ($user_product) {
+                $user_product->update([
+                    'product_id' => $product_ids,
+                ]);
+            } else {
+                UserProduct::create([
+                    'user_id'    => $user->id,
+                    'product_id' => $product_ids,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.' . $request->status);
     }

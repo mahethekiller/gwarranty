@@ -14,47 +14,47 @@ function toggleDiv2(show) {
 
 $(document).ready(function () {
     // Add new row
-    $('#addNewRow').on('click', function () {
-        let $clone = $('#tableBody tbody tr:first').clone();
-        $clone.find('input, select').val(''); // Clear input values
-        $clone.find('#handover_certificate_preview').empty(); // Clear file preview
-        $clone.find('.text-danger strong').text(''); // Clear error messages
-        $('#tableBody tbody').append($clone);
-        $clone.find('#product_type').trigger('change'); // Apply visibility logic
+    $("#addNewRow").on("click", function () {
+        let $clone = $("#tableBody tbody tr:first").clone();
+        $clone.find("input, select").val(""); // Clear input values
+        $clone.find("#handover_certificate_preview").empty(); // Clear file preview
+        $clone.find(".text-danger strong").text(""); // Clear error messages
+        $("#tableBody tbody").append($clone);
+        $clone.find("#product_type").trigger("change"); // Apply visibility logic
     });
 
     // Remove row
-    $(document).on('click', '.removeRow', function () {
-        if ($('#tableBody tbody tr').length > 1) {
-            $(this).closest('tr').remove();
+    $(document).on("click", ".removeRow", function () {
+        if ($("#tableBody tbody tr").length > 1) {
+            $(this).closest("tr").remove();
         } else {
-            alert('At least one row is required.');
+            alert("At least one row is required.");
         }
     });
 
     // Show/Hide fields based on Product Type
-    $(document).on('change', '#product_type', function () {
+    $(document).on("change", "#product_type", function () {
         let selectedValue = $(this).val();
-        let $row = $(this).closest('tr');
+        let $row = $(this).closest("tr");
 
         // Show/Hide Upload Handover Certificate div
         if (selectedValue == 2) {
-            $row.find('.handover-wrapper').show();
+            $row.find(".handover-wrapper").show();
         } else {
-            $row.find('.handover-wrapper').hide();
+            $row.find(".handover-wrapper").hide();
         }
 
         // Show/Hide Application Type div
         if (selectedValue == 4 || selectedValue == 6) {
-            $row.find('.application-wrapper').hide();
+            $row.find(".application-wrapper").hide();
         } else {
-            $row.find('.application-wrapper').show();
+            $row.find(".application-wrapper").show();
         }
     });
 
     // Trigger change for default row
-    $('#tableBody tbody tr').each(function () {
-        $(this).find('#product_type').trigger('change');
+    $("#tableBody tbody tr").each(function () {
+        $(this).find("#product_type").trigger("change");
     });
 });
 
@@ -99,16 +99,15 @@ $("#warrantyForm").on("submit", function (e) {
             if (xhr.status === 422) {
                 let errors = xhr.responseJSON.errors;
                 $.each(errors, function (field, messages) {
-                    let fieldName = field.replace(/\.\d+/g, ''); // remove index for arrays
+                    let fieldName = field.replace(/\.\d+/g, ""); // remove index for arrays
                     $(`#error-messages`).text(messages[0]);
                 });
             } else {
-                alert('An unexpected error occurred.');
+                alert("An unexpected error occurred.");
             }
-        }
+        },
     });
 });
-
 
 $("#qty_purchased").on("input", function (e) {
     this.value = this.value.replace(/[^0-9]/g, "");
@@ -189,7 +188,6 @@ $(document).on("click", '[data-bs-target="#editWarrantyModel"]', function (e) {
             if (response.message) {
                 alert(response.message);
             } else {
-
                 $("#editWarrantyModelBody").html(response);
                 applyProductTypeConditions();
             }
@@ -201,43 +199,60 @@ $(document).on("click", '[data-bs-target="#editWarrantyModel"]', function (e) {
     });
 });
 
-
-
 $(document).ready(function () {
     // Initialize DataTable
     // $('#warrantyTable').DataTable();
 
     // Open modal with product details
-    $(document).on('click', '.view-products-btn', function () {
-        let products = $(this).data('products');
-        let title = $(this).data('title');
+    $(document).on("click", ".view-products-btn", function () {
+        let products = $(this).data("products");
+        let title = $(this).data("title");
 
         // Set modal title
-        $('#productsModalLabel').text(title);
+        $("#productsModalLabel").text(title);
 
         // Build table rows
-        let rows = '';
+        let rows = "";
         if (products.length > 0) {
             products.forEach(function (product) {
                 rows += `
                     <tr>
-                        <td>${product.product?.name || 'N/A'}</td>
-                        <td>${product.qty_purchased || 'N/A'} </td>
-                        <td>${product.product_type === 4 || product.product_type === 6 ? 'N/A' : product.application_type || 'N/A'}</td>
+                        <td>${product.product?.name || "N/A"}</td>
+                        <td>${product.qty_purchased || "N/A"} </td>
+                        <td>${
+                            product.product_type === 4 ||
+                            product.product_type === 6
+                                ? "N/A"
+                                : product.application_type || "N/A"
+                        }</td>
                         <td>
-                            ${product.handover_certificate
-                                ? `<a href="/storage/${product.handover_certificate}" target="_blank" class="download-icon-red">
+                            ${
+                                product.handover_certificate
+                                    ? `<a href="/storage/${product.handover_certificate}" target="_blank" class="download-icon-red">
                                      <i class="fa fa-download"></i>&nbsp;View
                                    </a>`
-                                : 'N/A'}
+                                    : "N/A"
+                            }
                         </td>
-                        <td>${product.remarks || 'N/A'}</td>
+                        <td>${product.remarks || "N/A"}</td>
                         <td>
                             <span class="badge rounded-pill ${
-                                product.product_status === 'pending' ?
-                                'bg-warning' : product.product_status === 'modify' ?
-                                'bg-danger' : product.product_status === 'approved' ?
-                                'bg-success' : 'bg-secondary'} text-white">${product.product_status?.toUpperCase() || 'N/A'}</span>
+                                product.branch_admin_status === "modify"
+                                    ? "bg-danger"
+                                    : product.branch_admin_status === "approved" &&
+                                    product.country_admin_status === "approved"
+                                    ? "bg-success"
+                                    : "bg-warning"
+                            } text-white">
+                                ${
+                                    product.branch_admin_status === "modify"
+                                        ? "MODIFY"
+                                        : product.branch_admin_status === "approved" &&
+                                        product.country_admin_status === "approved"
+                                        ? "APPROVED"
+                                        : "PENDING"
+                                }
+                            </span>
                         </td>
 
                     </tr>
@@ -248,34 +263,32 @@ $(document).ready(function () {
         }
 
         // Insert rows into modal
-        $('#productsModalBody').html(rows);
+        $("#productsModalBody").html(rows);
 
         // Show modal
-        $('#productsModal').modal('show');
+        $("#productsModal").modal("show");
     });
 });
 
-
-
 $(document).ready(function () {
-    const stateSelect = $('#dealer_state');
-    const citySelect = $('#dealer_city');
+    const stateSelect = $("#dealer_state");
+    const citySelect = $("#dealer_city");
 
-    stateSelect.on('change', function () {
+    stateSelect.on("change", function () {
         const selectedState = $(this).val();
 
         // Clear city dropdown
         citySelect.html('<option value="">Select City</option>');
 
         if (selectedState) {
-            $.get(`/get-cities/${encodeURIComponent(selectedState)}`)
-                .then(cities => {
-                    cities.forEach(city => {
-                        const option = $('<option>').val(city).text(city);
+            $.get(`/get-cities/${encodeURIComponent(selectedState)}`).then(
+                (cities) => {
+                    cities.forEach((city) => {
+                        const option = $("<option>").val(city).text(city);
                         citySelect.append(option);
                     });
-                });
+                }
+            );
         }
     });
 });
-

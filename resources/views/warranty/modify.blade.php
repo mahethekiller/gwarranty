@@ -35,7 +35,8 @@
                                                     <tr>
                                                         <td>{{ $warranty->created_at->format('d-M-Y') }}</td>
                                                         <td>{{ $warranty->dealer_name ?? 'N/A' }}</td>
-                                                        <td>{{ $warranty->dealer_state ?? 'N/A' }} >{{ $warranty->dealer_city ?? 'N/A' }}</td>
+                                                        <td>{{ $warranty->dealer_state ?? 'N/A' }}
+                                                            >{{ $warranty->dealer_city ?? 'N/A' }}</td>
                                                         <td>{{ $warranty->invoice_number }}</td>
                                                         <td>
                                                             @if ($warranty->upload_invoice)
@@ -54,19 +55,37 @@
                                                                 <i class="fa fa-eye"></i> &nbsp; View
                                                             </a>
                                                         </td>
+                                                        @php
+                                                            $products = $warranty->products;
+
+                                                            if ($products->contains('branch_admin_status', 'modify')) {
+                                                                $status = 'modify';
+                                                            } elseif (
+                                                                $products->every(function ($p) {
+                                                                    return $p->branch_admin_status === 'approved' &&
+                                                                        $p->country_admin_status === 'approved';
+                                                                })
+                                                            ) {
+                                                                $status = 'approved';
+                                                            } else {
+                                                                $status = 'pending';
+                                                            }
+                                                        @endphp
+
                                                         <td>
-                                                            @if ($warranty->status == 'pending')
+                                                            @if ($status === 'pending')
                                                                 <span class="badge bg-warning text-white">Pending</span>
-                                                            @elseif($warranty->status == 'approved')
+                                                            @elseif ($status === 'approved')
                                                                 <span
                                                                     class="badge bg-success text-white">Approved</span>
-                                                            @elseif($warranty->status == 'modify')
+                                                            @elseif ($status === 'modify')
                                                                 <span class="badge bg-danger text-white">Modify</span>
                                                             @endif
                                                         </td>
+
                                                         <td>
 
-                                                            @if ($warranty->status == 'modify')
+                                                            @if ($warranty->products->contains('branch_admin_status', 'modify'))
                                                                 <a data-bs-toggle="modal"
                                                                     data-bs-target="#editWarrantyModel" href="#"
                                                                     data-id="{{ $warranty->id }}"
@@ -74,6 +93,7 @@
                                                                     <i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit
                                                                 </a>
                                                             @endif
+
                                                         </td>
 
                                                     </tr>
@@ -81,7 +101,7 @@
                                             @endif
                                         </tbody>
                                     </table>
-{{-- Pagination links --}}
+                                    {{-- Pagination links --}}
                                     <div class="mt-3">
                                         {{ $warranties->links() }}
                                     </div>

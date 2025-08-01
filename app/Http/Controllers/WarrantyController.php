@@ -188,7 +188,7 @@ class WarrantyController extends Controller
         // $warranty->dealer_city = $request->dealer_city;
         // $warranty->place_of_purchase = $request->place_of_purchase;
         $warranty->invoice_number = $request->invoice_number;
-        $warranty->status         = 'pending'; // Reset status to pending after modification
+        // $warranty->status         = 'pending'; // Reset status to pending after modification
 
         $dateTimeString = now()->format('Ymd_His');
 
@@ -232,7 +232,7 @@ class WarrantyController extends Controller
             $product->product_type     = $productTypes[$index];
             $product->qty_purchased    = $quantities[$index];
             $product->application_type = $applications[$index] ?? null;
-            $product->product_status   = 'pending';
+            $product->branch_admin_status   = 'pending';
 
             // Update handover file only if a new one is uploaded
             if (isset($handoverCertificates[$index])) {

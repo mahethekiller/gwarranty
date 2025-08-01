@@ -41,32 +41,24 @@
                                                             </a>
                                                         @endif
                                                     </td>
-                                                    {{-- <td>{{ $warranty->remarks ?? 'N/A' }}</td> --}}
+
                                                     <td>
 
 
                                                         @php
                                                             $products = $warranty->products->pluck('id')->toArray();
-                                                            $allApproved = \App\Models\WarrantyProduct::whereIn('id', $products)->whereIn('product_type', $productIds)->where('product_status', '!=', 'approved')->doesntExist();
                                                         @endphp
 
 
-                                                            <a href="#" class="view-icon-red view-products-btn {{ $allApproved ? 'bg-success' : '' }}"
+                                                            <a href="#" class="view-icon-red view-products-btn"
                                                                 data-products='@json($warranty->products)'
+                                                                data-user_product=''
                                                                 data-title="Products for Warranty #{{ $key + 1 }}">
                                                                 <i class="fa fa-eye"></i> &nbsp; View
                                                             </a>
 
                                                     </td>
-                                                    {{-- <td>
-                                                        @if ($warranty->status == 'pending')
-                                                            <span class="badge bg-warning text-white">Pending</span>
-                                                        @elseif($warranty->status == 'approved')
-                                                            <span class="badge bg-success text-white">Approved</span>
-                                                        @elseif($warranty->status == 'modify')
-                                                            <span class="badge bg-danger text-white">Modify</span>
-                                                        @endif
-                                                    </td> --}}
+
                                                     <td>
                                                         <a
                                                             href="{{ route('admin.warranty.edit', $warranty->id) }}"
@@ -98,12 +90,13 @@
                                                     <table class="table table-bordered table-striped mb-0">
                                                         <thead>
                                                             <tr>
-                                                                <th>Product Name</th>
+                                                                <th>Product</th>
                                                                 <th>Quantity</th>
                                                                 <th>Application Type</th>
                                                                 <th>Handover Certificate</th>
                                                                 <th>Remarks</th>
-                                                                <th>Status</th>
+                                                                <th>Branch Admin Status</th>
+                                                                <th>Country Admin Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="productsModalBody">
