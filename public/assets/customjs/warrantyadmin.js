@@ -120,12 +120,16 @@ $(document).ready(function () {
                 project_location: row.find(".project_location").val(),
             },
             success: function (response) {
-                row.find(".save-message")
+                row.closest("tr").find(".save-message")
                     .removeClass("d-none")
-                    .text("Saved!")
+                    .text("Updated!")
                     .fadeIn()
-                    .delay(2000)
+                    .delay(3000)
                     .fadeOut();
+
+                // Close the collapseRow after save
+                row.closest(".collapse").collapse("hide");
+
             },
             error: function (xhr) {
                 const errorDiv = row.find(".error-message");

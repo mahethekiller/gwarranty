@@ -34,6 +34,7 @@
                                     admin status: {{ $product->country_admin_status }}</small>
                             @endif
                         </strong>
+                        <div class="text-success save-message d-none">Updated!...</div>
                         <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseRow{{ $index }}" aria-expanded="false"
                             aria-controls="collapseRow{{ $index }}">
@@ -100,9 +101,9 @@
 
                             {{-- Total Quantity & Status --}}
                             {{-- Mikasa Ply --}}
-                            @if ($product->product_type == 3)
-                                <div class="row mb-2">
-                                    <div class="col-md-12">
+                            <div class="row mb-2">
+                                @if ($product->product_type == 3)
+                                    <div class="col-md-6">
                                         <label class="form-label">Product Name</label>
                                         <select class="form-control product_name_select"
                                             name="product_name[{{ $index }}]">
@@ -117,19 +118,18 @@
                                                     data-warranty="{{ $type['warranty'] }}"
                                                     {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
                                                     {{ $type['type'] }}
-                                                    ({{ $type['warranty'] }})
+                                                    {{-- ({{ $type['warranty'] }}) --}}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <input type="hidden" name="warranty_years[{{ $index }}]"
                                         class="warranty_hidden" value="{{ $product->warranty_years ?? '' }}">
-                                </div>
 
-                                {{-- Mikasa Floors --}}
-                            @elseif ($product->product_type == 1)
-                                <div class="row mb-2">
-                                    <div class="col-md-12">
+
+                                    {{-- Mikasa Floors --}}
+                                @elseif ($product->product_type == 1)
+                                    <div class="col-md-6">
                                         <label class="form-label">Product Name</label>
                                         <select class="form-control product_name_select"
                                             name="product_name[{{ $index }}]">
@@ -144,28 +144,28 @@
                                                     data-warranty="{{ $type['warranty'] }}"
                                                     {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
                                                     {{ $type['type'] }}
-                                                    ({{ $type['warranty'] }})
+                                                    {{-- ({{ $type['warranty'] }}) --}}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <input type="hidden" name="warranty_years[{{ $index }}]"
                                         class="warranty_hidden" value="{{ $product->warranty_years ?? '' }}">
-                                </div>
 
-                                {{-- Fixed warranty types --}}
-                            @elseif(in_array($product->product_type, [4, 2, 6, 5]))
-                                @php
-                                    $fixedWarranties = [
-                                        4 => '12 yrs',
-                                        2 => '5 yrs',
-                                        6 => '10 yrs',
-                                        5 => '10 yrs',
-                                    ];
-                                    $fixedWarranty = $fixedWarranties[$product->product_type] ?? '';
-                                @endphp
-                                <div class="row mb-2">
-                                    <div class="col-md-12">
+
+                                    {{-- Fixed warranty types --}}
+                                @elseif(in_array($product->product_type, [4, 2, 6, 5]))
+                                    @php
+                                        $fixedWarranties = [
+                                            4 => '12 yrs',
+                                            2 => '5 yrs',
+                                            6 => '10 yrs',
+                                            5 => '10 yrs',
+                                        ];
+                                        $fixedWarranty = $fixedWarranties[$product->product_type] ?? '';
+                                    @endphp
+
+                                    <div class="col-md-6">
                                         <label class="form-label">Product Name</label>
                                         <input type="text" class="form-control product_name_input"
                                             name="product_name[{{ $index }}]"
@@ -173,10 +173,16 @@
                                     </div>
                                     <input type="hidden" name="warranty_years[{{ $index }}]"
                                         value="{{ $fixedWarranty }}" class="warranty_hidden">
+                                @endif
+
+
+                                <div class="col-md-6 {{ $product->product_type == 4 ? 'd-none' : '' }}">
+                                    <label class="form-label">Invoice Date</label>
+                                    <input type="date" class="form-control invoice_date"
+                                        value="{{ $product->invoice_date }}">
                                 </div>
-                            @endif
 
-
+                            </div>
 
 
 
@@ -184,18 +190,14 @@
 
 
                             {{-- New Fields --}}
-                            <div class="row mb-2">
+                            <div class="row mb-2" style="display: none">
                                 <div class="col-md-6">
                                     <label class="form-label">Branch Name</label>
                                     <input type="text" class="form-control branch_name"
                                         value="{{ $product->branch_name }}">
                                 </div>
 
-                                <div class="col-md-6 {{ $product->product_type == 4 ? 'd-none' : '' }}">
-                                    <label class="form-label">Invoice Date</label>
-                                    <input type="date" class="form-control invoice_date"
-                                        value="{{ $product->invoice_date }}">
-                                </div>
+
                             </div>
 
                             <div class="row mb-2">
@@ -249,7 +251,9 @@
 
                             {{-- Error + Success messages --}}
                             <div class="error-message text-danger mt-2 d-none"></div>
-                            <div class="text-success save-message d-none">Saved!...</div>
+                            {{-- <div class="text-success save-message d-none">Saved!...</div> --}}
+
+
 
                             <div class="text-end">
                                 <button type="button" class="btn btn-success btn-sm save-product-btn"

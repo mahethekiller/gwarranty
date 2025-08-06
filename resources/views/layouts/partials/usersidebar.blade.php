@@ -34,7 +34,7 @@
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('user.warranty.certificate') }}" class="pc-link">
+                        <a href="{{ route('user.warranty.certificates') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/download.png') }}" /></span>
                             <span class="pc-mtext">Download Certificates</span>
                         </a>

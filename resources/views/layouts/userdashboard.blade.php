@@ -201,6 +201,7 @@
     <script>
         var baseurl = "{{ url('/') }}";
         var adminurl = "{{ url('/admin') }}";
+        var userurl = "{{ url('/user') }}";
     </script>
 
     {{-- <script defer src="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/js/coreui.bundle.min.js"></script> --}}

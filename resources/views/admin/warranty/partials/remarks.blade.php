@@ -10,6 +10,9 @@
                 <p>
                     <strong>{{ optional($log->user)->name ?? 'System' }}</strong>
                     updated the <strong>{{ $log->field }}</strong>
+
+
+                    in <strong>{{ $log->product->name ?? 'N/A' }}</strong>
                     from <em>"{{ $log->old_value }}"</em> to <em>"{{ $log->new_value }}"</em>
                     on <strong>{{ $log->created_at->format('d M Y, h:i A') }}</strong>.
                 </p>

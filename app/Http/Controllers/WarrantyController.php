@@ -50,25 +50,25 @@ class WarrantyController extends Controller
     {
 
         $messages = [
-            'dealer_name.required' => 'The dealer name is required.',
-            'dealer_name.max'      => 'The dealer name must not be greater than 255 characters.',
-            'dealer_city.required' => 'The dealer city is required.',
-            'dealer_city.max'      => 'The dealer city must not be greater than 255 characters.',
+            'dealer_name.required'            => 'The dealer name is required.',
+            'dealer_name.max'                 => 'The dealer name must not be greater than 255 characters.',
+            'dealer_city.required'            => 'The dealer city is required.',
+            'dealer_city.max'                 => 'The dealer city must not be greater than 255 characters.',
             // 'place_of_purchase.required' => 'The place of purchase is required.',
             // 'place_of_purchase.max'      => 'The place of purchase must not be greater than 255 characters.',
-            'invoice_number.required' => 'The invoice number is required.',
-            'invoice_number.max'      => 'The invoice number must not be greater than 255 characters.',
-            'upload_invoice.required' => 'An invoice file is required.',
-            'upload_invoice.mimes'    => 'Invoice file must be an image (jpg, png), PDF, DOC or DOCX.',
-            'upload_invoice.max'      => 'Invoice file must not be greater than 10MB.',
-            'dealer_state.required'  => 'The dealer state is required.',
-            'dealer_state.max'       => 'The dealer state must not be greater than 255 characters.',
-            'product_type.*.required' => 'The product type is required.',
-            'product_type.*.exists'   => 'The product type does not exist.',
-            'qty_purchased.*.required' => 'The quantity purchased is required.',
-            'qty_purchased.*.min'      => 'The quantity purchased must be at least 1.',
-            'application.*.nullable'  => 'The application is nullable.',
-            'application.*.string'    => 'The application must be a string.',
+            'invoice_number.required'         => 'The invoice number is required.',
+            'invoice_number.max'              => 'The invoice number must not be greater than 255 characters.',
+            'upload_invoice.required'         => 'An invoice file is required.',
+            'upload_invoice.mimes'            => 'Invoice file must be an image (jpg, png), PDF, DOC or DOCX.',
+            'upload_invoice.max'              => 'Invoice file must not be greater than 10MB.',
+            'dealer_state.required'           => 'The dealer state is required.',
+            'dealer_state.max'                => 'The dealer state must not be greater than 255 characters.',
+            'product_type.*.required'         => 'The product type is required.',
+            'product_type.*.exists'           => 'The product type does not exist.',
+            'qty_purchased.*.required'        => 'The quantity purchased is required.',
+            'qty_purchased.*.min'             => 'The quantity purchased must be at least 1.',
+            'application.*.nullable'          => 'The application is nullable.',
+            'application.*.string'            => 'The application must be a string.',
             'handover_certificate.*.nullable' => 'The handover certificate is nullable.',
             'handover_certificate.*.mimes'    => 'Handover certificate file must be an image (jpg, png), PDF, DOC or DOCX.',
             'handover_certificate.*.max'      => 'Handover certificate file must not be greater than 10MB.',
@@ -229,10 +229,10 @@ class WarrantyController extends Controller
             }
 
             // Update fields
-            $product->product_type     = $productTypes[$index];
-            $product->qty_purchased    = $quantities[$index];
-            $product->application_type = $applications[$index] ?? null;
-            $product->branch_admin_status   = 'pending';
+            $product->product_type        = $productTypes[$index];
+            $product->qty_purchased       = $quantities[$index];
+            $product->application_type    = $applications[$index] ?? null;
+            $product->branch_admin_status = 'pending';
 
             // Update handover file only if a new one is uploaded
             if (isset($handoverCertificates[$index])) {
@@ -255,4 +255,53 @@ class WarrantyController extends Controller
     {
         // Logic to delete a specific warranty
     }
+
+    // List all certificates for a specific warranty.
+    public function certificates()
+    {
+        // Logic to list certificates
+
+        $userId     = Auth::id();
+        $warranties = WarrantyRegistration::with(['products.product'])
+            ->where('user_id', $userId)
+            ->paginate(10);
+        $productNames = Product::pluck('name', 'id'); // returns [id => name]
+
+        return view('warranty.certificate',
+            [
+                "pageTitle"       => "Download Certificates",
+                "pageDescription" => "Download Certificates",
+                "pageScript"      => "warranty",
+                "warranties"      => $warranties,
+                "productNames"    => $productNames,
+            ]
+        );
+
+    }
+
+// Download a specific certificate.
+    public function downloadCertificate($warrantyProductId)
+    {
+        $userId   = Auth::id();
+        $warrantyProduct=WarrantyProduct::with('product', 'registration')->where('id', $warrantyProductId)->first();
+        // $warranty = WarrantyRegistration::where('user_id', $userId)
+        //     ->whereHas('products', function ($query) use ($productType) {
+        //         $query->where('product_type', $productType)
+        //             ->where('branch_admin_status', 'approved')
+        //             ->where('country_admin_status', 'approved');
+        //     })
+        //     ->first();
+
+        return view('warranty.download',
+            [
+                "pageTitle"       => "Download Certificate",
+                "pageDescription" => "Download Certificates",
+                "pageScript"      => "warranty",
+                // "warranty"      => $warranty,
+                "warrantyProduct"      => $warrantyProduct,
+            ]
+        );
+
+    }
+
 }

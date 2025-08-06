@@ -268,6 +268,66 @@ $(document).ready(function () {
         // Show modal
         $("#productsModal").modal("show");
     });
+
+
+    $(document).on("click", ".view-products-btn-download", function () {
+        let products = $(this).data("products");
+        let title = $(this).data("title");
+
+        // Set modal title
+        $("#productsModalLabel").text(title);
+
+        // Build table rows
+        let rows = "";
+        if (products.length > 0) {
+            products.forEach(function (product) {
+                rows += `
+                    <tr>
+                        <td>${product.product?.name || "N/A"}</td>
+
+                        <td>
+                            <span class="badge rounded-pill ${
+                                product.branch_admin_status === "modify"
+                                    ? "bg-danger"
+                                    : product.branch_admin_status === "approved" &&
+                                    product.country_admin_status === "approved"
+                                    ? "bg-success"
+                                    : "bg-warning"
+                            } text-white">
+                                ${
+                                    product.branch_admin_status === "modify"
+                                        ? "MODIFY"
+                                        : product.branch_admin_status === "approved" &&
+                                        product.country_admin_status === "approved"
+                                        ? "APPROVED"
+                                        : "PENDING"
+                                }
+                            </span>
+                        </td>
+                        <td>
+                        ${
+                                product.branch_admin_status === "approved" &&
+                                product.country_admin_status === "approved"
+                                    ? `<a href="${userurl}/warranty/certificate/download/${product.id}" target="_blank" class="download-icon-red ">
+                                     <i class="fa fa-download"></i>&nbsp;Download
+                                   </a>`
+                                    : ""
+                            }
+                        </td>
+
+                    </tr>
+                `;
+            });
+        } else {
+            rows = `<tr><td colspan="4" class="text-center">No Products Found</td></tr>`;
+        }
+
+        // Insert rows into modal
+        $("#productsModalBody").html(rows);
+
+        // Show modal
+        $("#productsModal").modal("show");
+    });
 });
 
 $(document).ready(function () {

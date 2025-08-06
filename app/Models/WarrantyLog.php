@@ -11,6 +11,7 @@ class WarrantyLog extends Model
         'old_value',
         'new_value',
         'updated_by',
+        'product_type',
     ];
 
     public function warranty()
@@ -26,5 +27,10 @@ class WarrantyLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_type', 'id')->select('id', 'name');
     }
 }

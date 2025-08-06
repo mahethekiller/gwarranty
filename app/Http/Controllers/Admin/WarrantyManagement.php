@@ -210,7 +210,7 @@ class WarrantyManagement extends Controller
             'surface_treatment_type'    => 'nullable|string|max:255',
             'product_thickness'         => 'nullable|string|max:255',
             'project_location'          => 'nullable|string|max:255',
-            'branch_name'               => 'nullable|string|max:255',
+            // 'branch_name'               => 'nullable|string|max:255',
         ];
 
         if (Auth::user()->hasRole('country_admin')) {
@@ -231,7 +231,7 @@ class WarrantyManagement extends Controller
             'remarks'                   => $validated['product_remarks'], // renamed from product_remarks to remarks
             'product_name'              => $validated['product_name'],
             'warranty_years'            => $validated['warranty_years'],
-            'branch_name'               => $validated['branch_name'],
+            // 'branch_name'               => $validated['branch_name'],
             // 'date_of_issuance' => $validated['date_of_issuance'],
             'invoice_date'              => $validated['invoice_date'],
             'execution_agency'          => $validated['execution_agency'],
@@ -258,6 +258,7 @@ class WarrantyManagement extends Controller
                     'old_value'   => $oldValue,
                     'new_value'   => $newValue,
                     'updated_by'  => Auth::id(),
+                    'product_type' => $product->product_type
                 ]);
 
                 $product->$field = $newValue;
@@ -305,6 +306,12 @@ class WarrantyManagement extends Controller
 
             $product->country_admin_status  = $validated['country_admin_status'];
             $product->country_admin_remarks = $validated['country_admin_remarks'] ?? '';
+
+            if ($validated['country_admin_status'] === 'approved') {
+                $product->date_of_issuance = now(); // Set issue date to current date
+            }
+
+
             $product->save();
         }
 
