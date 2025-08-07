@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mukesh">
     <title>Greenlam Clads – WARRANTY CARD</title>
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!---<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">-->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
 
     <style>

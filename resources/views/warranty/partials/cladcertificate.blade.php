@@ -5,11 +5,17 @@
 
     .warranty-card {
         background: #FFFFFF;
-        box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+        border:solid 1px #000;
         border-radius: 20px;
         margin-top: 40px;
-        padding: 30px;
+        padding: 10px 20px;
         margin-bottom: 40px;
+        max-width: 700px;
+  margin: 0px auto;
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
     }
 
     .warranty-card h2 {
@@ -35,7 +41,7 @@
     }
 
     .foot-bg {
-        background: #efefef;
+        background-color: #efefef !important;
         border-radius: 20px;
         padding: 20px;
         text-align: center;
@@ -45,18 +51,77 @@
         font-size: 45px;
         color: #116031;
     }
+    
+    #printButton{background: #333 !important;
+  font-size: 20px;
+  color: #fff !important;
+  border: solid 1px #333;
+  padding: 5px 20px;
+  border-radius: 5px;
+  margin: 0px auto;
+    margin-top: 0px;
+  text-align: center;
+  display: flex;
+  margin-top: 40px;}
+  
+  
+  #printButton:hover{
+      background: transparent !important;
+  font-size: 20px;
+  color: #333 !important;
+  border: solid 1px #333;
+  padding: 5px 20px;
+  border-radius: 5px;
+  margin: 0px auto;
+    margin-top: 0px;
+  text-align: center;
+  display: flex;
+  margin-top: 40px;
+  }
+  
+  
+  
+  table {
+      width: 96%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #000;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    /* PRINT STYLE FIX */
+    @media print {
+      table, th, td {
+        border: 1px solid black !important;
+      }
+
+      th, td {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  
+    
 </style>
 {{-- <div class="container"> --}}
 <div class="warranty-card">
     <div class="row">
-        <div class="col-md-4 text-left">
-            <img src="{{ asset('assets/images/greenlam-logo.png') }}" />
-        </div>
-        <div class="col-md-4 d-flex align-items-center justify-content-center">
-            <h1>WARRANTY CARD</h1>
-        </div>
-        <div class="col-md-4 d-flex align-items-center justify-content-end"><img
-                src="{{ asset('assets/images/Greenlam-clads-logo.jpg') }}" /></div>
+        <table border="0" cellpadding="8" cellspacing="0" style="border:0px;">
+<tbody>
+<tr style="border:0px;">
+<td width="33%" align="center" style="border:0px; text-align: center;"><img src="{{ asset('assets/images/greenlam-logo.png') }}" /></td>
+<td width="33%" align="center" style="margin-bottom:0px; border:0px; margin-top: 0px;"><h1 style="margin-bottom:0px; text-align: center; margin-top: 0px;">WARRANTY CARD</h1></td>
+<td width="33%" align="center" style="border:0px; text-align: center;"><img src="{{ asset('assets/images/Greenlam-clads-logo.jpg') }}" /></td>
+</tr>
+</tbody>
+</table>
         <div class="section">
             <h2 class="mt-5 wish-color">Congratulations!</h2>
             <p>On making a superb choice for superb exteriors.</p>
@@ -129,15 +194,15 @@
                 of a building in India, strictly as per the
                 instructions for installation as provided with the Product</p>
         </div>
-
+<br><br>
         <div class="col-lg-6">
             <div class="section form-section">
                 <h2>Purchase Details</h2>
-                <div class="col-lg-12">
-                    <table class="table table-bordered">
+                <div class="col-lg-6" style="50%;">
+                    <table>
                         <tbody>
                             <tr>
-                                <th style="width: 30%;">Invoice No.:</th>
+                                <th>Invoice No.:</th>
                                 <td>{{ $warrantyProduct->registration->invoice_number }}</td>
                             </tr>
                             <tr>
@@ -163,31 +228,32 @@
                 </div>
             </div>
         </div>
+      <br><br>
         <div class="col-lg-6">
             <div class="section form-section">
                 <h2>Customer Details</h2>
-                <div class="col-lg-12">
-                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; font-family: Arial, sans-serif; font-size: 14px;">
+                <div class="col-lg-6" style="50%;">
+                    <table>
     <tbody>
         <tr>
-            <th style="text-align: left; padding: 8px; width: 30%; background-color: #f2f2f2; border: 1px solid #ddd;">Name:</th>
-            <td style="padding: 8px; border: 1px solid #ddd;">{{ $warrantyProduct->registration->user->name }}</td>
+            <th>Name:</th>
+            <td>{{ $warrantyProduct->registration->user->name }}</td>
         </tr>
         <tr>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2; border: 1px solid #ddd;">Address:</th>
-            <td style="padding: 8px; border: 1px solid #ddd;">{{ $warrantyProduct->registration->user->address }}</td>
+            <th>Address:</th>
+            <td>{{ $warrantyProduct->registration->user->address }}</td>
         </tr>
         <tr>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2; border: 1px solid #ddd;">Phone:</th>
-            <td style="padding: 8px; border: 1px solid #ddd;">{{ $warrantyProduct->registration->user->phone_number }}</td>
+            <th>Phone:</th>
+            <td>{{ $warrantyProduct->registration->user->phone_number }}</td>
         </tr>
         <tr>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2; border: 1px solid #ddd;">Email:</th>
-            <td style="padding: 8px; border: 1px solid #ddd;">{{ $warrantyProduct->registration->user->email }}</td>
+            <th>Email:</th>
+            <td>{{ $warrantyProduct->registration->user->email }}</td>
         </tr>
         <tr>
-            <th style="text-align: left; padding: 8px; background-color: #f2f2f2; border: 1px solid #ddd;">Product Name:</th>
-            <td style="padding: 8px; border: 1px solid #ddd;">{{ $warrantyProduct->product->name }}</td>
+            <th>Product Name:</th>
+            <td>{{ $warrantyProduct->product->name }}</td>
         </tr>
     </tbody>
 </table>
@@ -195,9 +261,7 @@
                 </div>
             </div>
         </div>
-
-
-
+        
         <div class="section">
             <h2>Exclusion of Warranty</h2>
             <p>Further, the warranty being provided by GREENLAM herein does not apply to the instances, including but
@@ -288,8 +352,8 @@
                 venue of arbitration shall be at New Delhi. The courts of Delhi and no other shall have exclusive
                 jurisdiction over the matter.</p>
         </div>
-
-        <footer class="foot-bg">
+<br><br><br><br>
+        <footer class="foot-bg" style="background: #efefef !important;">
             <p><strong>Greenlam Industries Limited</strong><br>
                 2nd Floor, West Wing, Worldmark 1, Aerocity, IGI Airport Hospitality District, New Delhi – 110037,
                 India<br>
