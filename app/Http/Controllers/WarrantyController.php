@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\WarrantyProduct;
 use App\Models\WarrantyRegistration;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -282,8 +283,8 @@ class WarrantyController extends Controller
 // Download a specific certificate.
     public function downloadCertificate($warrantyProductId)
     {
-        $userId   = Auth::id();
-        $warrantyProduct=WarrantyProduct::with('product', 'registration')->where('id', $warrantyProductId)->first();
+        $userId          = Auth::id();
+        $warrantyProduct = WarrantyProduct::with(['product', 'registration', 'registration.user'])->where('id', $warrantyProductId)->first();
         // $warranty = WarrantyRegistration::where('user_id', $userId)
         //     ->whereHas('products', function ($query) use ($productType) {
         //         $query->where('product_type', $productType)
@@ -298,10 +299,30 @@ class WarrantyController extends Controller
                 "pageDescription" => "Download Certificates",
                 "pageScript"      => "warranty",
                 // "warranty"      => $warranty,
-                "warrantyProduct"      => $warrantyProduct,
+                "warrantyProduct" => $warrantyProduct,
             ]
         );
 
     }
+
+    // public function generatePDF($warrantyProductId)
+    // {
+    //     $warrantyProduct = WarrantyProduct::with(['product', 'registration', 'registration.user'])->where('id', $warrantyProductId)->first();
+    //     $logoPath        = public_path('assets/images/greenlam-logo.png');
+    //     $logoBase64      = base64_encode(file_get_contents($logoPath));
+    //     $logo            = 'data:image/png;base64,' . $logoBase64;
+
+    //     $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
+    //     $greenlamCladsLogoBase64 = base64_encode(file_get_contents($greenlamCladsLogoPath));
+    //     $greenlamCladsLogo = 'data:image/jpg;base64,' . $greenlamCladsLogoBase64;
+
+    //     $data = [
+    //         'warrantyProduct' => $warrantyProduct,
+    //     ];
+
+    //     $pdf = Pdf::loadView('warranty.download', compact('warrantyProduct', 'logo', 'greenlamCladsLogo'))->setPaper('a4', 'landscape');
+
+    //     return $pdf->download($warrantyProduct->product->name.'-Warranty-document.pdf');
+    // }
 
 }

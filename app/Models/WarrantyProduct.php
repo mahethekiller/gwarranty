@@ -15,8 +15,17 @@ class WarrantyProduct extends Model
         'application_type',
         'handover_certificate',
         'remarks',
+
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'date_of_issuance' => 'date',
+    ];
     /**
      * A warranty product belongs to a registration.
      */
