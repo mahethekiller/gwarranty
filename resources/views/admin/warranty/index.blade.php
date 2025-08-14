@@ -15,8 +15,9 @@
                                             <tr>
                                                 <th>S. No.</th>
                                                 <th>Submitted Date</th>
-                                                <th>Dealer</th>
-                                                <th>Dealer State & City</th>
+                                                <th>Dealer Name</th>
+                                                <th>Dealer State </th>
+                                                <th>Dealer City </th>
                                                 <th>Invoice Number</th>
                                                 <th>Invoice</th>
                                                 {{-- <th>Remarks</th> --}}
@@ -31,7 +32,8 @@
                                                     <td>{{ $key + 1 }}</td>
                                                     <td>{{ $warranty->created_at->format('d-m-Y') }}</td>
                                                     <td>{{ $warranty->dealer_name ?? 'N/A' }}</td>
-                                                    <td>{{ $warranty->dealer_state ?? '--' }} > {{ $warranty->dealer_city ?? '--' }}</td>
+                                                    <td>{{ $warranty->dealer_state ?? '--' }} </td>
+                                                    <td>{{ $warranty->dealer_city ?? '--' }}</td>
                                                     <td>{{ $warranty->invoice_number }}</td>
                                                     <td>
                                                         @if ($warranty->upload_invoice)

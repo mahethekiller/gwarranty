@@ -24,6 +24,17 @@ $(document).on("click", '[data-bs-target="#editWarrantyModel"]', function (e) {
 });
 
 $(document).ready(function () {
+    flatpickr("#datepickercustom", {
+        dateFormat: "Y-m-d",
+        // minDate: "2022-07-30",
+        // defaultDate: new Date($("input[name='created_at']").val()),
+        disable: [
+            function (date) {
+                return date > new Date($("input[name='created_at']").val());
+            },
+        ],
+    });
+
     // Initialize DataTable
     $("#warrantyTable").DataTable({
         order: [[0, "asc"]],
@@ -58,17 +69,31 @@ $(document).ready(function () {
                         <td>${product.remarks || "N/A"}</td>
                         <td>
                             <span class="badge rounded-pill ${
-                                product.branch_admin_status === 'pending' ?
-                                'bg-warning' : product.branch_admin_status === 'rejected' ?
-                                'bg-danger' : product.branch_admin_status === 'approved' ?
-                                'bg-success' : 'bg-secondary'} text-white">${product.branch_admin_status?.toUpperCase() || 'N/A'}</span>
+                                product.branch_admin_status === "pending"
+                                    ? "bg-warning"
+                                    : product.branch_admin_status === "rejected"
+                                    ? "bg-danger"
+                                    : product.branch_admin_status === "approved"
+                                    ? "bg-success"
+                                    : "bg-secondary"
+                            } text-white">${
+                    product.branch_admin_status?.toUpperCase() || "N/A"
+                }</span>
                         </td>
                         <td>
                             <span class="badge rounded-pill ${
-                                product.country_admin_status === 'pending' ?
-                                'bg-warning' : product.country_admin_status === 'rejected' ?
-                                'bg-danger' : product.country_admin_status === 'approved' ?
-                                'bg-success' : 'bg-secondary'} text-white">${product.country_admin_status?.toUpperCase() || 'N/A'}</span>
+                                product.country_admin_status === "pending"
+                                    ? "bg-warning"
+                                    : product.country_admin_status ===
+                                      "rejected"
+                                    ? "bg-danger"
+                                    : product.country_admin_status ===
+                                      "approved"
+                                    ? "bg-success"
+                                    : "bg-secondary"
+                            } text-white">${
+                    product.country_admin_status?.toUpperCase() || "N/A"
+                }</span>
                         </td>
                     </tr>
                 `;
@@ -120,7 +145,8 @@ $(document).ready(function () {
                 project_location: row.find(".project_location").val(),
             },
             success: function (response) {
-                row.closest("tr").find(".save-message")
+                row.closest("tr")
+                    .find(".save-message")
                     .removeClass("d-none")
                     .text("Updated!")
                     .fadeIn()
@@ -129,7 +155,6 @@ $(document).ready(function () {
 
                 // Close the collapseRow after save
                 row.closest(".collapse").collapse("hide");
-
             },
             error: function (xhr) {
                 const errorDiv = row.find(".error-message");

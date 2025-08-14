@@ -131,23 +131,27 @@
                                 @elseif ($product->product_type == 1)
                                     <div class="col-md-6">
                                         <label class="form-label">Product Name</label>
-                                        <select class="form-control product_name_select"
-                                            name="product_name[{{ $index }}]">
-                                            <option value="">Select Floor Type</option>
-                                            @php
-                                                $types = $product->product->product_types
-                                                    ? json_decode($product->product->product_types, true)
-                                                    : [];
-                                            @endphp
-                                            @foreach ($types as $type)
-                                                <option value="{{ $type['type'] }}"
-                                                    data-warranty="{{ $type['warranty'] }}"
-                                                    {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
-                                                    {{ $type['type'] }}
-                                                    {{-- ({{ $type['warranty'] }}) --}}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        @php
+    $types = $product->product->product_types
+        ? json_decode($product->product->product_types, true)
+        : [];
+
+    // Filter by usage matching application_type
+    $filteredTypes = array_filter($types, function ($type) use ($product) {
+        return isset($type['usage']) && $type['usage'] === $product->application_type;
+    });
+@endphp
+
+<select class="form-control product_name_select" name="product_name[{{ $index }}]">
+    <option value="">Select Product Type</option>
+    @foreach ($filteredTypes as $type)
+        <option value="{{ $type['type'] }}"
+            data-warranty="{{ $type['warranty'] }}"
+            {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
+            {{ $type['type'] }}
+        </option>
+    @endforeach
+</select>
                                     </div>
                                     <input type="hidden" name="warranty_years[{{ $index }}]"
                                         class="warranty_hidden" value="{{ $product->warranty_years ?? '' }}">
@@ -178,8 +182,9 @@
 
                                 <div class="col-md-6 {{ $product->product_type == 4 ? 'd-none' : '' }}">
                                     <label class="form-label">Invoice Date</label>
-                                    <input type="date" class="form-control invoice_date"
-                                        value="{{ $product->invoice_date }}">
+                                    <input type="text" id="datepickercustom" class="form-control invoice_date"
+                                        value="{{ $product->invoice_date }}"
+                                        >
                                 </div>
 
                             </div>
@@ -209,9 +214,14 @@
                                 </div>
                                 <div
                                     class="col-md-6 {{ $product->product_type == 4 || $product->product_type == 2 || $product->product_type == 5 ? '' : 'd-none' }} ">
-                                    <label class="form-label">Date of Handover
-                                        Certificate</label>
-                                    <input type="date" class="form-control handover_certificate_date"
+                                    <label class="form-label">Handover
+                                        Certificate Date
+                                    <a class="download-icon-red" href="{{ asset('storage/' . $product->handover_certificate) }}" target="_blank">
+                                        View Certificate
+                                    </a>
+
+                                    </label>
+                                    <input type="text" id="datepicker" class="form-control handover_certificate_date"
                                         value="{{ $product->handover_certificate_date }}">
                                 </div>
                             </div>

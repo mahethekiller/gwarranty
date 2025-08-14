@@ -71,6 +71,8 @@
 
         @if ($warrantyProduct->product_type == 4)
             @include('warranty.partials.cladcertificate')
+        @elseif ($warrantyProduct->product_type == 6)
+            @include('warranty.partials.sturdocertificate')
         @elseif ($warrantyProduct->product_type == 2)
             {{-- @include('warranty.partials.cementcertificate') --}}
         @endif

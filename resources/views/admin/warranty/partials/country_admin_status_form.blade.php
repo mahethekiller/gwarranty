@@ -35,7 +35,7 @@
 
                 <div class="col-md-12">
                     <label for="remarks" class="col-md-4 col-form-label text-md-right">Remarks</label>
-                    <textarea class="form-control" id="country_admin_remarks" name="country_admin_remarks" rows="3">{{ old('country_admin_remarks', $warrantyProducts[0]->country_admin_remarks) }}</textarea>
+                    <textarea class="form-control" id="country_admin_remarks" name="country_admin_remarks" rows="3"></textarea>
                 </div>
             </div>
 

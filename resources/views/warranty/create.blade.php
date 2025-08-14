@@ -11,8 +11,7 @@
     <div class="col-md-12 col-xl-12">
         <div class="card">
             <div class="card-body">
-                <label for="builder_contractor" class="form-label custom-form-label">Have you bought the product by
-                    yourself or from any builder/ contractor?</label>
+                <label for="builder_contractor" class="form-label custom-form-label">Select Yes if you bought the product yourself. Select No if you purchased it through a builder or contractor.</label>
                 <div class="form-group row">
                     <div class="col-lg-12">
                         <div class="form-check form-check-inline">
@@ -130,7 +129,7 @@
                                     </td>
                                     <td>
                                         <label for="qty_purchased">Quantity Purchased</label>
-                                        <input class="form-control" id="qty_purchased" type="text"
+                                        <input class="form-control qty_purchased" id="qty_purchased" type="text"
                                             name="qty_purchased[]" placeholder="Enter Qty Purchased">
                                         <span class="text-danger" id="error-qty_purchased" role="alert">
                                             <strong></strong>

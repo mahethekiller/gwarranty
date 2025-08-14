@@ -31,6 +31,11 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+
 
     <link rel="stylesheet" href="{{ asset('assets/dashboard/style.css') }}" id="main-style-link">
 
@@ -53,7 +58,7 @@
         @include('layouts.partials.adminsidebar')
     @elseif(Auth::user()->hasRole('user'))
         @include('layouts.partials.usersidebar')
-    {{-- @elseif(Auth::user()->hasRole('branch_admin'))
+        {{-- @elseif(Auth::user()->hasRole('branch_admin'))
         @include('layouts.partials.editorsidebar') --}}
     @endif
     <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
@@ -80,7 +85,8 @@
                     <li class="dropdown pc-h-item header-user-profile">
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-                            <img src="{{ asset('assets/images/avatar-icon.png') }}" alt="user-image" class="user-avtar">
+                            <img src="{{ asset('assets/images/avatar-icon.png') }}" alt="user-image"
+                                class="user-avtar">
                             <span>{{ Auth::user()->name }}</span>&nbsp;
                             <i aria-hidden="true" class="fa fa-angle-down"></i>
 
@@ -185,6 +191,7 @@
     <script src="{{ asset('assets/dashboard/feather.min.js') }}"></script>
 
 
+
     <!-- Bootstrap Select compatible with Bootstrap 5 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
     <script>
@@ -192,6 +199,12 @@
             $('.selectpicker').selectpicker({
                 width: '100%'
             });
+        });
+    </script>
+
+    <script>
+        flatpickr("#datepicker", {
+            dateFormat: "Y-m-d"
         });
     </script>
 

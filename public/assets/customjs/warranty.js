@@ -38,14 +38,14 @@ $(document).ready(function () {
         let $row = $(this).closest("tr");
 
         // Show/Hide Upload Handover Certificate div
-        if (selectedValue == 2) {
+        if (selectedValue == 2 || selectedValue == 4 || selectedValue == 5) {
             $row.find(".handover-wrapper").show();
         } else {
             $row.find(".handover-wrapper").hide();
         }
 
         // Show/Hide Application Type div
-        if (selectedValue == 4 || selectedValue == 6) {
+        if (selectedValue == 4 ) {
             $row.find(".application-wrapper").hide();
         } else {
             $row.find(".application-wrapper").show();
@@ -109,8 +109,11 @@ $("#warrantyForm").on("submit", function (e) {
     });
 });
 
-$("#qty_purchased").on("input", function (e) {
+$(document).on("input", "#qty_purchased, .qty_purchased", function (e) {
     this.value = this.value.replace(/[^0-9]/g, "");
+    if (this.value == 0) {
+        this.value = "";
+    }
 });
 
 $("#place_of_purchase").on("input", function (e) {

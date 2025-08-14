@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class WarrantyController extends Controller
 {
@@ -73,9 +74,13 @@ class WarrantyController extends Controller
             'handover_certificate.*.nullable' => 'The handover certificate is nullable.',
             'handover_certificate.*.mimes'    => 'Handover certificate file must be an image (jpg, png), PDF, DOC or DOCX.',
             'handover_certificate.*.max'      => 'Handover certificate file must not be greater than 10MB.',
+            'handover_certificate.*.required' => 'Handover certificate is required.',
+            'handover_certificate.*.mimes'    => 'Allowed file types: jpg, png, pdf, doc, docx',
+            'handover_certificate.*.max'      => 'Max file size is 2MB',
+            'application.*.required'          => 'Application type is required',
         ];
 
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'dealer_name'            => 'required|string|max:255',
             'dealer_city'            => 'required|string|max:255',
             // 'place_of_purchase'      => 'required|string|max:255',
@@ -89,6 +94,28 @@ class WarrantyController extends Controller
             'dealer_state'           => 'required|string|max:255',
 
         ], $messages);
+
+        // Conditional rule for product type 2 or 4
+        foreach ($request->product_type as $key => $productType) {
+            if (in_array($productType, [2, 4, 5])) {
+                $validator->sometimes("handover_certificate.$key", 'required', function () {return true;});
+            }
+        }
+
+        foreach ($request->product_type as $key => $productType) {
+            if (! in_array($productType, [4, 6])) {
+                $validator->sometimes("application.$key", 'required', fn() => true);
+            }
+        }
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         // Save dealer details
         $registration               = new WarrantyRegistration();
@@ -137,7 +164,8 @@ class WarrantyController extends Controller
             $product->save();
         }
 
-        return response()->json(['success' => true, 'message' => 'Warranty registered successfully']);
+        return response()->json(['success' => true, 'message' => 'Thanks for submitting your warranty request, upon validation,
+        we will be sending warranty details in 3-5 business days.'], 200);
 
     }
 
@@ -293,36 +321,52 @@ class WarrantyController extends Controller
         //     })
         //     ->first();
 
+        $logoPath   = public_path('assets/images/greenlam-logo.png');
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+        $logo       = 'data:image/png;base64,' . $logoBase64;
+
+        $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
+        if ($warrantyProduct->product_type == 4) { //clads
+            $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
+        }else if($warrantyProduct->product_type == 6){ //sturdo
+            $greenlamCladsLogoPath = public_path('assets/images/greenlam-sturdo.jpg');
+        }
+
+        $greenlamCladsLogoBase64 = base64_encode(file_get_contents($greenlamCladsLogoPath));
+        $greenlamCladsLogo       = 'data:image/jpg;base64,' . $greenlamCladsLogoBase64;
+
         return view('warranty.download',
             [
-                "pageTitle"       => "Download Certificate",
-                "pageDescription" => "Download Certificates",
-                "pageScript"      => "warranty",
+                "pageTitle"         => "Download Certificate",
+                "pageDescription"   => "Download Certificates",
+                "pageScript"        => "warranty",
                 // "warranty"      => $warranty,
-                "warrantyProduct" => $warrantyProduct,
+                "warrantyProduct"   => $warrantyProduct,
+                "logo"              => $logo,
+                "greenlamCladsLogo" => $greenlamCladsLogo,
             ]
         );
 
     }
 
-    // public function generatePDF($warrantyProductId)
-    // {
-    //     $warrantyProduct = WarrantyProduct::with(['product', 'registration', 'registration.user'])->where('id', $warrantyProductId)->first();
-    //     $logoPath        = public_path('assets/images/greenlam-logo.png');
-    //     $logoBase64      = base64_encode(file_get_contents($logoPath));
-    //     $logo            = 'data:image/png;base64,' . $logoBase64;
+    public function generatePDF($warrantyProductId)
+    {
+        $warrantyProduct = WarrantyProduct::with(['product', 'registration', 'registration.user'])->where('id', $warrantyProductId)->first();
+        $logoPath        = public_path('assets/images/greenlam-logo.png');
+        $logoBase64      = base64_encode(file_get_contents($logoPath));
+        $logo            = 'data:image/png;base64,' . $logoBase64;
 
-    //     $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
-    //     $greenlamCladsLogoBase64 = base64_encode(file_get_contents($greenlamCladsLogoPath));
-    //     $greenlamCladsLogo = 'data:image/jpg;base64,' . $greenlamCladsLogoBase64;
+        $greenlamCladsLogoPath   = public_path('assets/images/Greenlam-clads-logo.jpg');
+        $greenlamCladsLogoBase64 = base64_encode(file_get_contents($greenlamCladsLogoPath));
+        $greenlamCladsLogo       = 'data:image/jpg;base64,' . $greenlamCladsLogoBase64;
 
-    //     $data = [
-    //         'warrantyProduct' => $warrantyProduct,
-    //     ];
+        $data = [
+            'warrantyProduct' => $warrantyProduct,
+        ];
 
-    //     $pdf = Pdf::loadView('warranty.download', compact('warrantyProduct', 'logo', 'greenlamCladsLogo'))->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('warranty.download', compact('warrantyProduct', 'logo', 'greenlamCladsLogo'));
 
-    //     return $pdf->download($warrantyProduct->product->name.'-Warranty-document.pdf');
-    // }
+        return $pdf->download($warrantyProduct->product->name . '-Warranty-document.pdf');
+    }
 
 }

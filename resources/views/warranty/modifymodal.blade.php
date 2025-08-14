@@ -16,8 +16,12 @@
                 <td>{{ $warranty->dealer_city }}</td>
                 <td>{{ $warranty->dealer_state }}</td>
             </tr>
+
         </tbody>
     </table>
+
+
+
     <div class="row">
 
         <div class="col-md-6 mb-6">
@@ -26,12 +30,13 @@
         </div>
 
         <div class="col-md-6 mb-6">
-            <label for="upload_invoice">Upload Invoice</label>
+            <label for="upload_invoice">Upload Invoice </label>
             <input type="file" class="form-control" name="upload_invoice">
             @if ($warranty->upload_invoice)
                 <a href="{{ asset('storage/' . $warranty->upload_invoice) }}" target="_blank"
                     class="download-icon-red">View Existing</a>
             @endif
+            <small class=" text-warning">Uploading a new will automatically replace your existing one.</small>
         </div>
     </div>
 
@@ -39,12 +44,20 @@
     <div id="editProducts">
         @foreach ($warranty->products as $index => $product)
             @if ($product->branch_admin_status == 'modify')
+
+
                 <input type="hidden" name="product_id[]" value="{{ $product->id }}">
 
                 <div class="border rounded p-3 mb-2">
                     <div class="row">
+                        <div class="col-md-12 p-3 mb-2">
+                            <strong class="text-danger">Remarks: {{ $product->remarks }}</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+
                         <div class="col-md-6">
-                            <label>Product Type {{ $product->product_status }}</label>
+                            <label>Product Type </label>
                             <select class="form-select" id="product_type" name="product_type[]">
                                 @foreach ($products as $p)
                                     <option value="{{ $p->id }}"
@@ -73,9 +86,10 @@
                             <label>Upload Handover Certificate</label>
                             <input type="file" class="form-control" name="handover_certificate[]">
                             @if ($product->handover_certificate)
-                                <a href="{{ asset('uploads/handover_certificates/' . $product->handover_certificate) }}"
+                                <a href="{{ asset('storage/' . $product->handover_certificate) }}"
                                     target="_blank" class="download-icon-red">View Existing</a>
                             @endif
+                             <small class=" text-warning">Uploading a new will automatically replace your existing one.</small>
                         </div>
                     </div>
                 </div>
@@ -97,14 +111,14 @@
         let $row = $(this).closest('.border'); // Each product is wrapped in .border
 
         // Show/Hide Upload Handover Certificate div
-        if (selectedValue == 2) {
+        if (selectedValue == 2 || selectedValue == 4 || selectedValue == 5) {
             $row.find('.handover-wrapper').show();
         } else {
             $row.find('.handover-wrapper').hide();
         }
 
         // Show/Hide Application Type div
-        if (selectedValue == 4 || selectedValue == 6) {
+        if (selectedValue == 4) {
             $row.find('.application-wrapper').hide();
         } else {
             $row.find('.application-wrapper').show();
@@ -118,14 +132,14 @@
             let $row = $(this).closest('.border');
 
             // Show/Hide Upload Handover Certificate div
-            if (selectedValue == 2) {
+            if (selectedValue == 2 || selectedValue == 4 || selectedValue == 5) {
                 $row.find('.handover-wrapper').show();
             } else {
                 $row.find('.handover-wrapper').hide();
             }
 
             // Show/Hide Application Type div
-            if (selectedValue == 4 || selectedValue == 6) {
+            if (selectedValue == 4 ) {
                 $row.find('.application-wrapper').hide();
             } else {
                 $row.find('.application-wrapper').show();
