@@ -32,11 +32,12 @@ return new class extends Migration
         // Mikasa Floors types and warranties
         DB::table('products')->where('name', 'Mikasa Floors')->update([
             'product_types' => json_encode([
-                ['type' => 'Atmos (10 mm)', 'warranty' => '10 yrs'],
-                ['type' => 'Pristine (15 mm)', 'warranty' => '30 yrs'],
-                ['type' => 'Atmos (10 mm)', 'warranty' => '3 yrs'],
-                ['type' => 'Pristine (15 mm)', 'warranty' => '5 yrs'],
-            ]),
+                ['type' => 'Atmos (10 mm)', 'warranty' => '10 yrs', 'usage' => 'Residential'],
+                ['type' => 'Pristine (15 mm)', 'warranty' => '30 yrs', 'usage' => 'Residential'],
+                ['type' => 'Atmos (10 mm)', 'warranty' => '3 yrs', 'usage' => 'Commercial'],
+                ['type' => 'Pristine (15 mm)', 'warranty' => '5 yrs', 'usage' => 'Commercial'],
+            ]
+            ),
         ]);
     }
 
