@@ -90,8 +90,10 @@
             @elseif ($warrantyProduct->product_name == 'Sapphire')
                 @include('warranty.partials.sapphire-certificate')
             @endif
+        @elseif ($warrantyProduct->product_type == 5)
+            @include('warranty.partials.NewMika-FXcertificate')
         @elseif ($warrantyProduct->product_type == 2)
-            {{-- @include('warranty.partials.cementcertificate') --}}
+            @include('warranty.partials.mikasadoorscertificate')
         @elseif ($warrantyProduct->product_type == 1)
             @if ($warrantyProduct->product_name == 'Atmos (10 mm)')
                 @include('warranty.partials.mikasaAtmos')
