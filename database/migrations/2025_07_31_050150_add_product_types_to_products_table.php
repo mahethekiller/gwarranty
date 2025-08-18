@@ -19,7 +19,7 @@ return new class extends Migration
         // Mikasa Ply types and warranties
         DB::table('products')->where('name', 'Mikasa Ply')->update([
             'product_types' => json_encode([
-                ['type' => 'Fire Guaardian', 'warranty' => '30 yrs'],
+                ['type' => 'Fire Guardian', 'warranty' => '30 yrs'],
                 ['type' => 'Marine Blue Blockboard', 'warranty' => '25 yrs'],
                 ['type' => 'Marine Blue', 'warranty' => '30 yrs'],
                 ['type' => 'Marine', 'warranty' => '25 yrs'],

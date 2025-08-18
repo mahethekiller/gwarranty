@@ -132,26 +132,28 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Product Name</label>
                                         @php
-    $types = $product->product->product_types
-        ? json_decode($product->product->product_types, true)
-        : [];
+                                            $types = $product->product->product_types
+                                                ? json_decode($product->product->product_types, true)
+                                                : [];
 
-    // Filter by usage matching application_type
-    $filteredTypes = array_filter($types, function ($type) use ($product) {
-        return isset($type['usage']) && $type['usage'] === $product->application_type;
-    });
-@endphp
+                                            // Filter by usage matching application_type
+                                            $filteredTypes = array_filter($types, function ($type) use ($product) {
+                                                return isset($type['usage']) &&
+                                                    $type['usage'] === $product->application_type;
+                                            });
+                                        @endphp
 
-<select class="form-control product_name_select" name="product_name[{{ $index }}]">
-    <option value="">Select Product Type</option>
-    @foreach ($filteredTypes as $type)
-        <option value="{{ $type['type'] }}"
-            data-warranty="{{ $type['warranty'] }}"
-            {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
-            {{ $type['type'] }}
-        </option>
-    @endforeach
-</select>
+                                        <select class="form-control product_name_select"
+                                            name="product_name[{{ $index }}]">
+                                            <option value="">Select Product Type</option>
+                                            @foreach ($filteredTypes as $type)
+                                                <option value="{{ $type['type'] }}"
+                                                    data-warranty="{{ $type['warranty'] }}"
+                                                    {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
+                                                    {{ $type['type'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <input type="hidden" name="warranty_years[{{ $index }}]"
                                         class="warranty_hidden" value="{{ $product->warranty_years ?? '' }}">
@@ -183,8 +185,7 @@
                                 <div class="col-md-6 {{ $product->product_type == 4 ? 'd-none' : '' }}">
                                     <label class="form-label">Invoice Date</label>
                                     <input type="text" id="datepickercustom" class="form-control invoice_date"
-                                        value="{{ $product->invoice_date }}"
-                                        >
+                                        value="{{ $product->invoice_date }}">
                                 </div>
 
                             </div>
@@ -195,7 +196,8 @@
 
 
                             {{-- New Fields --}}
-                            <div class="row mb-2" style="display: none">
+
+                            <div class="row mb-2 {{ $product->product_type != 3 ? 'd-none' : '' }}">
                                 <div class="col-md-6">
                                     <label class="form-label">Branch Name</label>
                                     <input type="text" class="form-control branch_name"
@@ -204,6 +206,7 @@
 
 
                             </div>
+
 
                             <div class="row mb-2">
                                 <div
@@ -216,23 +219,26 @@
                                     class="col-md-6 {{ $product->product_type == 4 || $product->product_type == 2 || $product->product_type == 5 ? '' : 'd-none' }} ">
                                     <label class="form-label">Handover
                                         Certificate Date
-                                    <a class="download-icon-red" href="{{ asset('storage/' . $product->handover_certificate) }}" target="_blank">
-                                        View Certificate
-                                    </a>
+                                        <a class="download-icon-red"
+                                            href="{{ asset('storage/' . $product->handover_certificate) }}"
+                                            target="_blank">
+                                            View Certificate
+                                        </a>
 
                                     </label>
-                                    <input type="text" id="datepicker" class="form-control handover_certificate_date"
+                                    <input type="text" id="datepicker"
+                                        class="form-control handover_certificate_date"
                                         value="{{ $product->handover_certificate_date }}">
                                 </div>
                             </div>
 
-                            <div class="row mb-2 d-none">
+                            <div class="row mb-2 {{ $product->product_type != 1 ? 'd-none' : '' }}">
                                 <div class="col-md-6">
                                     <label class="form-label">Product Code</label>
                                     <input type="text" class="form-control product_code"
                                         value="{{ $product->product_code }}">
                                 </div>
-                                <div class="col-md-6 {{ $product->product_type != 1 ? 'd-none' : '' }}">
+                                <div class="col-md-6 ">
                                     <label class="form-label">Type of Surface Treatment</label>
                                     <input type="text" class="form-control surface_treatment_type"
                                         value="{{ $product->surface_treatment_type }}">

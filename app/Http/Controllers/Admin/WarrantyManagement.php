@@ -210,7 +210,7 @@ class WarrantyManagement extends Controller
             'surface_treatment_type'    => 'nullable|string|max:255',
             'product_thickness'         => 'nullable|string|max:255',
             'project_location'          => 'nullable|string|max:255',
-            // 'branch_name'               => 'nullable|string|max:255',
+            'branch_name'               => 'nullable|string|max:255',
         ];
 
         if (Auth::user()->hasRole('country_admin')) {
@@ -231,7 +231,7 @@ class WarrantyManagement extends Controller
             'remarks'                   => $validated['product_remarks'], // renamed from product_remarks to remarks
             'product_name'              => $validated['product_name'],
             'warranty_years'            => $validated['warranty_years'],
-            // 'branch_name'               => $validated['branch_name'],
+            'branch_name'               => $validated['branch_name'],
             // 'date_of_issuance' => $validated['date_of_issuance'],
             'invoice_date'              => $validated['invoice_date'],
             'execution_agency'          => $validated['execution_agency'],

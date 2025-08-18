@@ -4,6 +4,8 @@
     </div>
     <div class="card-body">
 
+        {{-- {{ dd($warrantyProducts[0]) }} --}}
+
 
         <form action="{{ route('updatecountryadminstatus', $warrantyProducts[0]->id) }}" method="POST">
             @csrf
