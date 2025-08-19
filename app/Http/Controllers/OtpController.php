@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Helpers\MailHelper;
+use App\Helpers\OTPHelper;
 use App\Models\Otp;
 use App\Models\User;
 use Carbon\Carbon;
@@ -77,54 +79,7 @@ class OtpController extends Controller
             'phone_number' => 'required|digits:10|unique:users,phone_number',
         ]);
 
-        $otp       = rand(100000, 999999); // generate OTP
-        $expiresAt = Carbon::now()->addMinutes(5);
-
-        // Store OTP in DB (optional, if you want persistent verification)
-        Otp::updateOrCreate(
-            ['phone_number' => $request->phone_number],
-            ['otp' => $otp, 'expires_at' => $expiresAt]
-        );
-
-        // SMS message text
-        $message = "$otp is the OTP to login Greenlam Warranty Portal.Greenlam Industries Ltd";
-
-        // API URL
-        $url = "https://bulksms.analyticsmantra.com/sendsms/sendsms.php";
-
-        $params = [
-            'username'   => 'greenlam',
-            'password'   => 'plywood1',
-            'type'       => 'TEXT',
-            'sender'     => 'GLIAPP',
-            'mobile'     => $request->phone_number,
-            'message'    => $message,
-            'PEID'       => '1201159980423620375',
-            'HeaderId'   => '1205160017196213320',
-            'templateId' => '1207175437985868276',
-            // 'p1'         => $otp,
-        ];
-
-        try {
-            $response = Http::get($url, $params);
-
-            // Store phone in session for verification step
-            session(['register_phone_number' => $request->phone_number]);
-
-            return response()->json([
-                'success'  => true,
-                'message'  => 'OTP sent successfully!',
-                'otp'      => $otp, // ⚠️ remove in production, keep for testing only
-                'response' => $response->body(),
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send OTP',
-                'error'   => $e->getMessage(),
-            ], 500);
-        }
+        return OTPHelper::sendOTP($request->phone_number);
     }
 
     // public function sendLoginOtp(Request $request)
@@ -151,50 +106,9 @@ class OtpController extends Controller
         $request->validate([
             'phone_number' => 'required|exists:users,phone_number',
         ]);
+        session(['login_phone_number' => $request->phone_number]);
 
-        $otp       = rand(100000, 999999);
-        $expiresAt = now()->addMinutes(5);
-
-        Otp::updateOrCreate(
-            ['phone_number' => $request->phone_number],
-            ['otp' => $otp, 'expires_at' => $expiresAt]
-        );
-
-        $message = "$otp is the OTP to login Greenlam Warranty Portal.Greenlam Industries Ltd";
-
-        $url    = "https://bulksms.analyticsmantra.com/sendsms/sendsms.php";
-        $params = [
-            'username'   => 'greenlam',
-            'password'   => 'plywood1',
-            'type'       => 'TEXT',
-            'sender'     => 'GLIAPP',
-            'mobile'     => $request->phone_number,
-            'message'    => $message,
-            'PEID'       => '1201159980423620375',
-            'HeaderId'   => '1205160017196213320',
-            'templateId' => '1207175437985868276',
-            // 'p1'         => $otp,
-        ];
-
-        try {
-            $response = Http::get($url, $params);
-
-            session(['login_phone_number' => $request->phone_number]);
-
-            return response()->json([
-                'success'  => true,
-                'message'  => 'OTP sent for login',
-                'otp'      => $otp, // ⚠️ remove in production
-                'response' => $response->body(),
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send OTP',
-                'error'   => $e->getMessage(),
-            ], 500);
-        }
+        return OTPHelper::sendOTP($request->phone_number);
     }
 
     // Show OTP verification form
@@ -355,47 +269,7 @@ class OtpController extends Controller
 
     public function resendOtp(Request $request)
     {
-        $otp       = rand(100000, 999999);
-        $expiresAt = now()->addMinutes(5);
-
-        // Update or create OTP record
-        Otp::updateOrCreate(
-            ['phone_number' => $request->phone_number],
-            ['otp' => $otp, 'expires_at' => $expiresAt]
-        );
-
-        // ✅ Send OTP via SMS Gateway
-        $message = "$otp is the OTP to login Greenlam Warranty Portal.Greenlam Industries Ltd";
-
-        $url    = "https://bulksms.analyticsmantra.com/sendsms/sendsms.php";
-        $params = [
-            'username'   => 'greenlam',
-            'password'   => 'plywood1',
-            'type'       => 'TEXT',
-            'sender'     => 'GLIAPP',
-            'mobile'     => $request->phone_number,
-            'message'    => $message,
-            'PEID'       => '1201159980423620375',
-            'HeaderId'   => '1205160017196213320',
-            'templateId' => '1207175437985868276',
-            // 'p1'         => $otp,
-        ];
-
-        // Use Laravel HTTP client instead of raw cURL
-        try {
-            $response = Http::get($url, $params);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'OTP generated but failed to send SMS.',
-                'error'   => $e->getMessage(),
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'OTP resent successfully! You have 5 more minutes.',
-        ]);
+        return OTPHelper::sendOTP($request->phone_number);
     }
 
 }
