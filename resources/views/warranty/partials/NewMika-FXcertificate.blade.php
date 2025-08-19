@@ -129,7 +129,7 @@
                             <h1 style="margin-bottom:0px; text-align: center; margin-top: 0px;">WARRANTY CARD</h1>
                         </td>
                         <td width="33%" align="center" style="border:0px; text-align: center;"><img
-                                src="{{ $greenlamCladsLogo }}" /></td>
+                                src="{{ asset('assets/images/newmika-fx-logo.jpg') }}" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -139,7 +139,7 @@
                 <p>You have just purchased Exterior Grade Compact Panel of exceptional quality.
                     As much as they reflect beauty, their light fastness property, revolutionary NMEF technology and
                     protection layer reflect strength. Hence, making these irresistible exteriors last for long,
-                    promising you 10 years of Warranty.</p>
+                    promising you {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} of Warranty.</p>
                 <p><strong>Promising you {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} of
                         Warranty.</strong></p>
             </div>
@@ -148,7 +148,7 @@
                 <h2>Limited Warranty</h2>
                 <p>Greenlam Industries Limited (‘Greenlam’) expressly warrants that, it’s Exterior Grade Compact Panel,
                     NewMika FX (‘Product’) conform to applicable manufacturing standards and will be reasonably free of
-                    defects in materials and workmanship for a period of 10 years commencing from the date of issue of
+                    defects in materials and workmanship for a period of {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} commencing from the date of issue of
                     invoice by the Company. This warranty shall automatically expire by efflux of time on completion of
                     the period indicated herein above and no notice of such expiry will be given by Greenlam. Colours
                     subject to dye lot variations. This limited warranty only applies to the product when stored,
@@ -204,7 +204,7 @@
                                 </tr>
                                 <tr>
                                     <th>Invoice Date.:</th>
-                                    <td>...................</td>
+                                    <td>{{ $warrantyProduct->invoice_date ? $warrantyProduct->invoice_date->format('d-M-Y') : 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Execution Agency:</th>
@@ -220,7 +220,7 @@
                                 </tr>
                                 <tr>
                                     <th>Date of Handover Certificate:</th>
-                                    <td>.........................</td>
+                                    <td>{{ $warrantyProduct->handover_certificate_date ? $warrantyProduct->handover_certificate_date->format('d-M-Y') : 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th>Date of Issuance:</th>

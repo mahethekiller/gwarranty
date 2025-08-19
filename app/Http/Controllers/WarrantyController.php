@@ -1,7 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Helpers\MailHelper;
+use App\Models\BranchEmail;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\WarrantyProduct;
 use App\Models\WarrantyRegistration;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -163,6 +166,21 @@ class WarrantyController extends Controller
 
             $product->save();
         }
+
+        // Send email to customer
+        MailHelper::sendMaiCustomerRequestSubmit($registration->user->email);
+
+        $branchEmail = BranchEmail::where('state', $registration->dealer_state)
+            ->where('city', $registration->dealer_city)
+            ->value('commercial_email');
+
+        if ($branchEmail) {
+
+            $userName = User::where('email', $branchEmail)->value('name') ?? 'Branch Admin';
+            MailHelper::sendMailBranchNewRequest($branchEmail,$userName);
+        }
+
+
 
         return response()->json(['success' => true, 'message' => 'Thanks for submitting your warranty request, upon validation,
         we will be sending warranty details in 3-5 business days.'], 200);

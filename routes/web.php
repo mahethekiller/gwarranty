@@ -6,13 +6,13 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WarrantyController;
+use App\Services\ExchangeMailer;
 use Illuminate\Support\Facades\Route;
+use Raju\EWSMail\ExchangeMailServer;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/get-cities/{state}', [ProfileController::class, 'getCitiesAjax']);
 Route::get('/admin/get-branch-email', [UserManagement::class, 'getBranchEmail'])->name('get.branch.email');
-
-
 
 // OTP Routes
 Route::get('registerotp', [OtpController::class, 'showRegisterForm'])->name('registerotp');
@@ -68,7 +68,7 @@ Route::middleware(['auth', 'role:branch_admin'])->group(function () {
 
 // USER ROLE
 
-Route::middleware(['auth', 'role:user','profile.updated'])->group(function () {
+Route::middleware(['auth', 'role:user', 'profile.updated'])->group(function () {
     Route::get('/user/dashboard', function () {
         return view('dashboard.user');
     })->name('user.dashboard');
@@ -89,11 +89,9 @@ Route::middleware(['auth', 'role:user','profile.updated'])->group(function () {
 
 Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(function () {
 
-
-     Route::get('/admin/dashboard', function () {
+    Route::get('/admin/dashboard', function () {
         return view('dashboard.admin');
     })->name('admin.dashboard');
-
 
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
@@ -107,15 +105,27 @@ Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(func
 
     Route::put('/admin/warranty/update/product/{id}', [WarrantyManagement::class, 'updateProduct'])->name('admin.warranty.updateproduct');
 
-
     Route::put('/admin/warranty/update/status/{id}', [WarrantyManagement::class, 'updateCountryAdminStatus'])->name('updatecountryadminstatus');
-
-
-
-
 
 });
 
 // ADMIN AND EDITOR ROLE
+
+
+
+Route::get('/test-ews', function () {
+    try {
+        $sent = ExchangeMailServer::sendEmail(
+            ['name' => 'Raju at LHG', 'email' => 'mahendra@i2k2.com'],
+            ['subject' => 'Mail From Package', 'body' => 'Message Body']
+        );
+
+        return 'Mail sent successfully! (Return value: ' . var_export($sent, true) . ')';
+    } catch (\Throwable $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
+
 
 require __DIR__ . '/auth.php';

@@ -9,6 +9,7 @@
         "php": "^8.2",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "rajurayhan/laravel-ews-mail-server": "dev-master",
         "spatie/laravel-permission": "^6.17"
     },
     "require-dev": {

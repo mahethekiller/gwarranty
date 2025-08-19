@@ -7,6 +7,7 @@
         {{-- {{ dd($warrantyProducts[0]) }} --}}
 
 
+
         <form action="{{ route('updatecountryadminstatus', $warrantyProducts[0]->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -18,16 +19,17 @@
                 <div class="col-md-12">
                     <label for="country_admin_status" class="col-md-4 col-form-label text-md-right">Status</label>
                     <select class="form-control" id="country_admin_status" name="country_admin_status">
-                        <option value="approved"
-                            {{ old('country_admin_status', $warrantyProducts[0]->country_admin_status) == 'approved' ? 'selected' : '' }}>
-                            Approved</option>
-                        <option value="rejected"
-                            {{ old('country_admin_status', $warrantyProducts[0]->country_admin_status) == 'rejected' ? 'selected' : '' }}>
-                            Rejected</option>
                         <option value="pending"
                             {{ old('country_admin_status', $warrantyProducts[0]->country_admin_status) == 'pending' ? 'selected' : '' }}>
                             Pending
                         </option>
+                        <option value="approved"
+                            {{ old('country_admin_status', $warrantyProducts[0]->country_admin_status) == 'approved' ? 'selected' : '' }}>
+                            Approved</option>
+                        {{-- <option value="rejected"
+                            {{ old('country_admin_status', $warrantyProducts[0]->country_admin_status) == 'rejected' ? 'selected' : '' }}>
+                            Rejected</option> --}}
+
                     </select>
                 </div>
             </div>

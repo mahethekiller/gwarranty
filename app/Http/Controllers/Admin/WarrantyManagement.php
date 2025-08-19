@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\MailHelper;
 use App\Http\Controllers\Controller;
 use App\Models\BranchEmail;
 use App\Models\Product;
@@ -10,6 +11,7 @@ use App\Models\WarrantyProduct;
 use App\Models\WarrantyRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class WarrantyManagement extends Controller
 {
@@ -31,17 +33,19 @@ class WarrantyManagement extends Controller
             $productId = UserProduct::where('user_id', $userId)
                 ->value('product_id');
 
-            $warranties = WarrantyRegistration::with([
-                'products' => function ($q) use ($productId) {
-                    $q->where('product_type', $productId)
-                        ->where('branch_admin_status', 'approved');
-                },
-                'products.product',
-            ])
-            // ->whereHas('products', function ($query) use ($productId) {
-            //     $query->where('product_type', $productId)
-            //         ->where('branch_admin_status', 'approved');
-            // })
+                echo "mKKKK".$productId;
+
+            $warranties = WarrantyRegistration::whereHas('products', function ($q) use ($productId) {
+                $q->where('product_type', $productId)
+                    ->where('branch_admin_status', 'approved');
+            })
+                ->with([
+                    'products' => function ($q) use ($productId) {
+                        $q->where('product_type', $productId)
+                            ->where('branch_admin_status', 'approved');
+                    },
+                    'products.product',
+                ])
                 ->orderBy('id', 'desc')
                 ->paginate(10);
 
@@ -253,15 +257,36 @@ class WarrantyManagement extends Controller
 
             if ($oldValue != $newValue) {
                 WarrantyLog::create([
-                    'warranty_id' => $warranty->id,
-                    'field'       => $field,
-                    'old_value'   => $oldValue,
-                    'new_value'   => $newValue,
-                    'updated_by'  => Auth::id(),
-                    'product_type' => $product->product_type
+                    'warranty_id'  => $warranty->id,
+                    'field'        => $field,
+                    'old_value'    => $oldValue,
+                    'new_value'    => $newValue,
+                    'updated_by'   => Auth::id(),
+                    'product_type' => $product->product_type,
                 ]);
 
                 $product->$field = $newValue;
+            }
+        }
+
+        // Send email to the user
+        if (isset($fieldsToLog['branch_admin_status']) && $fieldsToLog['branch_admin_status'] == 'modify') {
+            MailHelper::sendMailCustomerModifyRequired($warranty->user->email);
+        }
+
+        if (isset($fieldsToLog['branch_admin_status']) && $fieldsToLog['branch_admin_status'] == 'approved') {
+
+            Log::info("Sending email to the user for product type $product->product_type");
+
+
+            $userProduct = UserProduct::where('product_id', $product->product_type)
+                ->with('user')
+                ->first();
+
+            if ($userProduct) {
+                Log::info("Sending email to " . $userProduct->user->email . "," . $userProduct->user->name . " for country approved by branch for product type $product->product_type");
+
+                MailHelper::sendMailCountryApprovedByBranch($userProduct->user->email, $userProduct->user->name);
             }
         }
 
@@ -275,7 +300,7 @@ class WarrantyManagement extends Controller
         // Validate the form data
         $validated = $request->validate([
             'country_admin_status'  => 'required|in:pending,rejected,approved',
-            'country_admin_remarks' => 'required_if:country_admin_status,rejected',
+            'country_admin_remarks' => 'required_if:country_admin_status,rejected,pending',
         ]);
 
         // Find the product
@@ -309,8 +334,15 @@ class WarrantyManagement extends Controller
 
             if ($validated['country_admin_status'] === 'approved') {
                 $product->date_of_issuance = now(); // Set issue date to current date
-            }
 
+                if ($product->registration) {
+                    $warranty = $product->registration;
+                    Log::info("Sending email to " . $warranty->user->email . " for country approved ");
+
+                    MailHelper::sendMailApprovedCustomer($warranty->user->email);
+                }
+
+            }
 
             $product->save();
         }
