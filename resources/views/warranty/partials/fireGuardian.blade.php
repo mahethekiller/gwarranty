@@ -354,7 +354,8 @@
     </div>
 
 
-    <br><br><br><br>
+<br>
+    <p style="text-align: center;" > <strong>Note: This is a system generated certificate and no signature is required.</strong>
     <footer class="foot-bg" style="background: #efefef !important;">
         <p><strong>Greenlam Industries Limited</strong><br>
             2nd Floor, West Wing, Worldmark 1, Aerocity, IGI Airport Hospitality District, New Delhi – 110037,

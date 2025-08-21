@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mukesh">
-    <title>Greenlam Clads – WARRANTY CARD</title>
+    <title>Download Warranty Certificate</title>
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/ico" sizes="16x16">
     <!---<link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">-->
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
 

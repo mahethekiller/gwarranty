@@ -27,6 +27,8 @@ class WarrantyProduct extends Model
         'date_of_issuance' => 'date',
         'invoice_date'     => 'date',
         'handover_certificate_date' => 'date',
+        'products_json' => 'array',
+        'products_jsonFloor' => 'array',
     ];
     /**
      * A warranty product belongs to a registration.

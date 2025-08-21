@@ -100,89 +100,12 @@
                             </div>
 
                             {{-- Total Quantity & Status --}}
-                            {{-- Mikasa Ply --}}
+
                             <div class="row mb-2">
-                                @if ($product->product_type == 3)
-                                    <div class="col-md-6">
-                                        <label class="form-label">Product Name</label>
-                                        <select class="form-control product_name_select"
-                                            name="product_name[{{ $index }}]">
-                                            <option value="">Select Product Type</option>
-                                            @php
-                                                $types = $product->product->product_types
-                                                    ? json_decode($product->product->product_types, true)
-                                                    : [];
-                                            @endphp
-                                            @foreach ($types as $type)
-                                                <option value="{{ $type['type'] }}"
-                                                    data-warranty="{{ $type['warranty'] }}"
-                                                    {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
-                                                    {{ $type['type'] }}
-                                                    {{-- ({{ $type['warranty'] }}) --}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <input type="hidden" name="warranty_years[{{ $index }}]"
-                                        class="warranty_hidden" value="{{ $product->warranty_years ?? '' }}">
 
 
-                                    {{-- Mikasa Floors --}}
-                                @elseif ($product->product_type == 1)
-                                    <div class="col-md-6">
-                                        <label class="form-label">Product Name</label>
-                                        @php
-                                            $types = $product->product->product_types
-                                                ? json_decode($product->product->product_types, true)
-                                                : [];
 
-                                            // Filter by usage matching application_type
-                                            $filteredTypes = array_filter($types, function ($type) use ($product) {
-                                                return isset($type['usage']) &&
-                                                    $type['usage'] === $product->application_type;
-                                            });
-                                        @endphp
-
-                                        <select class="form-control product_name_select"
-                                            name="product_name[{{ $index }}]">
-                                            <option value="">Select Product Type</option>
-                                            @foreach ($filteredTypes as $type)
-                                                <option value="{{ $type['type'] }}"
-                                                    data-warranty="{{ $type['warranty'] }}"
-                                                    {{ $product->product_name == $type['type'] ? 'selected' : '' }}>
-                                                    {{ $type['type'] }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <input type="hidden" name="warranty_years[{{ $index }}]"
-                                        class="warranty_hidden" value="{{ $product->warranty_years ?? '' }}">
-
-
-                                    {{-- Fixed warranty types --}}
-                                @elseif(in_array($product->product_type, [4, 2, 6, 5]))
-                                    @php
-                                        $fixedWarranties = [
-                                            4 => '12 yrs',
-                                            2 => '5 yrs',
-                                            6 => '10 yrs',
-                                            5 => '10 yrs',
-                                        ];
-                                        $fixedWarranty = $fixedWarranties[$product->product_type] ?? '';
-                                    @endphp
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Product Name</label>
-                                        <input type="text" class="form-control product_name_input"
-                                            name="product_name[{{ $index }}]"
-                                            value="{{ $product->product_name ?? '' }}">
-                                    </div>
-                                    <input type="hidden" name="warranty_years[{{ $index }}]"
-                                        value="{{ $fixedWarranty }}" class="warranty_hidden">
-                                @endif
-
-
-                                <div class="col-md-6 {{ $product->product_type == 4 ? 'd-none' : '' }}">
+                                <div class="col-md-12 {{ $product->product_type == 4 ? 'd-none' : '' }}">
                                     <label class="form-label">Invoice Date</label>
                                     <input type="text" id="datepickercustom" class="form-control invoice_date"
                                         value="{{ $product->invoice_date }}">
@@ -198,7 +121,7 @@
                             {{-- New Fields --}}
 
                             <div class="row mb-2 {{ $product->product_type != 3 ? 'd-none' : '' }}">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label class="form-label">Branch Name</label>
                                     <input type="text" class="form-control branch_name"
                                         value="{{ $product->branch_name }}">
@@ -226,8 +149,7 @@
                                         </a>
 
                                     </label>
-                                    <input type="text" id="datepicker"
-                                        class="form-control handover_certificate_date"
+                                    <input type="text" id="datepicker" class="form-control handover_certificate_date"
                                         value="{{ $product->handover_certificate_date }}">
                                 </div>
                             </div>
@@ -246,17 +168,36 @@
                             </div>
 
                             <div class="row mb-2 {{ $product->product_type != 2 ? 'd-none' : '' }}">
-                                <div class="col-md-6 ">
+                                <div class="col-md-12 ">
                                     <label class="form-label">Product Thickness</label>
                                     <input type="text" class="form-control product_thickness"
                                         value="{{ $product->product_thickness }}">
                                 </div>
-                                <div class="col-md-6">
+
+                            </div>
+                            <div class="row mb-2 {{ $product->product_type != 2 ? 'd-none' : '' }}">
+
+                                <div class="col-md-12">
                                     <label class="form-label">Project Location</label>
                                     <input type="text" class="form-control project_location"
                                         value="{{ $product->project_location }}">
                                 </div>
                             </div>
+
+                            <div class="row mb-2">
+                                @if ($product->product_type == 3)
+                                    {{-- Mikasa Ply --}}
+                                    @include('admin.warranty.partials.mikasaply-products')
+                                @elseif ($product->product_type == 1)
+                                    {{-- Mikasa Floors --}}
+                                    @include('admin.warranty.partials.mikasafloor-products')
+                                @elseif(in_array($product->product_type, [4, 2, 6, 5]))
+                                    {{-- Common warranty types --}}
+                                    @include('admin.warranty.partials.common-products')
+                                @endif
+                            </div>
+
+                            <hr>
                             {{-- Remarks --}}
                             <div class="row mb-3">
                                 <div class="col-12">

@@ -144,18 +144,18 @@
             <ol>
                 <li>
                     <p>Greenlam Industries Limited (the "Company"), the manufacturer/supplier of Mikasa Plywood
-                        ("Product"), offers a 25-year warranty to end users ("End User") on Mikasa Plywood Marine
+                        ("Product"), offers a {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty to end users ("End User") on Mikasa Plywood Marine
                         Plywood (the "Product"), which shall come into effect from the date of purchase of the Product
                         by the End User.</p>
                 </li>
-                <li><strong> Validity of the 25-Year Warranty</strong></li>
+                <li><strong> Validity of the {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} Warranty</strong></li>
             </ol>
             <ul>
                 <li>The aforesaid warranty is provided against the product and shall only be valid to cover the
                     manufacturing defects and damages to the product due to insect attacks, subject to the terms stated
                     in Clause 5.</li>
-                <li>The 25-year warranty shall be only valid against the manufacturing defects.</li>
-                <li>The 25-year aforesaid warranty is valid only towards the end user of the product and stands
+                <li>The {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty shall be only valid against the manufacturing defects.</li>
+                <li>The {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} aforesaid warranty is valid only towards the end user of the product and stands
                     non-transferable to any other third party.</li>
             </ul>
             <ol start="3">
@@ -207,7 +207,7 @@
                 <li><strong> Warranty Exclusions</strong></li>
             </ol>
             <ul>
-                <li>Notwithstanding anything mentioned in these terms and conditions, the company provides a 25-year
+                <li>Notwithstanding anything mentioned in these terms and conditions, the company provides a {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }}
                     warranty for the product against manufacturing defects or insect attack, subject to the
                     below-mentioned conditions and exclusions:<br /> &bull; Misuse/abnormal use of the product,
                     including but not limited to, close proximity of the product to water or moisture or any other
@@ -336,7 +336,9 @@
     </div>
 
 
-    <br><br><br><br>
+    <br>
+    <p style="text-align: center;" > <strong>Note: This is a system generated certificate and no signature is required.</strong>
+ </p>
     <footer class="foot-bg" style="background: #efefef !important;">
         <p><strong>Greenlam Industries Limited</strong><br>
             2nd Floor, West Wing, Worldmark 1, Aerocity, IGI Airport Hospitality District, New Delhi – 110037,

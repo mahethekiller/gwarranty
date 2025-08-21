@@ -204,7 +204,9 @@ class WarrantyManagement extends Controller
         $validations = [
             'total_quantity'            => 'required|numeric|min:1',
             'product_remarks'           => 'nullable|string|max:500',
-            'product_name'              => 'nullable|string|max:255',
+            'product_name'              => 'sometimes|nullable|string|max:255',
+            'products_json'             => 'nullable|json',
+            'products_jsonFloor'             => 'nullable|json',
             'warranty_years'            => 'nullable|string|max:50',
             'date_of_issuance'          => 'nullable|date',
             'invoice_date'              => 'nullable|date',
@@ -233,8 +235,8 @@ class WarrantyManagement extends Controller
             'total_quantity'            => $validated['total_quantity'],
                                                                           // 'product_status' => $validated['product_status'],
             'remarks'                   => $validated['product_remarks'], // renamed from product_remarks to remarks
-            'product_name'              => $validated['product_name'],
-            'warranty_years'            => $validated['warranty_years'],
+            'product_name'              => isset($validated['product_name']) ? $validated['product_name'] : null,
+            'warranty_years'            => isset($validated['warranty_years']) ? $validated['warranty_years'] : null,
             'branch_name'               => $validated['branch_name'],
             // 'date_of_issuance' => $validated['date_of_issuance'],
             'invoice_date'              => $validated['invoice_date'],
@@ -269,6 +271,8 @@ class WarrantyManagement extends Controller
             }
         }
 
+        $product->products_json = isset($validated['products_json']) ? $validated['products_json'] : null;
+        $product->products_jsonFloor = isset($validated['products_jsonFloor']) ? $validated['products_jsonFloor'] : null;
         // Send email to the user
         if (isset($fieldsToLog['branch_admin_status']) && $fieldsToLog['branch_admin_status'] == 'modify') {
             MailHelper::sendMailCustomerModifyRequired($warranty->user->email);

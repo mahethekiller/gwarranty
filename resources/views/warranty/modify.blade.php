@@ -39,13 +39,17 @@
                                                             >{{ $warranty->dealer_city ?? 'N/A' }}</td>
                                                         <td>{{ $warranty->invoice_number }}</td>
                                                         <td>
-                                                            @if ($warranty->upload_invoice)
-                                                                <a href="/storage/{{ $warranty->upload_invoice }}"
-                                                                    target="_blank" class="download-icon-red">
-                                                                    <i class="fa fa-download"></i>&nbsp;View
-                                                                </a>
-                                                            @endif
-                                                        </td>
+    @if ($warranty->upload_invoice)
+        <a href="{{ asset('storage/invoices/' . $warranty->upload_invoice) }}"
+           target="_blank"
+           class="download-icon-red">
+            <i class="fa fa-download"></i>&nbsp;View
+        </a>
+    @endif
+</td>
+
+
+
                                                         {{-- <td>{{ $warranty->remarks }}</td> --}}
                                                         <td>
                                                             <!-- View Products Button -->

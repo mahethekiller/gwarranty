@@ -29,7 +29,7 @@
                     alt="Greenlam Industries - Warranty Services Portal for Consumers" />
             </a>
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="#" class="nav-link custom-nav-btn">Contact Us</a></li>
+                <li class="nav-item"><a href="https://www.greenlamindustries.com/contact-us.html" class="nav-link custom-nav-btn">Contact Us</a></li>
             </ul>
         </header>
     </div>

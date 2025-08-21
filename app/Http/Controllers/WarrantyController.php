@@ -355,8 +355,8 @@ class WarrantyController extends Controller
 
         return view('warranty.download',
             [
-                "pageTitle"         => "Download Certificate",
-                "pageDescription"   => "Download Certificates",
+                "pageTitle"         => "Download Warranty Certificate",
+                "pageDescription"   => "Download Warranty Certificates",
                 "pageScript"        => "warranty",
                 // "warranty"      => $warranty,
                 "warrantyProduct"   => $warrantyProduct,

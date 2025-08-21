@@ -116,6 +116,41 @@ $(document).ready(function () {
         const row = button.closest(".card-body");
         const productId = button.data("id");
 
+        // Collect JSON table data
+        let productsData = [];
+        $("#productTable tbody tr").each(function () {
+            let product = $(this).find(".product_name_selectply").val();
+            let qty = $(this).find(".product_qty").val();
+            let warranty = $(this).find(".warranty_years").val();
+
+            if (product) {
+                productsData.push({
+                    product_name: product,
+                    quantity: qty,
+                    warranty_years: warranty,
+                });
+            }
+        });
+
+        let productsDataFloor = [];
+
+        $("#productTableFloor tbody tr").each(function () {
+            let product = $(this).find(".product_name_selectmfloor").val();
+            let qty = $(this).find(".product_qty").val();
+            let warranty = $(this).find(".warranty_years").val();
+
+            if (product) {
+                productsDataFloor.push({
+                    product_name: product,
+                    quantity: qty,
+                    warranty_years: warranty,
+                });
+            }
+        });
+
+
+        // console.log(productsDataFloor);
+
         $.ajax({
             url: adminurl + "/warranty/update/product/" + productId,
             type: "POST",
@@ -126,6 +161,8 @@ $(document).ready(function () {
                 branch_admin_status: row.find(".branch_admin_status").val(),
                 country_admin_status: row.find(".country_admin_status").val(),
                 product_remarks: row.find(".product_remarks").val(),
+                products_json: JSON.stringify(productsData),
+                products_jsonFloor: JSON.stringify(productsDataFloor),
                 product_name:
                     row.find(".product_name_select").val() ||
                     row.find(".product_name_input").val(),
@@ -195,4 +232,130 @@ $(document).ready(function () {
             badge.addClass("bg-success").text("Status: Approved");
         }
     });
+});
+
+$(document).ready(function () {
+    // Populate select options
+    function populateSelect($select) {
+        $select.empty().append('<option value="">Select Product Type</option>');
+        productTypes.forEach(function (type) {
+            $select.append(
+                `<option value="${type.type}" data-warranty="${type.warranty}">
+                    ${type.type}
+                </option>`
+            );
+        });
+    }
+
+    // Initialize first row select
+    // populateSelect($("#productTable tbody tr:first .product_name_selectply"));
+
+    // Auto-fill warranty
+    $(document).on("change", ".product_name_selectply", function () {
+        let warranty = $(this).find(":selected").data("warranty") || "";
+        $(this).closest("tr").find(".warranty_years").val(warranty);
+    });
+
+    // Add new row
+    $("#addRow").click(function () {
+        let newRow = `<tr>
+            <td><select class="form-control product_name_selectply"></select></td>
+            <td><input type="number" class="form-control product_qty" value="1" min="1"></td>
+            <td><input type="text" class="form-control warranty_years" readonly></td>
+            <td><button type="button" class="btn btn-danger removeRow">X</button></td>
+        </tr>`;
+
+        let $row = $(newRow);
+        populateSelect($row.find(".product_name_selectply"));
+        $("#productTable tbody").append($row);
+    });
+
+    // Remove row
+    $(document).on("click", ".removeRow", function () {
+        $(this).closest("tr").remove();
+    });
+
+    // Get JSON
+    $("#getJson").click(function () {
+        let data = [];
+        $("#productTable tbody tr").each(function () {
+            let product = $(this).find(".product_name_selectply").val();
+            let qty = $(this).find(".product_qty").val();
+            let warranty = $(this).find(".warranty_years").val();
+
+            if (product) {
+                data.push({
+                    product_name: product,
+                    quantity: qty,
+                    warranty_years: warranty,
+                });
+            }
+        });
+
+        $("#output").text(JSON.stringify(data, null, 2));
+    });
+});
+
+$(document).ready(function () {
+    // Populate select options
+    function populateSelectFloor($select) {
+        $select.empty().append('<option value="">Select Product Type</option>');
+        productTypesFloor.forEach(function (type) {
+            $select.append(
+                `<option value="${type.type}" data-warranty="${type.warranty}">
+                    ${type.type}
+                </option>`
+            );
+        });
+    }
+
+    // Initialize first row select
+    // populateSelectFloor(
+    //     $("#productTableFloor tbody tr:first .product_name_selectmfloor")
+    // );
+
+    // Auto-fill warranty
+    $(document).on("change", ".product_name_selectmfloor", function () {
+        let warranty = $(this).find(":selected").data("warranty") || "";
+        $(this).closest("tr").find(".warranty_years").val(warranty);
+    });
+
+    // Add new row
+    $("#addRowFloor").click(function () {
+        let newRow = `<tr>
+            <td><select class="form-control product_name_selectmfloor"></select></td>
+            <td><input type="number" class="form-control product_qty" value="1" min="1"></td>
+            <td><input type="text" class="form-control warranty_years" readonly></td>
+            <td><button type="button" class="btn btn-danger removeRow">X</button></td>
+        </tr>`;
+
+        let $row = $(newRow);
+        populateSelectFloor($row.find(".product_name_selectmfloor"));
+        $("#productTableFloor tbody").append($row);
+    });
+
+    // Remove row
+    $(document).on("click", ".removeRow", function () {
+        $(this).closest("tr").remove();
+    });
+
+    // Get JSON
+    // $("#getJsonFloor").click(function () {
+    //     let data = [];
+    //     $("#productTableFloor tbody tr").each(function () {
+    //         let product = $(this).find(".product_name_selectmfloor").val();
+    //         let qty = $(this).find(".product_qty").val();
+    //         let warranty = $(this).find(".warranty_years").val();
+
+    //         if (product) {
+    //             data.push({
+    //                 product_name: product,
+    //                 quantity: qty,
+    //                 warranty_years: warranty,
+    //             });
+    //         }
+    //     });
+
+    //     $("#outputFloor").text(JSON.stringify(data, null, 2));
+    // });
 });
