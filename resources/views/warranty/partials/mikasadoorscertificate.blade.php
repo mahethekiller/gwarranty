@@ -137,11 +137,14 @@
             <h2 class="mt-5 wish-color">Congratulations!</h2>
             <p>Mikasa warranty terms and conditions and commercial flooring maintenance guidelines with 5 years limited
                 warranty.</p>
-            <p>Mikasa commercial flooring is covered by a {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} limited warranty for all approved commercial uses.
+            <p>Mikasa commercial flooring is covered by a
+                {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} limited warranty for all approved
+                commercial uses.
                 However, coverage may be lost due to failure to strictly follow all installation and maintenance
                 instructions and recommendations or the use of improper materials, tools non mikasa brand underlayment,
                 flooring accessories, cleaners, tools, etc. Read and follow all mikasa installation and maintenance
-                instructions carefully. The {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} limited warranty applies only to mikasa 15mm, and the 3 year limited
+                instructions carefully. The {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} limited
+                warranty applies only to mikasa 15mm, and the 3 year limited
                 warranty for 10mm flooring. Both warranties cover only such products purchased on or after the date set
                 forth above. The warranty is not transferable and it extends only to the original product and after
                 following the installation guidelines. All warranties expire upon sale, transfer or relocation of the
@@ -237,7 +240,33 @@
                             </tr>
                             <tr>
                                 <th>Product Thickness:</th>
-                                <td>{{ $warrantyProduct->product_thickness }}</td>
+                                @php
+                                    $variants = json_decode($warrantyProduct->product_thickness ?? '[]', true);
+                                @endphp
+
+                                <td>
+                                    @if (!empty($variants))
+                                        <table class="table table-bordered mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Thickness</th>
+                                                    <th>Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($variants as $variant)
+                                                    <tr>
+                                                        <td>{{ $variant['thickness'] ?? 'N/A' }}</td>
+                                                        <td>{{ $variant['quantity'] ?? 'N/A' }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+
                             </tr>
                             <tr>
                                 <th>Dealer Name:</th>
@@ -554,8 +583,9 @@
 
 
 
-     <br>
-    <p style="text-align: center;" > <strong>Note: This is a system generated certificate and no signature is required.</strong>
+        <br>
+        <p style="text-align: center;"> <strong>Note: This is a system generated certificate and no signature is
+                required.</strong>
         <footer class="foot-bg" style="background: #efefef !important;">
             <p><strong>Greenlam Industries Limited</strong><br>
                 2nd Floor, West Wing, Worldmark 1, Aerocity, IGI Airport Hospitality District, New Delhi – 110037,

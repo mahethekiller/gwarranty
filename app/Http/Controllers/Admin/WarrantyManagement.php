@@ -33,7 +33,7 @@ class WarrantyManagement extends Controller
             $productId = UserProduct::where('user_id', $userId)
                 ->value('product_id');
 
-                echo "mKKKK".$productId;
+                // echo "mKKKK".$productId;
 
             $warranties = WarrantyRegistration::whereHas('products', function ($q) use ($productId) {
                 $q->where('product_type', $productId)

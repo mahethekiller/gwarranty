@@ -81,6 +81,9 @@ Route::middleware(['auth', 'role:user', 'profile.updated'])->group(function () {
     Route::get('/user/warranty/certificates', [WarrantyController::class, 'certificates'])->name('user.warranty.certificates');
     Route::get('/user/warranty/certificate/download/{id}', [WarrantyController::class, 'downloadCertificate'])->name('user.warranty.certificates.download');
 
+    Route::get('/warranty/products/{warranty}', [WarrantyController::class, 'getProducts'])->name('warranty.products');
+
+
 });
 
 // USER ROLE

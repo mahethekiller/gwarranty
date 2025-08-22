@@ -110,6 +110,34 @@ $(document).ready(function () {
     });
 });
 
+function getVariantsAsJson() {
+    var variants = [];
+
+    // Check if there are any rows
+    var $rows = $("#product-variants-table tbody tr");
+    if ($rows.length === 0) {
+        return JSON.stringify(variants); // return empty array
+    }
+
+    $rows.each(function () {
+        var thickness = $(this)
+            .find('input[name="product_thickness[]"]')
+            .val()
+            .trim();
+        var quantity = $(this).find('input[name="quantity[]"]').val().trim();
+
+        // Only include rows with both values
+        if (thickness !== "" && quantity !== "") {
+            variants.push({
+                thickness: thickness,
+                quantity: quantity,
+            });
+        }
+    });
+
+    return JSON.stringify(variants);
+}
+
 $(document).ready(function () {
     $(".save-product-btn").on("click", function () {
         const button = $(this);
@@ -148,8 +176,9 @@ $(document).ready(function () {
             }
         });
 
+        var ThicknessJson = getVariantsAsJson();
 
-        // console.log(productsDataFloor);
+        // console.log(ThicknessJson);
 
         $.ajax({
             url: adminurl + "/warranty/update/product/" + productId,
@@ -178,7 +207,7 @@ $(document).ready(function () {
                 surface_treatment_type: row
                     .find(".surface_treatment_type")
                     .val(),
-                product_thickness: row.find(".product_thickness").val(),
+                product_thickness: ThicknessJson,
                 project_location: row.find(".project_location").val(),
             },
             success: function (response) {
@@ -358,4 +387,51 @@ $(document).ready(function () {
 
     //     $("#outputFloor").text(JSON.stringify(data, null, 2));
     // });
+});
+
+$(function () {
+    // Add new row
+    $(document).on("click", ".add-variant", function (e) {
+        e.preventDefault();
+
+        var $currentRow = $(this).closest("tr");
+
+        // Optional: prevent adding blank rows
+        var thickness = $currentRow
+            .find('input[name="product_thickness[]"]')
+            .val()
+            .trim();
+        var quantity = $currentRow
+            .find('input[name="quantity[]"]')
+            .val()
+            .trim();
+        if (thickness === "" || quantity === "") {
+            alert(
+                "Please fill both Thickness and Quantity before adding a new row."
+            );
+            return false;
+        }
+
+        // Clone the row
+        var $newRow = $currentRow.clone();
+
+        // Clear input values
+        $newRow.find("input").val("");
+
+        // Change Add button to Remove button
+        $newRow
+            .find("button")
+            .removeClass("btn-success add-variant")
+            .addClass("btn-danger remove-variant")
+            .html('<i class="fa fa-trash"></i>');
+
+        // Append new row
+        $("#product-variants-table tbody").append($newRow);
+    });
+
+    // Remove row
+    $(document).on("click", ".remove-variant", function (e) {
+        e.preventDefault();
+        $(this).closest("tr").remove();
+    });
 });

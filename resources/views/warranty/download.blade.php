@@ -65,30 +65,34 @@
 
     {{-- {{ dd($warrantyProduct) }} --}}
 
+    @php
+    $warrantyProduct->product_type
+    @endphp
+
 
     <button id="printButton">Print</button>
 
     <div id="printArea">
-        {{-- {{ $warrantyProduct->product_name }} --}}
+        {{-- {{ $productName }} --}}
         @if ($warrantyProduct->product_type == 4)
             @include('warranty.partials.cladcertificate')
         @elseif ($warrantyProduct->product_type == 6)
             @include('warranty.partials.sturdocertificate')
         @elseif ($warrantyProduct->product_type == 3)
             {{-- Mikasa ply  --}}
-            @if ($warrantyProduct->product_name == 'Marine Blue Blockboard')
+            @if ($productName == 'Marine Blue Blockboard')
                 @include('warranty.partials.blackbord-marineblue')
-            @elseif ($warrantyProduct->product_name == 'Fire Guardian')
+            @elseif ($productName == 'Fire Guardian')
                 @include('warranty.partials.fireGuardian')
-            @elseif ($warrantyProduct->product_name == 'Marine Blue')
+            @elseif ($productName == 'Marine Blue')
                 @include('warranty.partials.marinebluecertificate')
-            @elseif ($warrantyProduct->product_name == 'Marine')
+            @elseif ($productName == 'Marine')
                 @include('warranty.partials.marinecertificate')
-            @elseif ($warrantyProduct->product_name == 'MR+ Blockboard')
+            @elseif ($productName == 'MR+ Blockboard')
                 @include('warranty.partials.blockboard-mr')
-            @elseif ($warrantyProduct->product_name == 'MR+')
+            @elseif ($productName == 'MR+')
                 @include('warranty.partials.mrcertificate')
-            @elseif ($warrantyProduct->product_name == 'Sapphire')
+            @elseif ($productName == 'Sapphire')
                 @include('warranty.partials.sapphire-certificate')
             @endif
         @elseif ($warrantyProduct->product_type == 5)
@@ -96,9 +100,9 @@
         @elseif ($warrantyProduct->product_type == 2)
             @include('warranty.partials.mikasadoorscertificate')
         @elseif ($warrantyProduct->product_type == 1)
-            @if ($warrantyProduct->product_name == 'Atmos (10 mm)')
+            @if ($productName == 'Atmos (10 mm)')
                 @include('warranty.partials.mikasaAtmos')
-            @elseif ($warrantyProduct->product_name == 'Pristine (15 mm)')
+            @elseif ($productName == 'Pristine (15 mm)')
                 @include('warranty.partials.mikasaPristine')
             @endif
         @endif

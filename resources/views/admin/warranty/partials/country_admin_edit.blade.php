@@ -66,15 +66,9 @@
                                 </div>
                             </div> --}}
 
-                                {{-- Product Name & Warranty --}}
-                                <div class="col-md-6">
-                                    <label><strong>Product Name:</strong></label>
-                                    <p>{{ $product->product_name ?? 'N/A' }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <label><strong>Warranty:</strong></label>
-                                    <p>{{ $product->warranty_years ?? 'N/A' }}</p>
-                                </div>
+
+
+
 
                                 {{-- Additional Fields --}}
 
@@ -86,7 +80,8 @@
                                 @if ($product->product_type != 4)
                                     <div class="col-md-6">
                                         <label><strong>Invoice Date:</strong></label>
-                                        <p>{{ $product->invoice_date ?? 'N/A' }}</p>
+                                        <p>{{ $product->invoice_date ? $product->invoice_date->format('d-M-Y') : 'N/A' }}
+                                        </p>
                                     </div>
                                 @endif
 
@@ -101,7 +96,7 @@
                                 @if ($product->product_type == 5 || $product->product_type == 2 || $product->product_type == 4)
                                     <div class="col-md-6">
                                         <label><strong>Date of Handover Certificate:</strong></label>
-                                        <p>{{ $product->handover_certificate_date ?? 'N/A' }}</p>
+                                        <p>{{ $product->handover_certificate_date ? $product->handover_certificate_date->format('d-M-Y') : 'N/A' }}</p>
                                     </div>
                                 @endif
 
@@ -119,16 +114,126 @@
                                 @endif
 
                                 @if (in_array($product->product_type, [2]))
+                                    @php
+                                        $variants = json_decode($product->product_thickness ?? '[]', true);
+                                    @endphp
+
                                     <div class="col-md-6">
-                                        <label><strong>Product Thickness:</strong></label>
-                                        <p>{{ $product->product_thickness ?? 'N/A' }}</p>
+                                        <label><strong>Product Variants:</strong></label>
+
+                                        @if (!empty($variants))
+                                            <table class="table table-bordered mt-2">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Thickness</th>
+                                                        <th>Quantity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($variants as $index => $variant)
+                                                        <tr>
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $variant['thickness'] ?? 'N/A' }}</td>
+                                                            <td>{{ $variant['quantity'] ?? 'N/A' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        @else
+                                            <p>N/A</p>
+                                        @endif
                                     </div>
+
                                     <div class="col-md-6">
                                         <label><strong>Project Location:</strong></label>
                                         <p>{{ $product->project_location ?? 'N/A' }}</p>
                                     </div>
                                 @endif
                             </div>
+
+                            {{-- Product Name & Warranty --}}
+                            @if ($product->product_type == 1)
+                                {{-- Floor Products --}}
+                                @php
+                                    $productsjsonFloor = !empty($product->products_jsonFloor)
+                                        ? (is_array($product->products_jsonFloor)
+                                            ? $product->products_jsonFloor
+                                            : json_decode($product->products_jsonFloor, true))
+                                        : [];
+                                @endphp
+
+                                @if (!empty($productsjsonFloor))
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Warranty (Years)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($productsjsonFloor as $prod)
+                                                <tr>
+                                                    <td>{{ $prod['product_name'] ?? 'N/A' }}</td>
+                                                    <td>{{ $prod['quantity'] ?? 'N/A' }}</td>
+                                                    <td>{{ $prod['warranty_years'] ?? 'N/A' }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p>No floor products found.</p>
+                                @endif
+                            @elseif ($product->product_type == 3)
+                                {{-- Ply Products --}}
+                                @php
+                                    $productsjson = !empty($product->products_json)
+                                        ? (is_array($product->products_json)
+                                            ? $product->products_json
+                                            : json_decode($product->products_json, true))
+                                        : [];
+                                @endphp
+
+                                @if (!empty($productsjson))
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Warranty (Years)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($productsjson as $prod)
+                                                <tr>
+                                                    <td>{{ $prod['product_name'] ?? 'N/A' }}</td>
+                                                    <td>{{ $prod['quantity'] ?? 'N/A' }}</td>
+                                                    <td>{{ $prod['warranty_years'] ?? 'N/A' }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p>No ply products found.</p>
+                                @endif
+                            @else
+                                {{-- Single Product --}}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Warranty (Years)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ $product->product_name ?? 'N/A' }}</td>
+                                            <td>{{ $product->warranty_years ?? 'N/A' }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            @endif
 
                             {{-- Remarks --}}
                             <div class="row mb-3">

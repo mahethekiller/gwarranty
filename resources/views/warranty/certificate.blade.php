@@ -63,6 +63,11 @@
                                                                 data-title="Products for Warranty #{{ $index + 1 }}">
                                                                 <i class="fa fa-eye"></i> &nbsp; View
                                                             </a>
+                                                            <a href="#" class="view-icon-red view-products-btn-download-new"
+                                                                data-warranty_id='@json($warranty->id)'
+                                                                data-title="Products for Warranty #{{ $index + 1 }}">
+                                                                <i class="fa fa-eye"></i> &nbsp; View2
+                                                            </a>
                                                         </td>
 
 

@@ -331,6 +331,35 @@ $(document).ready(function () {
         // Show modal
         $("#productsModal").modal("show");
     });
+
+
+
+    $(document).on("click", ".view-products-btn-download-new", function (e) {
+    e.preventDefault();
+
+    let warranty_id = $(this).data("warranty_id");
+
+    $.ajax({
+        url: '/warranty/products/' + warranty_id,
+        type: 'GET',
+        success: function (response) {
+            // Set modal title
+            $("#productsModalLabel").text(response.title);
+
+            // Insert HTML
+            $("#productsModalBody").html(response.html);
+
+            // Show modal
+            $("#productsModal").modal("show");
+        },
+        error: function () {
+            alert('Failed to fetch products.');
+        }
+    });
+});
+
+
+
 });
 
 $(document).ready(function () {

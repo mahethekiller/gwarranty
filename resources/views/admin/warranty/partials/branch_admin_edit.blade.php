@@ -133,13 +133,15 @@
 
                             <div class="row mb-2">
                                 <div
-                                    class="col-md-6 {{ $product->product_type != 5 && $product->product_type != 4 ? 'd-none' : '' }} ">
+                                    class="col-md-12 {{ $product->product_type != 5 && $product->product_type != 4 ? 'd-none' : '' }} ">
                                     <label class="form-label">Execution Agency</label>
                                     <input type="text" class="form-control execution_agency"
                                         value="{{ $product->execution_agency }}">
                                 </div>
+                            </div>
+                            <div class="row mb-2">
                                 <div
-                                    class="col-md-6 {{ $product->product_type == 4 || $product->product_type == 2 || $product->product_type == 5 ? '' : 'd-none' }} ">
+                                    class="col-md-12 {{ $product->product_type == 4 || $product->product_type == 2 || $product->product_type == 5 ? '' : 'd-none' }} ">
                                     <label class="form-label">Handover
                                         Certificate Date
                                         <a class="download-icon-red"
@@ -167,14 +169,26 @@
                                 </div>
                             </div>
 
+
+
                             <div class="row mb-2 {{ $product->product_type != 2 ? 'd-none' : '' }}">
-                                <div class="col-md-12 ">
+                                {{-- <div class="col-md-12 ">
                                     <label class="form-label">Product Thickness</label>
                                     <input type="text" class="form-control product_thickness"
                                         value="{{ $product->product_thickness }}">
-                                </div>
+                                </div> --}}
+
+
+                                @include('admin.warranty.partials.thickness')
+
+
+
+
 
                             </div>
+
+
+
                             <div class="row mb-2 {{ $product->product_type != 2 ? 'd-none' : '' }}">
 
                                 <div class="col-md-12">

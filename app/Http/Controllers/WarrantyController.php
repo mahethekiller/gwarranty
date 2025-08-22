@@ -177,13 +177,11 @@ class WarrantyController extends Controller
         if ($branchEmail) {
 
             $userName = User::where('email', $branchEmail)->value('name') ?? 'Branch Admin';
-            MailHelper::sendMailBranchNewRequest($branchEmail,$userName);
+            MailHelper::sendMailBranchNewRequest($branchEmail, $userName);
         }
 
-
-
         return response()->json(['success' => true, 'message' => 'Thanks for submitting your warranty request, upon validation,
-        we will be sending warranty details in 3-5 business days.'], 200);
+        we will be sending warranty details in 3-5 business days.', ], 200);
 
     }
 
@@ -326,10 +324,25 @@ class WarrantyController extends Controller
 
     }
 
+    public function getProducts(WarrantyRegistration $warranty)
+    {
+        $warranty->load('products.product');
+
+        $html = view('warranty.partials.products_table', [
+            'products' => $warranty->products,
+        ])->render();
+
+        return response()->json([
+            'title' => "Products for Warranty #{$warranty->id}",
+            'html'  => $html,
+        ]);
+    }
+
 // Download a specific certificate.
-    public function downloadCertificate($warrantyProductId)
+    public function downloadCertificate($warrantyProductId, Request $request)
     {
         $userId          = Auth::id();
+        $productName = $request->query('product');
         $warrantyProduct = WarrantyProduct::with(['product', 'registration', 'registration.user'])->where('id', $warrantyProductId)->first();
         // $warranty = WarrantyRegistration::where('user_id', $userId)
         //     ->whereHas('products', function ($query) use ($productType) {
@@ -346,7 +359,7 @@ class WarrantyController extends Controller
         $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
         if ($warrantyProduct->product_type == 4) { //clads
             $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
-        }else if($warrantyProduct->product_type == 6){ //sturdo
+        } else if ($warrantyProduct->product_type == 6) { //sturdo
             $greenlamCladsLogoPath = public_path('assets/images/greenlam-sturdo.jpg');
         }
 
@@ -362,6 +375,7 @@ class WarrantyController extends Controller
                 "warrantyProduct"   => $warrantyProduct,
                 "logo"              => $logo,
                 "greenlamCladsLogo" => $greenlamCladsLogo,
+                "productName"       => $productName
             ]
         );
 
