@@ -58,15 +58,15 @@
                                                         {{-- <td>{{ $warranty->remarks }}</td> --}}
                                                         <td>
                                                             <!-- View Products Button -->
-                                                            <a href="#" class="view-icon-red view-products-btn-download"
+                                                            {{-- <a href="#" class="view-icon-red view-products-btn-download"
                                                                 data-products='@json($warranty->products)'
                                                                 data-title="Products for Warranty #{{ $index + 1 }}">
                                                                 <i class="fa fa-eye"></i> &nbsp; View
-                                                            </a>
+                                                            </a> --}}
                                                             <a href="#" class="view-icon-red view-products-btn-download-new"
                                                                 data-warranty_id='@json($warranty->id)'
                                                                 data-title="Products for Warranty #{{ $index + 1 }}">
-                                                                <i class="fa fa-eye"></i> &nbsp; View2
+                                                                <i class="fa fa-eye"></i> &nbsp; View
                                                             </a>
                                                         </td>
 

@@ -33,7 +33,7 @@ class WarrantyManagement extends Controller
             $productId = UserProduct::where('user_id', $userId)
                 ->value('product_id');
 
-                // echo "mKKKK".$productId;
+            // echo "mKKKK".$productId;
 
             $warranties = WarrantyRegistration::whereHas('products', function ($q) use ($productId) {
                 $q->where('product_type', $productId)
@@ -201,15 +201,16 @@ class WarrantyManagement extends Controller
 
     public function updateProduct(Request $request, $id)
     {
+
         $validations = [
             'total_quantity'            => 'required|numeric|min:1',
             'product_remarks'           => 'nullable|string|max:500',
             'product_name'              => 'sometimes|nullable|string|max:255',
             'products_json'             => 'nullable|json',
-            'products_jsonFloor'             => 'nullable|json',
+            'products_jsonFloor'        => 'nullable|json',
             'warranty_years'            => 'nullable|string|max:50',
             'date_of_issuance'          => 'nullable|date',
-            'invoice_date'              => 'nullable|date',
+            'invoice_date'              => 'nullable|date|required_if:product_type,3',
             'execution_agency'          => 'nullable|string|max:255',
             'handover_certificate_date' => 'nullable|date',
             'product_code'              => 'nullable|string|max:255',
@@ -219,6 +220,36 @@ class WarrantyManagement extends Controller
             'branch_name'               => 'nullable|string|max:255',
         ];
 
+        $product = WarrantyProduct::findOrFail($id);
+
+        if ($product->product_type == 1) {
+            $validations['product_code']           = 'required|string|max:255';
+            $validations['surface_treatment_type'] = 'required|string|max:255';
+            $validations['invoice_date']           = 'required|date';
+            $validations['products_jsonFloor']     = 'required';
+
+        } elseif ($product->product_type == 2) {
+            $validations['invoice_date']              = 'required|date';
+            $validations['handover_certificate_date'] = 'required|date';
+            $validations['product_thickness']         = 'required|string|max:255';
+            $validations['project_location']          = 'required|string|max:255';
+
+        } elseif ($product->product_type == 3) {
+            $validations['invoice_date']  = 'required|date';
+            $validations['products_json'] = 'required|json|not_in:[]';
+            $validations['branch_name']   = 'required|string|max:255';
+
+        } elseif ($product->product_type == 4) {
+            $validations['execution_agency']          = 'required|string|max:255';
+            $validations['handover_certificate_date'] = 'required|date';
+            $validations['handover_certificate_date'] = 'required|date';
+        } elseif ($product->product_type == 5) {
+            $validations['invoice_date']     = 'required|date';
+            $validations['execution_agency'] = 'required|string|max:255';
+        } elseif ($product->product_type == 6) {
+            $validations['invoice_date'] = 'required|date';
+        }
+
         if (Auth::user()->hasRole('country_admin')) {
             $validations['country_admin_status'] = 'required|in:pending,modify,approved';
         } elseif (Auth::user()->hasRole('branch_admin')) {
@@ -226,9 +257,21 @@ class WarrantyManagement extends Controller
         }
         // dd($request);
 
-        $validated = $request->validate($validations);
+        $validated = $request->validate(
+            $validations,
+            [
+                'products_json.required'      => 'Products is required.',
+                'products_jsonFloor.required' => 'Products is required.',
+                'products_json.required'      => 'Products is required.',
+                'products_json.json'          => 'Products must be a valid format.',
+                'products_json.not_in'        => 'Please add at least one product.',
 
-        $product  = WarrantyProduct::findOrFail($id);
+                'products_jsonFloor.required'      => 'Products is required.',
+                'products_jsonFloor.json'          => 'Products must be a valid format.',
+                'products_jsonFloor.not_in'        => 'Please add at least one product.',
+            ]
+        );
+
         $warranty = $product->registration; // assumes a belongsTo relation in WarrantyProduct
 
         $fieldsToLog = [
@@ -271,7 +314,7 @@ class WarrantyManagement extends Controller
             }
         }
 
-        $product->products_json = isset($validated['products_json']) ? $validated['products_json'] : null;
+        $product->products_json      = isset($validated['products_json']) ? $validated['products_json'] : null;
         $product->products_jsonFloor = isset($validated['products_jsonFloor']) ? $validated['products_jsonFloor'] : null;
         // Send email to the user
         if (isset($fieldsToLog['branch_admin_status']) && $fieldsToLog['branch_admin_status'] == 'modify') {
@@ -281,7 +324,6 @@ class WarrantyManagement extends Controller
         if (isset($fieldsToLog['branch_admin_status']) && $fieldsToLog['branch_admin_status'] == 'approved') {
 
             Log::info("Sending email to the user for product type $product->product_type");
-
 
             $userProduct = UserProduct::where('product_id', $product->product_type)
                 ->with('user')

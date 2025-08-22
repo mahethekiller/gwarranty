@@ -217,7 +217,7 @@ p{    padding-left: 22px !important;}
                             </tr>
                             <tr>
                                 <th>Invoice Date:</th>
-                                <td>{{ $warrantyProduct->execution_agency }}</td>
+                                <td>{{ $warrantyProduct->invoice_date ? $warrantyProduct->invoice_date->format('d-M-Y') : 'N/A' }}</td>
                             </tr>
                             <tr>
                                 <th>Dealer Name:</th>
