@@ -144,8 +144,11 @@ $(document).ready(function () {
         const row = button.closest(".card-body");
         const productId = button.data("id");
 
+        total_quantity = row.find(".total_quantity").val();
+
         // Collect JSON table data
         let productsData = [];
+        let qtyply = 0;
         $("#productTable tbody tr").each(function () {
             let product = $(this).find(".product_name_selectply").val();
             let qty = $(this).find(".product_qty").val();
@@ -157,10 +160,18 @@ $(document).ready(function () {
                     quantity: qty,
                     warranty_years: warranty,
                 });
+
+                qtyply = parseInt(qty) + parseInt(qtyply);
             }
         });
 
+        if (productsData.length > 0 && total_quantity != qtyply) {
+            alert("Total Quantity Mismatch");
+            return false;
+        }
+
         let productsDataFloor = [];
+        let qtyfloor = 0;
 
         $("#productTableFloor tbody tr").each(function () {
             let product = $(this).find(".product_name_selectmfloor").val();
@@ -173,10 +184,28 @@ $(document).ready(function () {
                     quantity: qty,
                     warranty_years: warranty,
                 });
+
+                qtyfloor = parseInt(qty) + parseInt(qtyfloor);
             }
         });
 
+        if (productsDataFloor.length > 0 && total_quantity != qtyfloor) {
+            alert("Total Quantity Mismatch");
+            return false;
+        }
+
         var ThicknessJson = getVariantsAsJson();
+
+        let qtyThickness = 0;
+        JSON.parse(ThicknessJson).forEach(function(element) {
+            qtyThickness += parseInt(element.quantity);
+        });
+        // alert(qtyThickness)
+
+        if (ThicknessJson.length > 0 && total_quantity != qtyThickness) {
+            alert("Total Quantity Mismatch");
+            return false;
+        }
 
         // console.log(ThicknessJson);
 
@@ -294,9 +323,18 @@ $(document).ready(function () {
             <td><button type="button" class="btn btn-danger removeRow">X</button></td>
         </tr>`;
 
-        let $row = $(newRow);
-        populateSelect($row.find(".product_name_selectply"));
-        $("#productTable tbody").append($row);
+        let numRows = $("#productTable tbody tr").length;
+        if (numRows < 7) {
+            let $row = $(newRow);
+            populateSelect($row.find(".product_name_selectply"));
+            $("#productTable tbody").append($row);
+        } else {
+            alert("You can't add more than 7 products");
+        }
+
+        // let $row = $(newRow);
+        // populateSelect($row.find(".product_name_selectply"));
+        // $("#productTable tbody").append($row);
     });
 
     // Remove row
