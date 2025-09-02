@@ -166,7 +166,7 @@ $(document).ready(function () {
         });
 
         if (productsData.length > 0 && total_quantity != qtyply) {
-            alert("Total Quantity Mismatch");
+            alert("Product quantity should be equal to total quantity!!");
             return false;
         }
 
@@ -190,7 +190,7 @@ $(document).ready(function () {
         });
 
         if (productsDataFloor.length > 0 && total_quantity != qtyfloor) {
-            alert("Total Quantity Mismatch");
+            alert("Product quantity should be equal to total quantity!!");
             return false;
         }
 
@@ -203,10 +203,10 @@ $(document).ready(function () {
         // alert(qtyThickness)
 
         if (ThicknessJson.length > 0 && total_quantity != qtyThickness) {
-            alert("Total Quantity Mismatch");
+            alert("Product quantity should be equal to total quantity!!");
             return false;
         }
-        ThicknessJson = JSON.stringify(ThicknessJson); //convert to json
+        ThicknessJson = JSON.stringify(ThicknessJson); //convert to
 
         // console.log(ThicknessJson);
 
