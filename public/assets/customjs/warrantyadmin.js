@@ -116,7 +116,7 @@ function getVariantsAsJson() {
     // Check if there are any rows
     var $rows = $("#product-variants-table tbody tr");
     if ($rows.length === 0) {
-        return JSON.stringify(variants); // return empty array
+        return variants; // return empty array
     }
 
     $rows.each(function () {
@@ -135,7 +135,7 @@ function getVariantsAsJson() {
         }
     });
 
-    return JSON.stringify(variants);
+    return variants;
 }
 
 $(document).ready(function () {
@@ -194,10 +194,10 @@ $(document).ready(function () {
             return false;
         }
 
-        var ThicknessJson = getVariantsAsJson();
+        var ThicknessJson = getVariantsAsJson(); //array
 
         let qtyThickness = 0;
-        JSON.parse(ThicknessJson).forEach(function(element) {
+        ThicknessJson.forEach(function(element) {
             qtyThickness += parseInt(element.quantity);
         });
         // alert(qtyThickness)
@@ -206,6 +206,7 @@ $(document).ready(function () {
             alert("Total Quantity Mismatch");
             return false;
         }
+        ThicknessJson = JSON.stringify(ThicknessJson); //convert to json
 
         // console.log(ThicknessJson);
 
