@@ -274,7 +274,7 @@
                             </tr>
                             <tr>
                                 <th>Total Quantity:</th>
-                                <td>{{ $warrantyProduct->total_quantity }}</td>
+                                <td>{{ $warrantyProduct->qty_purchased }}</td>
                             </tr>
                             <tr>
                                 <th>Date of Issuance:</th>
