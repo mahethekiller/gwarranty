@@ -22,13 +22,13 @@
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('user.warranty.create') }}" class="pc-link">
+                        <a href="{{ route('user.warranty.new.create') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/protection.png') }}" /></span>
                             <span class="pc-mtext">Warranty Registration</span>
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('user.warranty.modify') }}" class="pc-link">
+                        <a href="{{ route('user.warranties.index') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/edit.png') }}" /></span>
                             <span class="pc-mtext">Modify Warranty Request</span>
                         </a>

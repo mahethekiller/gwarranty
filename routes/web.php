@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WarrantyController;
+use App\Http\Controllers\WarrantyNewController;
 use App\Services\ExchangeMailer;
 use Illuminate\Support\Facades\Route;
 use Raju\EWSMail\ExchangeMailServer;
@@ -82,6 +83,26 @@ Route::middleware(['auth', 'role:user', 'profile.updated'])->group(function () {
     Route::get('/user/warranty/certificate/download/{id}', [WarrantyController::class, 'downloadCertificate'])->name('user.warranty.certificates.download');
 
     Route::get('/warranty/products/{warranty}', [WarrantyController::class, 'getProducts'])->name('warranty.products');
+
+
+});
+
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/warranty/new', [WarrantyNewController::class, 'create'])->name('warranty.new.create');
+    Route::post('/warranty/new', [WarrantyNewController::class, 'store'])->name('warranty.new.store');
+    Route::get('/warranty/get-variants/{productTypeId}', [WarrantyNewController::class, 'getVariants'])->name('warranty.getVariants'); ;
+    Route::get('/warranty/get-product-fields/{productTypeId}', [WarrantyNewController::class, 'getProductFields'])->name('warranty.getProductFields');
+
+
+    Route::get('/warranties', [WarrantyNewController::class, 'index'])->name('warranties.index');
+    Route::get('/warrantynew/{id}', [WarrantyNewController::class, 'show'])->name('warranty.show');
+    Route::get('/warrantynew/edit/{id}', [WarrantyNewController::class, 'edit'])->name('warranty.edit');
+    Route::put('/warrantynew/update/{id}', [WarrantyNewController::class, 'update'])->name('warranty.update');
+    Route::get('/warrantynew/download/{id}', [WarrantyNewController::class, 'downloadCertificate'])->name('warranty.certificate.download');
+
+       // New routes for editing modify products
+    Route::get('/warrantynew/{id}/modify-products', [WarrantyNewController::class, 'editModifyProducts'])->name('warranty.edit.modify');
+    Route::post('/warrantynew/{id}/modify-products', [WarrantyNewController::class, 'updateModifyProducts'])->name('warranty.update.modify');
 
 
 });

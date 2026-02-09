@@ -50,6 +50,21 @@ class WarrantyController extends Controller
             ]);
     }
 
+
+    public function create_new()
+    {
+        $products = Product::all();
+
+        return view('warranty.create',
+            [
+                "pageTitle"       => "Warranty Registration",
+                "pageDescription" => "Warranty Registration",
+                "pageScript"      => "warrantynew",
+                "products"        => $products,
+            ]);
+    }
+
+
     // Store a newly created warranty in storage.
     public function store(Request $request)
     {

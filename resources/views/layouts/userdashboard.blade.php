@@ -218,9 +218,13 @@
     </script>
 
     {{-- <script defer src="https://cdn.jsdelivr.net/npm/@coreui/coreui-pro@5.14.2/dist/js/coreui.bundle.min.js"></script> --}}
+
     @if ($pageScript)
         <script src="{{ asset('assets/customjs/' . $pageScript . '.js') }}"></script>
     @endif
+
+    {{-- Page specific scripts --}}
+    @stack('scripts')
 </body>
 <!-- [Body] end -->
 
