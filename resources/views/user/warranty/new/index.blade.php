@@ -26,6 +26,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Invoice Number</th>
+                                    <th>Invoice Date</th>
                                     <th>Dealer Name</th>
                                     <th>Date Submitted</th>
                                     <th>Products</th>
@@ -39,6 +40,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $warranty->invoice_number }}</td>
+                                        <td>{{ $warranty->invoice_date ? $warranty->invoice_date->format('d M, Y') : 'N/A' }}</td>
                                         <td>{{ $warranty->dealer_name }}</td>
                                         <td>{{ $warranty->created_at->format('d M, Y') }}</td>
                                         <td>
@@ -63,7 +65,19 @@
                                             @if($warranty->admin_remarks)
                                                 <small>{{ Str::limit($warranty->admin_remarks, 50) }}</small>
                                             @else
-                                                <span class="text-muted">No remarks</span>
+                                                @php
+                                                    $productRemarks = $warranty->productDetails->filter(function($p) { return !empty($p->admin_remarks); })->pluck('admin_remarks');
+                                                @endphp
+                                                @if($productRemarks->isNotEmpty())
+                                                    <small class="text-danger" title="{{ $productRemarks->implode(', ') }}">
+                                                        {{ Str::limit($productRemarks->first(), 50) }}
+                                                        @if($productRemarks->count() > 1)
+                                                            <br><span class="text-muted">(+{{ $productRemarks->count() - 1 }} more)</span>
+                                                        @endif
+                                                    </small>
+                                                @else
+                                                    <span class="text-muted">No remarks</span>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>
@@ -73,8 +87,8 @@
                                                     <i class="fa fa-eye"></i>
                                                 </a>
 
-                                                @if($warranty->status === 'modify')
-                                                    <a href="{{ route('user.warranty.edit.modify', $warranty->id) }}"
+                                                @if($warranty->status === 'modify' || $warranty->productDetails->where('status', 'modify')->count() > 0)
+                                                    <a href="{{ route('user.warranty.new.edit', $warranty->id) }}"
                                                        class="btn btn-sm btn-warning" title="Edit">
                                                         <i class="fa fa-edit"></i>
                                                     </a>

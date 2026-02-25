@@ -89,6 +89,7 @@ class WarrantyNewController extends Controller
                 'dealer_state'      => $request->dealer_state,
                 'dealer_city'       => $request->dealer_city,
                 'invoice_number'    => $request->invoice_number,
+                'invoice_date'      => $request->invoice_date,
                 'invoice_file_path' => $invoicePath,
                 'is_self_purchased' => $request->has('radio') && $request->radio === '1',
                 'status'            => 'pending',
@@ -128,6 +129,7 @@ class WarrantyNewController extends Controller
             'dealer_state'               => 'required|string',
             'dealer_city'                => 'required|string',
             'invoice_number'             => 'required|string|unique:warranty_registrations_new,invoice_number',
+            'invoice_date'               => 'required|date',
             'upload_invoice'             => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
             'products'                   => 'required|array|min:1',
             'products.*.product_type_id' => 'required|exists:product_types,id',
@@ -136,6 +138,7 @@ class WarrantyNewController extends Controller
         // Exclude current warranty from unique check for updates
         if ($excludeWarrantyId) {
             $rules['invoice_number'] = 'required|string|unique:warranty_registrations_new,invoice_number,' . $excludeWarrantyId;
+            $rules['invoice_date']   = 'required|date';
             $rules['upload_invoice'] = 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048';
         }
 
@@ -232,23 +235,23 @@ class WarrantyNewController extends Controller
     }
 
     // Get product fields configuration
-    // public function getProductFields($productTypeId)
-    // {
-    //     $productType = ProductType::findOrFail($productTypeId);
+    public function getProductFields($productTypeId)
+    {
+        $productType = ProductType::findOrFail($productTypeId);
 
-    //     $config = $this->productFieldConfig[$productType->name] ?? [
-    //         'required'  => [],
-    //         'fields'    => [],
-    //         'auto_fill' => [],
-    //     ];
+        $config = $this->productFieldConfig[$productType->name] ?? [
+            'required'  => [],
+            'fields'    => [],
+            'auto_fill' => [],
+        ];
 
-    //     return response()->json([
-    //         'fields'            => $config['fields'],
-    //         'required'          => $config['required'],
-    //         'auto_fill'         => $config['auto_fill'],
-    //         'product_type_name' => $productType->name,
-    //     ]);
-    // }
+        return response()->json([
+            'fields'            => $config['fields'],
+            'required'          => $config['required'],
+            'auto_fill'         => $config['auto_fill'],
+            'product_type_name' => $productType->name,
+        ]);
+    }
 
     // Add this method to WarrantyNewController
     public static function getCitiesByState($state)
@@ -271,6 +274,35 @@ class WarrantyNewController extends Controller
         return view('user.warranty.new.index', compact('warranties'));
     }
 
+    // List all certificates for new warranties
+    public function certificates()
+    {
+        $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('user.warranty.new.certificates', compact('warranties'));
+    }
+
+    // Get products for a new warranty via AJAX for the certificates modal
+    public function getProductsAjax($id)
+    {
+        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+            ->where('user_id', Auth::id())
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $html = view('user.warranty.new.partials.products_table', [
+            'products' => $warranty->productDetails,
+        ])->render();
+
+        return response()->json([
+            'title' => "Products for Warranty #{$warranty->invoice_number}",
+            'html'  => $html,
+        ]);
+    }
+
     // Show single warranty
     public function show($id)
     {
@@ -282,7 +314,7 @@ class WarrantyNewController extends Controller
         return view('user.warranty.new.show', compact('warranty'));
     }
 
-    // Edit warranty (only if status is 'modify')
+    // Edit warranty (only for modify status)
     public function edit($id)
     {
         $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
@@ -290,204 +322,269 @@ class WarrantyNewController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // Check if warranty has any modifiable products
-        if (! $warranty->can_be_edited) {
-            return redirect()->route('user.warranty.show', $warranty->id)
-                ->with('error', 'No products require modification. This warranty cannot be edited.');
+        // Check if warranty allows editing (has at least one modify product)
+        $canEdit = $warranty->productDetails->where('status', 'modify')->count() > 0;
+
+        if (!$canEdit) {
+            return redirect()->route('user.warranties.index')->with('error', 'This warranty cannot be edited.');
         }
 
         $productTypes = ProductType::with('variants')->where('is_active', true)->get();
 
-        return view(
-            'user.warranty.new.edit',
-
-            [
-                "pageTitle"       => "Warranty Registration",
-                "pageDescription" => "Warranty Registration",
-                'warranty'        => $warranty,
-                'productTypes'    => $productTypes,
-                "pageScript"      => "editwarrantynew",
-            ]
-        );
+        return view('user.warranty.new.edit', [
+            "pageTitle"       => "Edit Warranty Registration",
+            "pageDescription" => "Edit Warranty Registration",
+            "pageScript"      => "editwarrantynew",
+            "productTypes"    => $productTypes,
+            "warranty"        => $warranty
+        ]);
     }
 
-    // Download warranty certificate
-    public function downloadCertificate($id)
+    // Update warranty registration
+    public function update(Request $request, $id)
     {
         $warranty = WarrantyRegistrationNew::where('user_id', Auth::id())
             ->where('id', $id)
             ->firstOrFail();
 
-        // Check if warranty is approved
-        if ($warranty->status !== 'approved') {
-            return redirect()->back()->with('error', 'Certificate is only available for approved warranties.');
+        // Validate request
+        $this->validateWarrantyRequest($request, $id);
+
+        try {
+            // Update warranty details
+            $updateData = [
+                'dealer_name'    => $request->dealer_name,
+                'dealer_state'   => $request->dealer_state,
+                'dealer_city'    => $request->dealer_city,
+                'invoice_number' => $request->invoice_number,
+                'status'         => 'pending', // Reset status to pending after edit
+                'admin_remarks'  => null,       // Clear admin remarks
+            ];
+
+            // Handle invoice file upload
+            if ($request->hasFile('upload_invoice')) {
+                $invoicePath = $request->file('upload_invoice')->store('warranty/invoices', 'public');
+                $updateData['invoice_file_path'] = $invoicePath;
+            }
+
+            $warranty->update($updateData);
+
+            // Process products
+            $hasUpdates = false;
+            foreach ($request->products as $index => $productData) {
+                // We typically expect an ID for existing products
+                if (isset($productData['id'])) {
+                    $productDetail = ProductDetail::where('warranty_registration_id', $warranty->id)
+                        ->where('id', $productData['id'])
+                        ->first();
+
+                    if ($productDetail && $productDetail->status === 'modify') {
+                        // Only update if status is modify
+                        $this->updateProductDetail($productDetail, $productData);
+                        $hasUpdates = true;
+                    }
+                }
+            }
+
+            // If any product was updated, we might want to change the overall warranty status or product status
+            // For now, let's assume individual product status changes are handled by admin,
+            // but if user edits, maybe we switch it back to pending?
+            // The requirement didn't specify, but usually 'modify' -> 'pending' after safe.
+            // Let's update the modified products status to 'pending' so admin can review again.
+             if ($hasUpdates) {
+                foreach ($request->products as $productData) {
+                     if (isset($productData['id'])) {
+                        $productDetail = ProductDetail::where('warranty_registration_id', $warranty->id)
+                            ->where('id', $productData['id'])
+                            ->where('status', 'modify')
+                            ->first();
+
+                        if ($productDetail) {
+                            $productDetail->update(['status' => 'pending']);
+                        }
+                     }
+                }
+                // Also update main warranty status if needed, or let the accessor handle it.
+                // The accessor calculates based on product statuses.
+             }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Warranty registration updated successfully!',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Warranty Update Error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating. Please try again.',
+            ], 500);
+        }
+    }
+
+    // Helper to update product detail
+    private function updateProductDetail($productDetail, $data)
+    {
+        $productType = ProductType::find($data['product_type_id']);
+        $config      = $this->productFieldConfig[$productType->name] ?? [];
+
+        // Variant
+        $variantValue = null;
+        if (! empty($data['variant_id'])) {
+            $variant      = ProductTypeVariant::find($data['variant_id']);
+            $variantValue = $variant ? $variant->variant_name : null;
+        } elseif (! empty($data['variant'])) {
+            $variantValue = $data['variant'];
         }
 
-        // Generate PDF certificate (you'll need to implement this)
-        // For now, return a success message
-        return redirect()->back()->with('success', 'Certificate download initiated.');
+        // Handover Certificate
+        $handoverPath = $productDetail->handover_certificate;
+        if (isset($data['handover_certificate']) && $data['handover_certificate']) {
+            $handoverPath = $data['handover_certificate']->store('warranty/handover_certificates', 'public');
+        }
+
+        // UoM
+        $uomValue = $data['uom'] ?? $productDetail->uom;
+        if (isset($config['auto_fill']) && empty($uomValue)) {
+            $uomValue = $config['auto_fill']['uom'] ?? null;
+        }
+
+        $productDetail->update([
+            // 'product_type_id' => $data['product_type_id'], // Keep original product type? Or allow change? Assuming Keep for now as edit might be just fixing fields.
+            // actually if they change product type in UI, we should update it.
+            'product_type_id'          => $data['product_type_id'],
+            'variant_id'               => $data['variant_id'] ?? null,
+            'variant'                  => $variantValue,
+            'product_name_design'      => $data['product_name_design'] ?? null,
+            'product_category'         => $data['product_category'] ?? null,
+            'no_of_boxes'              => $data['no_of_boxes'] ?? null,
+            'quantity'                 => $data['quantity'] ?? null,
+            'area_sqft'                => $data['area_sqft'] ?? null,
+            'handover_certificate'     => $handoverPath,
+            'invoice_number'           => $data['invoice_number'] ?? null,
+            'invoice_date'             => $data['invoice_date'] ?? null,
+            'uom'                      => $uomValue,
+            'site_address'             => $data['site_address'] ?? null,
+            'product_thickness'        => $data['product_thickness'] ?? null,
+            'admin_remarks'            => null, // Clear remarks on update
+        ]);
+    }
+
+
+
+    // Download warranty certificate
+    public function downloadCertificate($id)
+    {
+        // $id is now the ProductDetail ID
+        $productDetail = ProductDetail::with(['warrantyRegistration', 'warrantyRegistration.user', 'productType', 'variant'])
+            ->findOrFail($id);
+
+        // Check if the product belongs to the authenticated user
+        if ($productDetail->warrantyRegistration->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Check if product is approved
+        if ($productDetail->status !== 'approved') {
+            return redirect()->back()->with('error', 'Certificate is only available for approved products.');
+        }
+
+        // Map ProductDetail and WarrantyRegistrationNew to what the view expects
+        // The view expects $warrantyProduct and $warrantyProduct->registration
+
+        // Remap new product type IDs to match what download.blade.php expects
+        $typeMapping = [
+            1 => 3, // Mikasa Ply
+            2 => 4, // Greenlam Clads
+            3 => 5, // MikasaFx
+            4 => 6, // Greenlam Sturdo
+            5 => 1, // Mikasa Floors
+            6 => 2, // Mikasa Doors
+        ];
+
+        $mappedProductType = $typeMapping[$productDetail->product_type_id] ?? $productDetail->product_type_id;
+
+
+        $warrantyProduct = (object)[
+            'id' => $productDetail->id,
+            'product_type' => $mappedProductType,
+            'qty_purchased' => $productDetail->quantity,
+            'total_quantity' => $productDetail->quantity,
+            'variant_name' => $productDetail->variant,
+            'product_name_design' => $productDetail->product_name_design,
+            'site_address' => $productDetail->site_address,
+            'project_location' => $productDetail->site_address,
+            'invoice_number' => $productDetail->warrantyRegistration->invoice_number,
+            'invoice_date' => $productDetail->warrantyRegistration->invoice_date ?: ($productDetail->invoice_date ?: null),
+            'handover_certificate_date' => $productDetail->warrantyRegistration->invoice_date ?: ($productDetail->invoice_date ?: null),
+            'branch_name' => 'N/A',
+            'product_code' => $productDetail->product_name_design ?: 'N/A',
+            'surface_treatment_type' => 'N/A',
+            'product_thickness' => json_encode([['thickness' => $productDetail->product_thickness ?: 'N/A', 'quantity' => $productDetail->quantity]]),
+            'warranty_years' => '10 yrs',
+            'date_of_issuance' => $productDetail->updated_at,
+            'execution_agency' => 'N/A',
+            'registration' => (object)[
+                'invoice_number' => $productDetail->warrantyRegistration->invoice_number,
+                'dealer_name' => $productDetail->warrantyRegistration->dealer_name,
+                'user' => $productDetail->warrantyRegistration->user
+            ],
+            'product' => (object)[
+                'name' => $productDetail->productType->name
+            ]
+        ];
+
+        // Some partials use specific product names to decide which template to show
+        // We use product_name_design, then variant, then productType->name
+        $productName = $productDetail->product_name_design ?: ($productDetail->variant ?: $productDetail->productType->name);
+
+        // Special handling for Floors (Old ID 1) - templates expect specific names
+        if ($mappedProductType == 1) {
+            // If it's a known variant name, ensure it matches exactly what the partial expects
+            if (stripos($productName, 'Atmos') !== false) {
+                $productName = 'Atmos (10 mm)';
+            } elseif (stripos($productName, 'Pristine') !== false) {
+                $productName = 'Pristine (15 mm)';
+            }
+        }
+
+        // Logo Logic matching WarrantyController
+        $logoPath   = public_path('assets/images/greenlam-logo.png');
+        if (!file_exists($logoPath)) {
+            $logoPath = public_path('assets/images/logo.png');
+        }
+        $logoBase64 = base64_encode(file_get_contents($logoPath));
+        $logo       = 'data:image/png;base64,' . $logoBase64;
+
+        $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
+        if ($mappedProductType == 4) { //clads
+            $greenlamCladsLogoPath = public_path('assets/images/Greenlam-clads-logo.jpg');
+        } else if ($mappedProductType == 6) { //sturdo
+            $greenlamCladsLogoPath = public_path('assets/images/greenlam-sturdo.jpg');
+        }
+
+        if (file_exists($greenlamCladsLogoPath)) {
+            $greenlamCladsLogoBase64 = base64_encode(file_get_contents($greenlamCladsLogoPath));
+            $greenlamCladsLogo       = 'data:image/jpg;base64,' . $greenlamCladsLogoBase64;
+        } else {
+            $greenlamCladsLogo = asset('assets/images/greenlam-clads-logo.png');
+        }
+
+        return view('warranty.download', [
+            "pageTitle"         => "Download Warranty Certificate",
+            "pageDescription"   => "Download Warranty Certificates",
+            "pageScript"        => "warranty",
+            "warrantyProduct"   => $warrantyProduct,
+            "logo"              => $logo,
+            "greenlamCladsLogo" => $greenlamCladsLogo,
+            "productName"       => $productName
+        ]);
     }
 
 // ----------------------------------------------------------------
 
-/**
- * Show edit form for modify products
- */
-    public function editModifyProducts($id)
-    {
-        $user = Auth::user();
 
-        // Get warranty registration
-        $warrantyRegistration = WarrantyRegistrationNew::where('id', $id)
-            ->where('user_id', $user->id)
-            ->with(['productDetails' => function ($query) {
-                $query->where('status', 'modify');
-            }])
-            ->firstOrFail();
-
-        // Get product types for dropdown
-        $productTypes = ProductType::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('user.warranty.new.edit', compact('warrantyRegistration', 'productTypes'));
-    }
-
-/**
- * Update modify products via AJAX
- */
-    public function updateModifyProducts(Request $request, $id)
-    {
-        try {
-            $user = Auth::user();
-
-            // Validate registration belongs to user
-            $warrantyRegistration = WarrantyRegistrationNew::where('id', $id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
-
-            // Get all modify products for this registration
-            $modifyProducts = ProductDetail::where('warranty_registration_id', $id)
-                ->where('status', 'modify')
-                ->get();
-
-            $updatedProducts = [];
-            $errors          = [];
-
-            // Process each product
-            foreach ($modifyProducts as $product) {
-                $productId   = $product->id;
-                $productData = $request->input("products.{$productId}", []);
-
-                // Get product type name for validation
-                $productType     = ProductType::find($product->product_type_id);
-                $productTypeName = $productType ? $productType->name : '';
-
-                // Get field configuration
-                $fieldConfig = $this->productFieldConfig[$productTypeName] ?? [];
-
-                // Build validation rules
-                $rules = [];
-                if (! empty($fieldConfig['required'])) {
-                    foreach ($fieldConfig['required'] as $field) {
-                        $rules["products.{$productId}.{$field}"] = 'required';
-                    }
-                }
-
-                // Validate required fields
-                if (! empty($rules)) {
-                    $validator = Validator::make($request->all(), $rules);
-                    if ($validator->fails()) {
-                        $errors[$productId] = $validator->errors()->all();
-                        continue;
-                    }
-                }
-
-                // Prepare update data
-                $updateData = [
-                    'variant'              => $productData['variant'] ?? $product->variant,
-                    'product_name_design'  => $productData['product_name_design'] ?? $product->product_name_design,
-                    'product_category'     => $productData['product_category'] ?? $product->product_category,
-                    'no_of_boxes'          => $productData['no_of_boxes'] ?? $product->no_of_boxes,
-                    'quantity'             => $productData['quantity'] ?? $product->quantity,
-                    'area_sqft'            => $productData['area_sqft'] ?? $product->area_sqft,
-                    'handover_certificate' => $productData['handover_certificate'] ?? $product->handover_certificate,
-                    'product_thickness'    => $productData['product_thickness'] ?? $product->product_thickness,
-                    'site_address'         => $productData['site_address'] ?? $product->site_address,
-                    'admin_remarks'        => null,      // Clear admin remarks after edit
-                    'status'               => 'pending', // Reset status to pending
-                ];
-
-                // Update product
-                $product->update($updateData);
-                $updatedProducts[] = $productId;
-            }
-
-            if (! empty($errors)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Some products failed validation',
-                    'errors'  => $errors,
-                ], 422);
-            }
-
-            // Update registration status if all modify products are updated
-            $remainingModifyProducts = ProductDetail::where('warranty_registration_id', $id)
-                ->where('status', 'modify')
-                ->count();
-
-            if ($remainingModifyProducts === 0) {
-                $warrantyRegistration->update([
-                    'admin_remarks' => null,
-                    'status'        => 'pending',
-                ]);
-            }
-
-            return response()->json([
-                'success'      => true,
-                'message'      => 'Products updated successfully',
-                'redirect_url' => route('user.warranty.show', $id),
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating products: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-/**
- * Get field configuration for product type via AJAX
- */
-    public function getProductFields($productTypeId)
-    {
-        try {
-            $productType = ProductType::find($productTypeId);
-            if (! $productType) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Product type not found',
-                ], 404);
-            }
-
-            $config = $this->productFieldConfig[$productType->name] ?? [
-                'required'  => [],
-                'fields'    => [],
-                'auto_fill' => [],
-            ];
-
-            return response()->json([
-                'success'           => true,
-                'config'            => $config,
-                'product_type_name' => $productType->name,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error fetching field configuration',
-            ], 500);
-        }
-    }
 
 }

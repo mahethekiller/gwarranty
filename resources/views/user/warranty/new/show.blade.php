@@ -73,7 +73,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Invoice Date</label>
-                            <p class="form-control-plaintext">{{ $warranty->created_at->format('d M, Y') }}</p>
+                            <p class="form-control-plaintext">{{ $warranty->invoice_date ? $warranty->invoice_date->format('d M, Y') : 'N/A' }}</p>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Invoice File</label>
@@ -105,6 +105,8 @@
                                             <th>Site Address</th>
                                             <th>Thickness</th>
                                             <th>Handover Certificate</th>
+                                            <th>Status</th>
+                                            <th>Admin Remarks</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -141,6 +143,26 @@
                                                            target="_blank" class="btn btn-sm btn-outline-info">
                                                             <i class="fa fa-eye"></i>
                                                         </a>
+                                                    @else
+                                                        N/A
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($product->status === 'approved')
+                                                        <span class="badge bg-success">Approved</span>
+                                                    @elseif($product->status === 'pending')
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    @elseif($product->status === 'rejected')
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                    @elseif($product->status === 'modify')
+                                                        <span class="badge bg-primary">Modify Required</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">{{ ucfirst($product->status) }}</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($product->admin_remarks)
+                                                        <small class="text-danger">{{ $product->admin_remarks }}</small>
                                                     @else
                                                         N/A
                                                     @endif

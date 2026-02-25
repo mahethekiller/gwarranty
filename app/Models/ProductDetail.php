@@ -39,7 +39,7 @@ class ProductDetail extends Model
     // Relationships
     public function warrantyRegistration()
     {
-        return $this->belongsTo(WarrantyRegistration::class);
+        return $this->belongsTo(WarrantyRegistrationNew::class);
     }
 
     public function productType()

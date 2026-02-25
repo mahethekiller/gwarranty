@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WarrantyController;
 use App\Http\Controllers\WarrantyNewController;
 use App\Services\ExchangeMailer;
+use App\Http\Controllers\Admin\BranchWarrantyNewController;
 use Illuminate\Support\Facades\Route;
 use Raju\EWSMail\ExchangeMailServer;
 
@@ -76,7 +77,7 @@ Route::middleware(['auth', 'role:user', 'profile.updated'])->group(function () {
 
     Route::get('/user/warranty/create', [WarrantyController::class, 'create'])->name('user.warranty.create');
     Route::post('/user/warranty/store', [WarrantyController::class, 'store'])->name('user.warranty.store');
-    Route::get('/user/warranty/modify', [WarrantyController::class, 'index'])->name('user.warranty.modify');
+    // Route::get('/user/warranty/modify', [WarrantyController::class, 'index'])->name('user.warranty.modify');
     Route::get('/user/warranty/edit/{id}', [WarrantyController::class, 'edit'])->name('user.warranty.edit');
     Route::post('/user/warranty/update/{id}', [WarrantyController::class, 'update'])->name('user.warranty.update');
     Route::get('/user/warranty/certificates', [WarrantyController::class, 'certificates'])->name('user.warranty.certificates');
@@ -95,14 +96,16 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 
 
     Route::get('/warranties', [WarrantyNewController::class, 'index'])->name('warranties.index');
+    Route::get('/warranties/certificates', [WarrantyNewController::class, 'certificates'])->name('warranties.certificates');
+    Route::get('/warranties/products-ajax/{id}', [WarrantyNewController::class, 'getProductsAjax'])->name('warranties.products-ajax');
     Route::get('/warrantynew/{id}', [WarrantyNewController::class, 'show'])->name('warranty.show');
-    Route::get('/warrantynew/edit/{id}', [WarrantyNewController::class, 'edit'])->name('warranty.edit');
-    Route::put('/warrantynew/update/{id}', [WarrantyNewController::class, 'update'])->name('warranty.update');
+
+    // Edit and Update routes
+    Route::get('/warranty/new/edit/{id}', [WarrantyNewController::class, 'edit'])->name('warranty.new.edit');
+    Route::post('/warranty/new/update/{id}', [WarrantyNewController::class, 'update'])->name('warranty.new.update');
+
     Route::get('/warrantynew/download/{id}', [WarrantyNewController::class, 'downloadCertificate'])->name('warranty.certificate.download');
 
-       // New routes for editing modify products
-    Route::get('/warrantynew/{id}/modify-products', [WarrantyNewController::class, 'editModifyProducts'])->name('warranty.edit.modify');
-    Route::post('/warrantynew/{id}/modify-products', [WarrantyNewController::class, 'updateModifyProducts'])->name('warranty.update.modify');
 
 
 });
@@ -130,6 +133,11 @@ Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(func
     Route::put('/admin/warranty/update/product/{id}', [WarrantyManagement::class, 'updateProduct'])->name('admin.warranty.updateproduct');
 
     Route::put('/admin/warranty/update/status/{id}', [WarrantyManagement::class, 'updateCountryAdminStatus'])->name('updatecountryadminstatus');
+
+    // New Warranty System - Branch Admin Routes
+    Route::get('/admin/warranties-new', [BranchWarrantyNewController::class, 'index'])->name('branch.warranties.new.index');
+    Route::get('/admin/warranty-new/edit/{id}', [BranchWarrantyNewController::class, 'edit'])->name('branch.warranties.new.edit');
+    Route::post('/admin/warranty-new/update/{id}', [BranchWarrantyNewController::class, 'update'])->name('branch.warranties.new.update');
 
 });
 

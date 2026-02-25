@@ -20,12 +20,14 @@ class WarrantyRegistrationNew extends Model
         'status',
         'admin_remarks',
         'is_self_purchased',
+        'invoice_date',
     ];
 
     protected $casts = [
         'is_self_purchased' => 'boolean',
         'created_at'        => 'datetime',
         'updated_at'        => 'datetime',
+        'invoice_date'      => 'date',
     ];
 
     // Relationships

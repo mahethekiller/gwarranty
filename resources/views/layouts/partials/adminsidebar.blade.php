@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="pc-item">
-                        <a href="{{ route('admin.warranty.index') }}" class="pc-link">
+                        <a href="{{ route('branch.warranties.new.index') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/edit.png') }}" /></span>
                             <span class="pc-mtext">Warranty Management</span>
                         </a>

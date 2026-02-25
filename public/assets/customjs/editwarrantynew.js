@@ -1,261 +1,362 @@
-// warranty-edit.js
-$(document).ready(function() {
-    // Initialize popovers for admin remarks
-    $(document).on('click', '.admin-remarks-btn', function() {
-        const remarks = $(this).data('remarks');
-        $(this).popover({
-            container: 'body',
-            placement: 'top',
-            trigger: 'focus',
-            content: remarks,
-            title: 'Admin Remarks',
-            template: '<div class="popover admin-remarks-popover" role="tooltip">' +
-                      '<div class="popover-arrow"></div>' +
-                      '<h3 class="popover-header"></h3>' +
-                      '<div class="popover-body"></div>' +
-                      '</div>'
-        }).popover('toggle');
+
+$(document).ready(function () {
+
+    // Initialize fields for existing products
+    $('.product-row').each(function() {
+        if ($(this).data('status') === 'modify') {
+            let row = $(this);
+            let productTypeId = row.find('.product-type').val();
+            let productTypeName = row.find('.product-type option:selected').text().trim();
+
+            if (productTypeId) {
+                updateRowFields(row, productTypeName);
+                getVariantsForProduct(row, productTypeId);
+                autoFillUoM(row, productTypeName);
+            }
+        }
     });
 
-    // AJAX for loading variants
-    $(document).on('change', '.product-type-select', function() {
-        const productId = $(this).data('product-id');
-        const productTypeId = $(this).val();
+    // Handle product type change (if they change type of an editable product)
+    $(document).on('change', '.product-type', function () {
+        let row = $(this).closest('tr');
+        let productTypeId = $(this).val();
 
-        if (!productTypeId) {
-            $(`.variant-field[data-product-id="${productId}"]`).hide();
-            return;
+        if (productTypeId) {
+            let productTypeName = $(this).find('option:selected').text().trim();
+            updateRowFields(row, productTypeName);
+            getVariantsForProduct(row, productTypeId);
+            autoFillUoM(row, productTypeName);
+        } else {
+            resetRowFields(row);
         }
+    });
 
-        // Show loading in variant select
-        const variantSelect = $(`.variant-select[data-product-id="${productId}"]`);
-        variantSelect.html('<option value="">Loading variants...</option>');
-        variantSelect.prop('disabled', true);
+    // Handle variant select change
+    $(document).on('change', '.variant-select', function () {
+        let variantId = $(this).val();
+        let variantInput = $(this).siblings('.variant-input');
 
-        // Fetch variants
-        const url = window.warrantyRoutes.getVariants.replace(':productTypeId', productTypeId);
+        if (variantId) {
+            variantInput.val('').hide();
+        } else {
+            let productTypeName = $(this).closest('tr').find('.product-type option:selected').text().trim();
+            if (productTypeName === 'Mikasa Ply' || productTypeName === 'Mikasa Floors') {
+                variantInput.show();
+            }
+        }
+    });
 
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(response) {
-                let options = '<option value="">Select Variant</option>';
-                if (response && response.length > 0) {
-                    response.forEach(variant => {
-                        options += `<option value="${variant.variant_name}">${variant.variant_name}</option>`;
+    // State-City dropdown interaction
+    $('#dealer_state').on('change', function () {
+        let selectedState = $(this).val();
+        let citySelect = $('#dealer_city');
+
+        citySelect.html('<option value="">Select City</option>');
+
+        if (selectedState) {
+            $.get('/get-cities/' + encodeURIComponent(selectedState))
+                .done(function (cities) {
+                    cities.forEach(function (city) {
+                        citySelect.append('<option value="' + city + '">' + city + '</option>');
                     });
-                }
-                variantSelect.html(options);
-                variantSelect.prop('disabled', false);
-                $(`.variant-field[data-product-id="${productId}"]`).show();
-            },
-            error: function(xhr) {
-                console.error('Error loading variants:', xhr);
-                variantSelect.html('<option value="">Error loading variants</option>');
-                variantSelect.prop('disabled', false);
-            }
-        });
-
-        // Fetch field configuration
-        fetchFieldConfig(productId, productTypeId);
+                })
+                .fail(function () {
+                    showErrorMessage('Failed to load cities. Please try again.');
+                });
+        }
     });
 
-    // Fetch field configuration
-    function fetchFieldConfig(productId, productTypeId) {
-        const url = window.warrantyRoutes.getProductFields.replace(':productTypeId', productTypeId);
+    // Trigger city load if state is already selected but city list might be empty (e.g. page reload)
+    // Actually the blade handles pre-selection if the list was populated, but since we rely on ajax for cities list often:
+    // We should trigger change or manually load if city is set but only one option exists.
+    // However, for edit, we might just want to load cities if state is present.
+    // But specific logic: if 'dealer_city' has value, we should ensure the list is populated.
 
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    updateDynamicFields(productId, response.config, response.product_type_name);
-                } else {
-                    console.error('Failed to fetch field config:', response.message);
-                }
-            },
-            error: function(xhr) {
-                console.error('Error fetching field config:', xhr);
-            }
-        });
-    }
+    let initialState = $('#dealer_state').val();
+    let selectedCity = $('#dealer_city').data('selected');
 
-    // Update dynamic fields based on configuration
-    function updateDynamicFields(productId, config, productTypeName) {
-        const fieldsContainer = $(`.dynamic-fields[data-product-id="${productId}"]`);
-        let html = '';
-
-        if (config.fields && config.fields.length > 0) {
-            html = '<div class="row">';
-            config.fields.forEach(field => {
-                if (field !== 'variant') {
-                    const isRequired = config.required && config.required.includes(field);
-                    const label = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-                    html += `
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label ${isRequired ? 'required-field' : ''}">${label}</label>`;
-
-                    if (field === 'product_category') {
-                        html += `
-                            <select class="form-control" name="products[${productId}][${field}]" ${isRequired ? 'required' : ''}>
-                                <option value="">Select Category</option>
-                                <option value="Interior">Interior</option>
-                                <option value="Exterior">Exterior</option>
-                            </select>`;
-                    } else if (field === 'handover_certificate') {
-                        html += `
-                            <select class="form-control" name="products[${productId}][${field}]" ${isRequired ? 'required' : ''}>
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>`;
-                    } else {
-                        const inputType = ['area_sqft', 'quantity', 'no_of_boxes'].includes(field) ? 'number' : 'text';
-                        const step = field === 'area_sqft' ? '0.01' : '1';
-                        html += `
-                            <input type="${inputType}" class="form-control dynamic-field-input"
-                                   name="products[${productId}][${field}]"
-                                   step="${step}" ${isRequired ? 'required' : ''}>`;
-                    }
-
-                    html += `</div>`;
-                }
+    if (initialState) {
+         $.get('/get-cities/' + encodeURIComponent(initialState))
+            .done(function (cities) {
+                let citySelect = $('#dealer_city');
+                citySelect.empty();
+                 citySelect.append('<option value="">Select City</option>');
+                cities.forEach(function (city) {
+                     let isSelected = (city == selectedCity) ? 'selected' : '';
+                    citySelect.append('<option value="' + city + '" '+isSelected+'>' + city + '</option>');
+                });
             });
-            html += '</div>';
-        }
-
-        fieldsContainer.html(html);
-
-        // Update UOM if auto_fill exists
-        const uomField = $(`.uom-field[name="products[${productId}][uom]"]`);
-        if (config.auto_fill && config.auto_fill.uom) {
-            uomField.val(config.auto_fill.uom);
-        }
     }
+
 
     // Form submission
-    $('#editProductsForm').on('submit', function(e) {
+    $('#warrantyFormEdit').on('submit', function (e) {
         e.preventDefault();
 
-        if (!confirm('Are you sure you want to submit these changes? The products will be sent back for admin review.')) {
-            return;
-        }
+        let formData = new FormData(this);
 
-        const formData = $(this).serialize();
-        const submitBtn = $('#submitBtn');
-        const loadingOverlay = $('#loadingOverlay');
-        const form = $(this);
-        const actionUrl = form.attr('action');
+        clearErrors();
 
-        // Validate required fields before submission
+        // Validate required fields for editable rows
         let isValid = true;
-        $('.required-field').each(function() {
-            const input = $(this).closest('.mb-3').find('select, input');
-            if (input.length && input.prop('required') && !input.val()) {
-                input.addClass('is-invalid');
-                isValid = false;
-            } else {
-                input.removeClass('is-invalid');
-            }
+        let errorMessages = [];
+
+        $('.product-row').each(function(index) {
+             if ($(this).data('status') === 'modify') {
+                let productTypeName = $(this).find('.product-type option:selected').text().trim();
+                if (productTypeName) {
+                    // Check required fields based on product type
+                    // Reusing logic from create JS
+                     switch(productTypeName) {
+                        case 'Mikasa Ply':
+                            let variantSelectPly = $(this).find('.variant-select').val();
+                            let variantInputPly = $(this).find('.variant-input').val();
+                            if (!variantSelectPly && !variantInputPly) {
+                                errorMessages.push(`Product ${index + 1}: Variant is required for Mikasa Ply`);
+                                isValid = false;
+                            }
+                            if (!$(this).find('.quantity-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Quantity is required for Mikasa Ply`);
+                                isValid = false;
+                            }
+                            break;
+                         // ... reuse other cases
+                        case 'Mikasa Floors':
+                            let variantSelectFloors = $(this).find('.variant-select').val();
+                            let variantInputFloors = $(this).find('.variant-input').val();
+                             if (!variantSelectFloors && !variantInputFloors) {
+                                errorMessages.push(`Product ${index + 1}: Variant is required for Mikasa Floors`);
+                                isValid = false;
+                            }
+                            if (!$(this).find('.area-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Area is required for Mikasa Floors`);
+                                isValid = false;
+                            }
+                            break;
+                        case 'Mikasa Doors':
+                             if (!$(this).find('.quantity-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Quantity is required for Mikasa Doors`);
+                                isValid = false;
+                            }
+                             // Handover certificate not required on Edit if already exists?
+                             // We should only enforce if file is new?
+                             // Logic: If hidden input or existing file link exists, it might be fine.
+                             // But since we don't track existing file presence in JS easily without extra fields:
+                             // Let's assume validation is handled by backend mostly or lenient here.
+                             // BUT, for text fields we enforce.
+
+                             if (!$(this).find('.thickness-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Product Thickness is required for Mikasa Doors`);
+                                isValid = false;
+                            }
+                            break;
+                         case 'Greenlam Clads':
+                            if (!$(this).find('.product-name-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Product Name/Design is required for Greenlam Clads`);
+                                isValid = false;
+                            }
+                            if (!$(this).find('.quantity-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Quantity is required for Greenlam Clads`);
+                                isValid = false;
+                            }
+                            break;
+                        case 'MikasaFx':
+                             if (!$(this).find('.product-name-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Product Name/Design is required for MikasaFx`);
+                                isValid = false;
+                            }
+                            if (!$(this).find('.quantity-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Quantity is required for MikasaFx`);
+                                isValid = false;
+                            }
+                             if (!$(this).find('.site-address-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Site Address is required for MikasaFx`);
+                                isValid = false;
+                            }
+                            break;
+                        case 'Greenlam Sturdo':
+                             if (!$(this).find('.product-category-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Product Category is required for Greenlam Sturdo`);
+                                isValid = false;
+                            }
+                            if (!$(this).find('.boxes-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: No. of Boxes is required for Greenlam Sturdo`);
+                                isValid = false;
+                            }
+                             if (!$(this).find('.site-address-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Site Address is required for Greenlam Sturdo`);
+                                isValid = false;
+                            }
+                            break;
+                     }
+                }
+             }
         });
 
         if (!isValid) {
-            showAlert('danger', 'Please fill in all required fields.');
+            showErrorMessage('<ul>' + errorMessages.map(msg => `<li>${msg}</li>`).join('') + '</ul>');
             return;
         }
 
-        // Show loading
-        submitBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
-        loadingOverlay.show();
+        let submitBtn = $(this).find('button[type="submit"]');
+        let originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
 
         $.ajax({
-            url: actionUrl,
-            method: 'POST',
+            url: $(this).attr('action'),
+            type: 'POST',
             data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                submitBtn.prop('disabled', false).html(originalText);
                 if (response.success) {
-                    showAlert('success', response.message);
-                    setTimeout(() => {
-                        if (response.redirect_url) {
-                            window.location.href = response.redirect_url;
-                        }
-                    }, 1500);
+                    showSuccessMessage(response.message);
+                    setTimeout(function() {
+                        window.location.href = "/user/warranties"; // Redirect to list
+                    }, 2000);
                 } else {
-                    showAlert('danger', response.message);
-                    if (response.errors) {
-                        // Display individual product errors
-                        for (const [productId, errors] of Object.entries(response.errors)) {
-                            const card = $(`#product-card-${productId}`);
-                            card.addClass('border-danger');
-                            const errorHtml = errors.map(error =>
-                                `<div class="text-danger"><i class="fa fa-exclamation-circle"></i> ${error}</div>`
-                            ).join('');
-                            card.find('.product-body').prepend(`<div class="alert alert-danger">${errorHtml}</div>`);
-
-                            // Scroll to first error
-                            $('html, body').animate({
-                                scrollTop: card.offset().top - 100
-                            }, 500);
-                        }
-                    }
+                    showErrorMessage(response.message);
                 }
             },
-            error: function(xhr) {
-                let message = 'An error occurred while updating products.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    message = xhr.responseJSON.message;
-                } else if (xhr.status === 422) {
-                    message = 'Validation error occurred. Please check your inputs.';
+            error: function (xhr) {
+                submitBtn.prop('disabled', false).html(originalText);
+                if (xhr.status === 422) {
+                     let errors = xhr.responseJSON.errors;
+                    let errorHtml = '<ul>';
+                    $.each(errors, function (field, messages) {
+                        errorHtml += '<li>' + messages[0] + '</li>';
+                    });
+                    errorHtml += '</ul>';
+                    showErrorMessage(errorHtml);
+                } else {
+                     showErrorMessage('An error occurred. Please try again.');
                 }
-                showAlert('danger', message);
-            },
-            complete: function() {
-                submitBtn.prop('disabled', false).html('<i class="fa fa-check"></i> Submit Updates');
-                loadingOverlay.hide();
             }
         });
     });
 
-    // Real-time validation for required fields
-    $(document).on('blur', 'select[required], input[required]', function() {
-        if ($(this).val()) {
-            $(this).removeClass('is-invalid');
-        } else {
-            $(this).addClass('is-invalid');
-        }
-    });
+     // Functions reused/adapted from create JS
 
-    // Show alert function
-    function showAlert(type, message) {
-        // Remove existing alerts
-        $('.alert-dismissible').remove();
+    function getVariantsForProduct(row, productTypeId) {
+        $.get('/user/warranty/get-variants/' + productTypeId, function (variants) {
+            let variantSelect = row.find('.variant-select');
+            let variantInput = row.find('.variant-input');
+            let selectedVariant = variantSelect.data('selected');
 
-        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-        const alertHtml = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                <i class="fa ${icon} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        $('.card-body').prepend(alertHtml);
+            variantSelect.empty().append('<option value="">Select Variant</option>');
 
-        // Auto-dismiss success alerts after 5 seconds
-        if (type === 'success') {
-            setTimeout(() => {
-                $('.alert-success').alert('close');
-            }, 5000);
+            if (variants.length > 0) {
+                variantSelect.prop('disabled', false).show();
+                variantInput.hide();
+
+                variants.forEach(function (variant) {
+                    let isSelected = (variant.id == selectedVariant) ? 'selected' : '';
+                    variantSelect.append('<option value="' + variant.id + '" '+isSelected+'>' +
+                        variant.variant_name + ' (' + variant.warranty_period + ')' +
+                        (variant.usage_type ? ' - ' + variant.usage_type : '') + '</option>');
+                });
+            } else {
+                variantSelect.prop('disabled', true).hide();
+                variantInput.show();
+            }
+        });
+    }
+
+    function autoFillUoM(row, productTypeName) {
+        let uomInput = row.find('.uom-input');
+        switch(productTypeName) {
+            case 'Mikasa Ply':
+            case 'Greenlam Clads':
+            case 'MikasaFx':
+            case 'Mikasa Doors':
+                uomInput.val('PCS').prop('readonly', true);
+                break;
+            case 'Greenlam Sturdo':
+                uomInput.val('Boxes').prop('readonly', true);
+                break;
+            case 'Mikasa Floors':
+                uomInput.val('Sq. Ft.').prop('readonly', true);
+                break;
+            default:
+                uomInput.prop('readonly', false);
         }
     }
 
-    // Trigger change event for existing product types to load variants
-    $('.product-type-select').each(function() {
-        if ($(this).val()) {
-            $(this).trigger('change');
+    function updateRowFields(row, productTypeName) {
+        // Reset row fields visibility excluding product type
+        row.find('td').slice(1).hide();
+
+        // Helper to show cols
+        // Note: index in slice depends on column index.
+        // 0: product type
+        // 1: variant
+        // 2: product name/design
+        // 3: product category
+        // 4: boxes
+        // 5: quantity
+        // 6: area
+        // 7: handover
+        // 8: invoice no
+        // 9: invoice date
+        // 10: uom
+        // 11: site address
+        // 12: thickness
+
+        // This relies on class names which is safer.
+
+        switch (productTypeName) {
+            case 'Mikasa Ply':
+                showFields(row, ['variant-col', 'quantity-col', 'uom-col']);
+                row.find('.variant-select').closest('td').show();
+                row.find('.variant-input').hide();
+                break;
+            case 'Greenlam Clads':
+                showFields(row, ['product-name-col', 'quantity-col', 'uom-col']);
+                break;
+            case 'MikasaFx':
+                showFields(row, ['product-name-col', 'quantity-col', 'site-address-col', 'uom-col']);
+                break;
+            case 'Greenlam Sturdo':
+                showFields(row, ['product-category-col', 'boxes-col', 'site-address-col', 'uom-col']);
+                break;
+            case 'Mikasa Floors':
+                showFields(row, ['variant-col', 'area-col', 'uom-col']);
+                row.find('.variant-select').closest('td').show();
+                row.find('.variant-input').hide();
+                break;
+            case 'Mikasa Doors':
+                showFields(row, ['quantity-col', 'handover-col', 'thickness-col', 'site-address-col', 'uom-col']);
+                break;
         }
-    });
+    }
+
+    function showFields(row, fieldClasses) {
+        fieldClasses.forEach(function(fieldClass) {
+            row.find('.' + fieldClass).closest('td').show();
+        });
+    }
+
+    function resetRowFields(row) {
+        row.find('td').slice(1).hide();
+        // Clear inputs? Maybe not for edit if they just misclicked.
+    }
+
+    function clearErrors() {
+        $('#formErrors').addClass('d-none').html('');
+        $('.text-danger').text('');
+    }
+
+    function showErrorMessage(message) {
+        $('#formErrors').removeClass('d-none alert-success').addClass('alert-danger').html(message);
+        $('#formErrors').show();
+        $('html, body').animate({ scrollTop: $('#formErrors').offset().top - 100 }, 500);
+    }
+
+    function showSuccessMessage(message) {
+         $('#formErrors').removeClass('d-none alert-danger').addClass('alert-success').html(message);
+        $('#formErrors').show();
+        $('html, body').animate({ scrollTop: $('#formErrors').offset().top - 100 }, 500);
+    }
+
 });

@@ -33,8 +33,14 @@
                             <span class="pc-mtext">Modify Warranty Request</span>
                         </a>
                     </li>
-                    <li class="pc-item">
+                    {{-- <li class="pc-item">
                         <a href="{{ route('user.warranty.certificates') }}" class="pc-link">
+                            <span class="pc-micon"><img src="{{ asset('assets/images/download.png') }}" /></span>
+                            <span class="pc-mtext">Download Certificates</span>
+                        </a>
+                    </li> --}}
+                    <li class="pc-item">
+                        <a href="{{ route('user.warranties.certificates') }}" class="pc-link">
                             <span class="pc-micon"><img src="{{ asset('assets/images/download.png') }}" /></span>
                             <span class="pc-mtext">Download Certificates</span>
                         </a>

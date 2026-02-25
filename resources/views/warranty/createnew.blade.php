@@ -75,6 +75,13 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="form-group">
+                                <label for="invoice_date" class="form-label custom-form-label">Invoice Date *</label>
+                                <input class="form-control" id="invoice_date" type="date" name="invoice_date" required>
+                                <span class="text-danger" id="error-invoice_date"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
                                 <label for="upload_invoice" class="form-label custom-form-label">Upload Invoice *</label>
                                 <input class="form-control" type="file" id="upload_invoice" name="upload_invoice" required>
                                 <small class="text-info">.jpg, .png, .pdf, .doc, .docx. Max size: 2MB</small>
