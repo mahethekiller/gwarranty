@@ -51,13 +51,13 @@
                                             @endforeach
                                         </td>
                                         <td>
-                                            @if($warranty->status === 'approved')
+                                            @if($warranty->overall_status === 'approved')
                                                 <span class="badge bg-success">Approved</span>
-                                            @elseif($warranty->status === 'pending')
+                                            @elseif($warranty->overall_status === 'pending')
                                                 <span class="badge bg-warning">Pending</span>
-                                            @elseif($warranty->status === 'rejected')
+                                            @elseif($warranty->overall_status === 'rejected')
                                                 <span class="badge bg-danger">Rejected</span>
-                                            @elseif($warranty->status === 'modify')
+                                            @elseif($warranty->overall_status === 'modify')
                                                 <span class="badge bg-primary">Modify Required</span>
                                             @endif
                                         </td>
@@ -87,17 +87,10 @@
                                                     <i class="fa fa-eye"></i>
                                                 </a>
 
-                                                @if($warranty->status === 'modify' || $warranty->productDetails->where('status', 'modify')->count() > 0)
+                                                @if($warranty->overall_status === 'modify')
                                                     <a href="{{ route('user.warranty.new.edit', $warranty->id) }}"
                                                        class="btn btn-sm btn-warning" title="Edit">
                                                         <i class="fa fa-edit"></i>
-                                                    </a>
-                                                @endif
-
-                                                @if($warranty->status === 'approved')
-                                                    <a href="{{ route('user.warranty.certificate.download', $warranty->id) }}"
-                                                       class="btn btn-sm btn-success" title="Download Certificate">
-                                                        <i class="fa fa-download"></i>
                                                     </a>
                                                 @endif
                                             </div>

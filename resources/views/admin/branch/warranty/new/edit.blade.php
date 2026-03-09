@@ -34,11 +34,12 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th width="25%">Product Info</th>
-                                    <th width="15%">Details</th>
+                                    <th width="20%">Product Info</th>
+                                    <th width="12%">Details</th>
+                                    <th width="18%">Site Address</th>
                                     <th width="15%">Docs</th>
-                                    <th width="20%">Status</th>
-                                    <th width="25%">Admin Remarks</th>
+                                    <th width="15%">Status</th>
+                                    <th width="20%">Admin Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,20 +48,27 @@
                                     <td>
                                         <strong>{{ $product->productType->name }}</strong>
                                         @if($product->variant) <br>Variant: {{ $product->variant }} @endif
-                                        @if($product->product_name_design) <br>Design: {{ $product->product_name_design }} @endif
+                                        @if($product->product_name_design) <br><span class="text-info">Design: {{ $product->product_name_design }}</span> @endif
                                         @if($product->product_category) <br>Cat: {{ $product->product_category }} @endif
                                     </td>
                                     <td>
-                                        @if($product->quantity) Qty: {{ $product->quantity }} {{ $product->uom }}<br> @endif
-                                        @if($product->area_sqft) Area: {{ $product->area_sqft }} Sq.Ft.<br> @endif
-                                        @if($product->no_of_boxes) Boxes: {{ $product->no_of_boxes }} @endif
+                                        @if($product->quantity) <span class="text-primary">Quantity: {{ $product->quantity }} {{ $product->uom }}</span><br> @endif
+                                        @if($product->area_sqft) <span class="text-primary">Area: {{ $product->area_sqft }} Sq.Ft.</span><br> @endif
+                                        @if($product->no_of_boxes) <span class="text-primary">Boxes: {{ $product->no_of_boxes }}</span><br> @endif
+                                        @if($product->product_thickness) <span class="text-danger">Thickness: {{ $product->product_thickness }}</span> @endif
+                                    </td>
+                                    <td>
+                                        {{ $product->site_address ?? 'N/A' }}
                                     </td>
                                     <td>
                                         @if($product->handover_certificate)
                                             <a href="{{ Storage::url($product->handover_certificate) }}" target="_blank" class="btn btn-xs btn-info mb-1">Handover Cert.</a>
                                         @endif
                                         @if($product->invoice_number)
-                                        <br><small>Inv: {{ $product->invoice_number }}</small>
+                                            <br><small>Inv: {{ $product->invoice_number }}</small>
+                                        @endif
+                                        @if($product->invoice_date)
+                                            <br><small>Date: {{ $product->invoice_date->format('d M Y') }}</small>
                                         @endif
                                     </td>
                                     <td>

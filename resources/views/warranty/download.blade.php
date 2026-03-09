@@ -93,7 +93,7 @@
             @elseif ($productName == 'MR+')
                 @include('warranty.partials.mrcertificate')
             @elseif ($productName == 'Sapphire')
-                @include('warranty.partials.sapphire-certificate')
+                @include('warranty.partials.sapphirecertificate')
             @endif
         @elseif ($warrantyProduct->product_type == 5)
             @include('warranty.partials.NewMika-FXcertificate')

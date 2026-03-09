@@ -112,6 +112,8 @@ class BranchWarrantyNewController extends Controller
              $status = 'pending';
          } elseif (array_unique($productStatuses) === ['approved']) {
              $status = 'approved';
+         } elseif (in_array('approved', $productStatuses)) {
+             $status = 'approved';
          } elseif (in_array('rejected', $productStatuses)) {
              $status = 'rejected';
          }

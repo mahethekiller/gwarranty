@@ -128,6 +128,10 @@ $(document).ready(function () {
                                 errorMessages.push(`Product ${index + 1}: Variant is required for Mikasa Floors`);
                                 isValid = false;
                             }
+                            if (!$(this).find('.boxes-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: No. of Boxes is required for Mikasa Floors`);
+                                isValid = false;
+                            }
                             if (!$(this).find('.area-input').val()) {
                                 errorMessages.push(`Product ${index + 1}: Area is required for Mikasa Floors`);
                                 isValid = false;
@@ -179,8 +183,8 @@ $(document).ready(function () {
                                 errorMessages.push(`Product ${index + 1}: Product Category is required for Greenlam Sturdo`);
                                 isValid = false;
                             }
-                            if (!$(this).find('.boxes-input').val()) {
-                                errorMessages.push(`Product ${index + 1}: No. of Boxes is required for Greenlam Sturdo`);
+                            if (!$(this).find('.quantity-input').val()) {
+                                errorMessages.push(`Product ${index + 1}: Quantity is required for Greenlam Sturdo`);
                                 isValid = false;
                             }
                              if (!$(this).find('.site-address-input').val()) {
@@ -273,10 +277,10 @@ $(document).ready(function () {
                 uomInput.val('PCS').prop('readonly', true);
                 break;
             case 'Greenlam Sturdo':
-                uomInput.val('Boxes').prop('readonly', true);
+                uomInput.val('PCS').prop('readonly', true);
                 break;
             case 'Mikasa Floors':
-                uomInput.val('Sq. Ft.').prop('readonly', true);
+                uomInput.val('Boxes').prop('readonly', true);
                 break;
             default:
                 uomInput.prop('readonly', false);
@@ -318,10 +322,10 @@ $(document).ready(function () {
                 showFields(row, ['product-name-col', 'quantity-col', 'site-address-col', 'uom-col']);
                 break;
             case 'Greenlam Sturdo':
-                showFields(row, ['product-category-col', 'boxes-col', 'site-address-col', 'uom-col']);
+                showFields(row, ['product-category-col', 'quantity-col', 'site-address-col', 'uom-col']);
                 break;
             case 'Mikasa Floors':
-                showFields(row, ['variant-col', 'area-col', 'uom-col']);
+                showFields(row, ['variant-col', 'boxes-col', 'area-col', 'uom-col']);
                 row.find('.variant-select').closest('td').show();
                 row.find('.variant-input').hide();
                 break;

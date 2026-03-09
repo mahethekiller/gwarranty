@@ -87,6 +87,11 @@ class WarrantyRegistrationNew extends Model
             return 'approved';
         }
 
+        // If any product is approved (if we reach here, it means there's a mix of approved and rejected)
+        if (in_array('approved', $productStatuses)) {
+            return 'approved';
+        }
+
         // If any product is rejected
         if (in_array('rejected', $productStatuses)) {
             return 'rejected';

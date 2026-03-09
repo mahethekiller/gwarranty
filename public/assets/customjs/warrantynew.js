@@ -282,6 +282,10 @@ $(document).ready(function () {
                             errorMessages.push(`Row ${index + 1}: Variant is required for Mikasa Floors`);
                             isValid = false;
                         }
+                        if (!$(this).find('.boxes-input').val()) {
+                            errorMessages.push(`Row ${index + 1}: No. of Boxes is required for Mikasa Floors`);
+                            isValid = false;
+                        }
                         if (!$(this).find('.area-input').val()) {
                             errorMessages.push(`Row ${index + 1}: Area is required for Mikasa Floors`);
                             isValid = false;
@@ -330,8 +334,8 @@ $(document).ready(function () {
                             errorMessages.push(`Row ${index + 1}: Product Category is required for Greenlam Sturdo`);
                             isValid = false;
                         }
-                        if (!$(this).find('.boxes-input').val()) {
-                            errorMessages.push(`Row ${index + 1}: No. of Boxes is required for Greenlam Sturdo`);
+                        if (!$(this).find('.quantity-input').val()) {
+                            errorMessages.push(`Row ${index + 1}: Quantity is required for Greenlam Sturdo`);
                             isValid = false;
                         }
                         if (!$(this).find('.site-address-input').val()) {
@@ -528,10 +532,10 @@ function autoFillUoM(row, productTypeName) {
             uomInput.val('PCS').prop('readonly', true);
             break;
         case 'Greenlam Sturdo':
-            uomInput.val('Boxes').prop('readonly', true);
+            uomInput.val('PCS').prop('readonly', true);
             break;
         case 'Mikasa Floors':
-            uomInput.val('Sq. Ft.').prop('readonly', true);
+            uomInput.val('Boxes').prop('readonly', true);
             break;
         default:
             uomInput.val('').prop('readonly', false);
@@ -570,18 +574,19 @@ function updateRowFields(row, productTypeName) {
             break;
 
         case 'Greenlam Sturdo':
-            showFields(row, ['product-category-col', 'boxes-col', 'site-address-col', 'uom-col']);
+            showFields(row, ['product-category-col', 'quantity-col', 'site-address-col', 'uom-col']);
             row.find('.variant-select').closest('td').hide();
             row.find('.variant-input').hide();
             row.find('.product-category-input').prop('required', true);
-            row.find('.boxes-input').prop('required', true);
+            row.find('.quantity-input').prop('required', true);
             row.find('.site-address-input').prop('required', true);
             break;
 
         case 'Mikasa Floors':
-            showFields(row, ['variant-col', 'area-col', 'uom-col']);
+            showFields(row, ['variant-col', 'boxes-col', 'area-col', 'uom-col']);
             row.find('.variant-select').closest('td').show();
             row.find('.variant-input').hide();
+            row.find('.boxes-input').prop('required', true);
             row.find('.area-input').prop('required', true);
             break;
 

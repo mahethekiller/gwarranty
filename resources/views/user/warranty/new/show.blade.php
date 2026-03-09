@@ -20,7 +20,7 @@
                 </div>
                 <div class="card-body">
                     <!-- Status Alert -->
-                    @if($warranty->status === 'modify')
+                    @if($warranty->overall_status === 'modify')
                         <div class="alert alert-warning">
                             <h6><i class="fa fa-exclamation-triangle me-2"></i> Modification Required</h6>
                             <p class="mb-0">{{ $warranty->admin_remarks ?? 'Please update your warranty information as requested by the administrator.' }}</p>
@@ -28,15 +28,20 @@
                                 <i class="fa fa-edit me-1"></i> Edit Now
                             </a>
                         </div>
-                    @elseif($warranty->status === 'approved')
+                    @elseif($warranty->overall_status === 'approved')
                         <div class="alert alert-success">
                             <h6><i class="fa fa-check-circle me-2"></i> Warranty Approved</h6>
                             <p class="mb-0">Your warranty has been approved. You can download the certificate.</p>
-                            <a href="{{ route('user.warranty.certificate.download', $warranty->id) }}" class="btn btn-success btn-sm mt-2">
-                                <i class="fa fa-download me-1"></i> Download Certificate
-                            </a>
+                            @php
+                                $approvedProduct = $warranty->productDetails->where('status', 'approved')->first();
+                            @endphp
+                            @if($approvedProduct)
+                                <a href="{{ route('user.warranty.certificate.download', $approvedProduct->id) }}" class="btn btn-success btn-sm mt-2">
+                                    <i class="fa fa-download me-1"></i> Download Certificate
+                                </a>
+                            @endif
                         </div>
-                    @elseif($warranty->status === 'rejected')
+                    @elseif($warranty->overall_status === 'rejected')
                         <div class="alert alert-danger">
                             <h6><i class="fa fa-times-circle me-2"></i> Warranty Rejected</h6>
                             <p class="mb-0">{{ $warranty->admin_remarks ?? 'Your warranty registration has been rejected.' }}</p>

@@ -28,14 +28,14 @@ class WarrantyNewController extends Controller
             'auto_fill' => ['uom' => 'PCS'],
         ],
         'Greenlam Sturdo' => [
-            'required'  => ['product_category', 'no_of_boxes', 'site_address'],
-            'fields'    => ['product_category', 'no_of_boxes', 'site_address'],
-            'auto_fill' => ['uom' => 'Boxes'],
+            'required'  => ['product_category', 'quantity', 'site_address'],
+            'fields'    => ['product_category', 'quantity', 'site_address'],
+            'auto_fill' => ['uom' => 'PCS'],
         ],
         'Mikasa Floors'   => [
-            'required'  => ['variant'],
-            'fields'    => ['variant', 'area_sqft'],
-            'auto_fill' => ['uom' => 'Sq. Ft.'],
+            'required'  => ['variant', 'no_of_boxes', 'area_sqft'],
+            'fields'    => ['variant', 'no_of_boxes', 'area_sqft'],
+            'auto_fill' => ['uom' => 'Boxes'],
         ],
         'Mikasa Doors'    => [
             'required'  => ['quantity', 'handover_certificate', 'product_thickness'],
