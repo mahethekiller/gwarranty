@@ -19,9 +19,11 @@
                     </div>
                     <div class="col-md-4">
                         <strong>Invoice No:</strong> {{ $warranty->invoice_number }}<br>
-                        <strong>Invoice Date:</strong> {{ $warranty->invoice_date ? $warranty->invoice_date->format('d M, Y') : 'N/A' }}<br>
-                        @if($warranty->invoice_file_path)
-                            <a href="{{ Storage::url($warranty->invoice_file_path) }}" target="_blank" class="btn btn-xs btn-info mt-1">View Invoice</a>
+                        <strong>Invoice Date:</strong>
+                        {{ $warranty->invoice_date ? $warranty->invoice_date->format('d M, Y') : 'N/A' }}<br>
+                        @if ($warranty->invoice_file_path)
+                            <a href="{{ Storage::url($warranty->invoice_file_path) }}" target="_blank"
+                                class="btn btn-xs btn-info mt-1">View Invoice</a>
                         @endif
                     </div>
                 </div>
@@ -37,53 +39,93 @@
                                     <th width="20%">Product Info</th>
                                     <th width="12%">Details</th>
                                     <th width="18%">Site Address</th>
-                                    <th width="15%">Docs</th>
+                                    {{-- <th width="15%">Docs</th> --}}
                                     <th width="15%">Status</th>
+                                    <th width="10%">Total Qty <span class="text-danger">*</span></th>
                                     <th width="20%">Admin Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($warranty->productDetails as $index => $product)
-                                <tr>
-                                    <td>
-                                        <strong>{{ $product->productType->name }}</strong>
-                                        @if($product->variant) <br>Variant: {{ $product->variant }} @endif
-                                        @if($product->product_name_design) <br><span class="text-info">Design: {{ $product->product_name_design }}</span> @endif
-                                        @if($product->product_category) <br>Cat: {{ $product->product_category }} @endif
-                                    </td>
-                                    <td>
-                                        @if($product->quantity) <span class="text-primary">Quantity: {{ $product->quantity }} {{ $product->uom }}</span><br> @endif
-                                        @if($product->area_sqft) <span class="text-primary">Area: {{ $product->area_sqft }} Sq.Ft.</span><br> @endif
-                                        @if($product->no_of_boxes) <span class="text-primary">Boxes: {{ $product->no_of_boxes }}</span><br> @endif
-                                        @if($product->product_thickness) <span class="text-danger">Thickness: {{ $product->product_thickness }}</span> @endif
-                                    </td>
-                                    <td>
-                                        {{ $product->site_address ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        @if($product->handover_certificate)
-                                            <a href="{{ Storage::url($product->handover_certificate) }}" target="_blank" class="btn btn-xs btn-info mb-1">Handover Cert.</a>
-                                        @endif
-                                        @if($product->invoice_number)
-                                            <br><small>Inv: {{ $product->invoice_number }}</small>
-                                        @endif
-                                        @if($product->invoice_date)
-                                            <br><small>Date: {{ $product->invoice_date->format('d M Y') }}</small>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <input type="hidden" name="products[{{ $index }}][id]" value="{{ $product->id }}">
-                                        <select class="form-select form-select-sm" name="products[{{ $index }}][status]">
-                                            <option value="pending" {{ $product->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="approved" {{ $product->status === 'approved' ? 'selected' : '' }}>Approved</option>
-                                            <option value="modify" {{ $product->status === 'modify' ? 'selected' : '' }}>Modify Required</option>
-                                            <option value="rejected" {{ $product->status === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <textarea class="form-control form-control-sm" name="products[{{ $index }}][admin_remarks]" rows="2" placeholder="Remarks for customer...">{{ $product->admin_remarks }}</textarea>
-                                    </td>
-                                </tr>
+                                @foreach ($warranty->productDetails as $index => $product)
+                                    <tr>
+                                        <td>
+                                            <strong>{{ $product->productType->name }}</strong>
+                                            @php
+                                                $variantDisp = $product->variant ?: ($product->productTypeVariant->variant_name ?? null);
+                                                $usageType = $product->productTypeVariant->usage_type ?? null;
+                                            @endphp
+                                            @if ($variantDisp)
+                                                <br>Variant: {{ $variantDisp }}
+                                                @if($usageType)
+                                                    <span class="text-muted">({{ $usageType }})</span>
+                                                @endif
+                                            @endif
+                                            @if ($product->product_name_design)
+                                                <br><span class="text-info">Design:
+                                                    {{ $product->product_name_design }}</span>
+                                            @endif
+                                            @if ($product->product_category)
+                                                <br>Cat: {{ $product->product_category }}
+                                            @endif
+                                            @if ($product->handover_certificate)
+                                                <br><a href="{{ Storage::url($product->handover_certificate) }}"
+                                                    target="_blank" class="btn btn-info mb-1"
+                                                    style="font-size: 13px; padding: 2px 4px; line-height: 1.5;"><i
+                                                        class="fa fa-file-pdf-o"></i> Handover Certificate.</a>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($product->quantity)
+                                                <span class="text-primary">Quantity: {{ $product->quantity }}
+                                                    {{ $product->uom }}</span><br>
+                                            @endif
+                                            @if ($product->area_sqft)
+                                                <span class="text-primary">Area: {{ $product->area_sqft }}
+                                                    Sq.Ft.</span><br>
+                                            @endif
+                                            @if ($product->no_of_boxes)
+                                                <span class="text-primary">Boxes:
+                                                    {{ $product->no_of_boxes }}</span><br>
+                                            @endif
+                                            @if ($product->product_thickness)
+                                                <span class="text-danger">Thickness:
+                                                    {{ $product->product_thickness }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $product->site_address ?? 'N/A' }}
+                                        </td>
+
+                                        <td>
+                                            <input type="hidden" name="products[{{ $index }}][id]"
+                                                value="{{ $product->id }}">
+                                            <select class="form-select form-select-sm"
+                                                name="products[{{ $index }}][status]">
+                                                <option value="pending"
+                                                    {{ $product->status === 'pending' ? 'selected' : '' }}>Pending
+                                                </option>
+                                                <option value="approved"
+                                                    {{ $product->status === 'approved' ? 'selected' : '' }}>Approved
+                                                </option>
+                                                <option value="modify"
+                                                    {{ $product->status === 'modify' ? 'selected' : '' }}>Modify
+                                                    Required</option>
+                                                <option value="rejected"
+                                                    {{ $product->status === 'rejected' ? 'selected' : '' }}>Rejected
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm"
+                                                name="products[{{ $index }}][total_quantity]"
+                                                value="{{ $product->total_quantity ?? '' }}" min="0"
+                                                placeholder="Total Qty" required>
+                                        </td>
+                                        <td>
+                                            <textarea class="form-control form-control-sm" name="products[{{ $index }}][admin_remarks]" rows="2"
+                                                placeholder="Remarks for customer...">{{ $product->admin_remarks }}</textarea>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

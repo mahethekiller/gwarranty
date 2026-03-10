@@ -49,7 +49,7 @@ class BranchWarrantyNewController extends Controller
         $cities = BranchEmail::where('commercial_email', $branchEmail)->pluck('city')->toArray();
         $states = BranchEmail::where('commercial_email', $branchEmail)->pluck('state')->toArray();
 
-        $warranty = WarrantyRegistrationNew::with(['user', 'productDetails', 'productDetails.productType', 'productDetails.variant'])
+        $warranty = WarrantyRegistrationNew::with(['user', 'productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('id', $id)
             ->where(function ($query) use ($cities, $states) {
                  $query->whereIn('dealer_city', $cities)
@@ -76,6 +76,7 @@ class BranchWarrantyNewController extends Controller
              'products.*.id' => 'required|exists:product_details,id',
              'products.*.status' => 'required|in:pending,approved,modify,rejected',
              'products.*.admin_remarks' => 'nullable|string|max:1000',
+             'products.*.total_quantity' => 'required|integer|min:0',
         ]);
 
         foreach ($request->products as $productData) {
@@ -87,6 +88,7 @@ class BranchWarrantyNewController extends Controller
                 $productDetail->update([
                     'status' => $productData['status'],
                     'admin_remarks' => $productData['admin_remarks'] ?? null,
+                    'total_quantity' => $productData['total_quantity'] ?? $productDetail->total_quantity,
                 ]);
             }
         }

@@ -26,13 +26,15 @@ class ProductDetail extends Model
         'site_address',
         'product_thickness',
         'status',
-        'admin_remarks'
+        'admin_remarks',
+        'total_quantity'
     ];
 
     protected $casts = [
         'invoice_date' => 'date',
         'no_of_boxes' => 'integer',
         'quantity' => 'integer',
+        'total_quantity' => 'integer',
         'area_sqft' => 'decimal:2'
     ];
 
@@ -47,9 +49,9 @@ class ProductDetail extends Model
         return $this->belongsTo(ProductType::class);
     }
 
-    public function variant()
+    public function productTypeVariant()
     {
-        return $this->belongsTo(ProductTypeVariant::class);
+        return $this->belongsTo(ProductTypeVariant::class, 'variant_id');
     }
 
     // Scopes

@@ -232,11 +232,11 @@ p{    padding-left: 22px !important;}
                                 <td>{{ $warrantyProduct->date_of_issuance ? $warrantyProduct->date_of_issuance->format('d-M-Y') : 'N/A' }}
                                 </td>
                             </tr>
-                             <tr>
+                             {{-- <tr>
                                 <th>Branch name:</th>
                                  <td>{{ $warrantyProduct->branch_name }}</td>
                                 </td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
 

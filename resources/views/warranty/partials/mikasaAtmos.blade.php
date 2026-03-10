@@ -255,14 +255,14 @@
                                     $warrantyProduct->date_of_issuance->format('d-M-Y') : 'N/A' }}
                                 </td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <th>Product Code:</th>
                                 <td>{{ $warrantyProduct->product_code }}</td>
-                            </tr>
-                            <tr>
+                            </tr> --}}
+                            {{-- <tr>
                                 <th>Type of Surface Treatment :</th>
                                 <td>{{ $warrantyProduct->surface_treatment_type }}</td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
 

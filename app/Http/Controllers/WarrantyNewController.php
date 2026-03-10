@@ -266,7 +266,7 @@ class WarrantyNewController extends Controller
     // List all warranties for the authenticated user
     public function index()
     {
-        $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+        $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -277,7 +277,7 @@ class WarrantyNewController extends Controller
     // List all certificates for new warranties
     public function certificates()
     {
-        $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+        $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -288,7 +288,7 @@ class WarrantyNewController extends Controller
     // Get products for a new warranty via AJAX for the certificates modal
     public function getProductsAjax($id)
     {
-        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
             ->where('id', $id)
             ->firstOrFail();
@@ -306,7 +306,7 @@ class WarrantyNewController extends Controller
     // Show single warranty
     public function show($id)
     {
-        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
             ->where('id', $id)
             ->firstOrFail();
@@ -317,7 +317,7 @@ class WarrantyNewController extends Controller
     // Edit warranty (only for modify status)
     public function edit($id)
     {
-        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.variant'])
+        $warranty = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
             ->where('id', $id)
             ->firstOrFail();
@@ -478,7 +478,7 @@ class WarrantyNewController extends Controller
     public function downloadCertificate($id)
     {
         // $id is now the ProductDetail ID
-        $productDetail = ProductDetail::with(['warrantyRegistration', 'warrantyRegistration.user', 'productType', 'variant'])
+        $productDetail = ProductDetail::with(['warrantyRegistration', 'warrantyRegistration.user', 'productType', 'productTypeVariant'])
             ->findOrFail($id);
 
         // Check if the product belongs to the authenticated user
@@ -507,11 +507,20 @@ class WarrantyNewController extends Controller
         $mappedProductType = $typeMapping[$productDetail->product_type_id] ?? $productDetail->product_type_id;
 
 
+        // Fetch dynamic warranty years from variant if available
+        $warrantyYears = '10 yrs';
+        if ($productDetail->variant_id) {
+            $variantObj = ProductTypeVariant::find($productDetail->variant_id);
+            if ($variantObj && $variantObj->warranty_period) {
+                $warrantyYears = $variantObj->warranty_period;
+            }
+        }
+
         $warrantyProduct = (object)[
             'id' => $productDetail->id,
             'product_type' => $mappedProductType,
-            'qty_purchased' => $productDetail->quantity,
-            'total_quantity' => $productDetail->quantity,
+            'qty_purchased' => $productDetail->total_quantity ?: $productDetail->quantity,
+            'total_quantity' => $productDetail->total_quantity ?: $productDetail->quantity,
             'variant_name' => $productDetail->variant,
             'product_name_design' => $productDetail->product_name_design,
             'site_address' => $productDetail->site_address,
@@ -522,8 +531,8 @@ class WarrantyNewController extends Controller
             'branch_name' => 'N/A',
             'product_code' => $productDetail->product_name_design ?: 'N/A',
             'surface_treatment_type' => 'N/A',
-            'product_thickness' => json_encode([['thickness' => $productDetail->product_thickness ?: 'N/A', 'quantity' => $productDetail->quantity]]),
-            'warranty_years' => '10 yrs',
+            'product_thickness' => json_encode([['thickness' => $productDetail->product_thickness ?: 'N/A', 'quantity' => $productDetail->total_quantity ?: $productDetail->quantity]]),
+            'warranty_years' => $warrantyYears,
             'date_of_issuance' => $productDetail->updated_at,
             'execution_agency' => 'N/A',
             'registration' => (object)[

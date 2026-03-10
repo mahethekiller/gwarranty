@@ -7,8 +7,16 @@
     <tr>
         <td>
             {{ $product->productType->name }}
-            @if($product->variant)
-                <br><small class="text-muted">{{ $product->variant }}</small>
+            @php
+                $variantDisp = $product->variant ?: ($product->productTypeVariant->variant_name ?? null);
+                $usageType = $product->productTypeVariant->usage_type ?? null;
+            @endphp
+            @if($variantDisp)
+                <br><small class="text-muted">{{ $variantDisp }}
+                    @if($usageType)
+                        ({{ $usageType }})
+                    @endif
+                </small>
             @endif
         </td>
         <td>
