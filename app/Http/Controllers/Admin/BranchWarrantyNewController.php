@@ -75,8 +75,46 @@ class BranchWarrantyNewController extends Controller
              'products' => 'required|array',
              'products.*.id' => 'required|exists:product_details,id',
              'products.*.status' => 'required|in:pending,approved,modify,rejected',
-             'products.*.admin_remarks' => 'nullable|string|max:1000',
-             'products.*.total_quantity' => 'required|integer|min:0',
+             'products.*.admin_remarks' => [
+                 'nullable',
+                 'string',
+                 'max:1000',
+                 function ($attribute, $value, $fail) use ($request) {
+                     preg_match('/products\.(\d+)\.admin_remarks/', $attribute, $matches);
+                     $index = $matches[1] ?? null;
+
+                     if ($index !== null) {
+                         $status = $request->input("products.$index.status");
+                         if (in_array($status, ['rejected', 'modify']) && empty($value)) {
+                             $productId = $request->input("products.$index.id");
+                             $productDetail = ProductDetail::find($productId);
+                             $productName = $productDetail ? $productDetail->productType->name : "Product #".($index + 1);
+                             $fail("Admin Remarks are required for $productName when status is " . ucfirst($status) . ".");
+                         }
+                     }
+                 },
+             ],
+             'products.*.total_quantity' => [
+                 'required',
+                 'integer',
+                 'min:1',
+                 function ($attribute, $value, $fail) use ($request) {
+                     // Extract index from attribute like products.0.total_quantity
+                     preg_match('/products\.(\d+)\.total_quantity/', $attribute, $matches);
+                     $index = $matches[1] ?? null;
+
+                     if ($index !== null) {
+                         $productId = $request->input("products.$index.id");
+                         $productDetail = ProductDetail::find($productId);
+                         if ($productDetail) {
+                             $maxQty = $productDetail->quantity ?? $productDetail->no_of_boxes;
+                             if ($value > $maxQty) {
+                                 $fail("The Total Qty for {$productDetail->productType->name} cannot be greater than the original quantity ({$maxQty}).");
+                             }
+                         }
+                     }
+                 },
+             ],
         ]);
 
         foreach ($request->products as $productData) {
@@ -85,11 +123,14 @@ class BranchWarrantyNewController extends Controller
                 ->first();
 
             if ($productDetail) {
-                $productDetail->update([
-                    'status' => $productData['status'],
-                    'admin_remarks' => $productData['admin_remarks'] ?? null,
-                    'total_quantity' => $productData['total_quantity'] ?? $productDetail->total_quantity,
-                ]);
+                // Only allow update if current status is NOT approved or rejected
+                if (!in_array($productDetail->status, ['approved', 'rejected'])) {
+                    $productDetail->update([
+                        'status' => $productData['status'],
+                        'admin_remarks' => $productData['admin_remarks'] ?? null,
+                        'total_quantity' => $productData['total_quantity'] ?? $productDetail->total_quantity,
+                    ]);
+                }
             }
         }
 

@@ -42,7 +42,7 @@
                                     {{-- <th width="15%">Docs</th> --}}
                                     <th width="15%">Status</th>
                                     <th width="10%">Total Qty <span class="text-danger">*</span></th>
-                                    <th width="20%">Admin Remarks</th>
+                                    <th width="20%">Admin Remarks <small class="text-danger">(Required for Rejected/Modify)</small></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,37 +93,49 @@
                                             @endif
                                         </td>
                                         <td>
-                                            {{ $product->site_address ?? 'N/A' }}
+                                            {{ $product->site_address ?? '-' }}
                                         </td>
 
-                                        <td>
-                                            <input type="hidden" name="products[{{ $index }}][id]"
-                                                value="{{ $product->id }}">
-                                            <select class="form-select form-select-sm"
-                                                name="products[{{ $index }}][status]">
-                                                <option value="pending"
-                                                    {{ $product->status === 'pending' ? 'selected' : '' }}>Pending
-                                                </option>
-                                                <option value="approved"
-                                                    {{ $product->status === 'approved' ? 'selected' : '' }}>Approved
-                                                </option>
-                                                <option value="modify"
-                                                    {{ $product->status === 'modify' ? 'selected' : '' }}>Modify
-                                                    Required</option>
-                                                <option value="rejected"
-                                                    {{ $product->status === 'rejected' ? 'selected' : '' }}>Rejected
-                                                </option>
-                                            </select>
-                                        </td>
+                                         <td>
+                                             @php
+                                                 $isLocked = in_array($product->status, ['approved', 'rejected']);
+                                             @endphp
+                                             <input type="hidden" name="products[{{ $index }}][id]"
+                                                 value="{{ $product->id }}">
+                                             <select class="form-select form-select-sm status-select" data-index="{{ $index }}"
+                                                 name="products[{{ $index }}][status]" {{ $isLocked ? 'disabled' : '' }}>
+                                                 <option value="pending"
+                                                     {{ $product->status === 'pending' ? 'selected' : '' }}>Pending
+                                                 </option>
+                                                 <option value="approved"
+                                                     {{ $product->status === 'approved' ? 'selected' : '' }}>Approved
+                                                 </option>
+                                                 <option value="modify"
+                                                     {{ $product->status === 'modify' ? 'selected' : '' }}>Modify
+                                                     Required</option>
+                                                 <option value="rejected"
+                                                     {{ $product->status === 'rejected' ? 'selected' : '' }}>Rejected
+                                                 </option>
+                                             </select>
+                                             @if($isLocked)
+                                                 <input type="hidden" name="products[{{ $index }}][status]" value="{{ $product->status }}">
+                                                 <div class="mt-1 small text-muted"><i class="fa fa-lock"></i> Locked</div>
+                                             @endif
+                                         </td>
                                         <td>
                                             <input type="number" class="form-control form-control-sm"
                                                 name="products[{{ $index }}][total_quantity]"
-                                                value="{{ $product->total_quantity ?? '' }}" min="0"
-                                                placeholder="Total Qty" required>
+                                                value="{{ $product->total_quantity ?? '' }}" min="1"
+                                                max="{{ $product->quantity ?? $product->no_of_boxes }}"
+                                                placeholder="Total Qty" required {{ $isLocked ? 'readonly' : '' }}>
+                                            <small class="text-muted">Max: {{ $product->quantity ?? $product->no_of_boxes }}</small>
+                                            @if($isLocked)
+                                                <input type="hidden" name="products[{{ $index }}][total_quantity]" value="{{ $product->total_quantity }}">
+                                            @endif
                                         </td>
                                         <td>
-                                            <textarea class="form-control form-control-sm" name="products[{{ $index }}][admin_remarks]" rows="2"
-                                                placeholder="Remarks for customer...">{{ $product->admin_remarks }}</textarea>
+                                            <textarea class="form-control form-control-sm remarks-textarea" name="products[{{ $index }}][admin_remarks]" rows="2"
+                                                placeholder="Remarks for customer..." {{ $isLocked ? 'readonly' : '' }}>{{ $product->admin_remarks }}</textarea>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -142,3 +154,26 @@
         </div>
     </div>
 </x-userdashboard-layout>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelects = document.querySelectorAll('.status-select');
+
+        statusSelects.forEach(select => {
+            const index = select.getAttribute('data-index');
+            const textarea = document.querySelector(`.remarks-textarea[name="products[${index}][admin_remarks]"]`);
+
+            function updateRequired() {
+                if (select.value === 'rejected' || select.value === 'modify') {
+                    textarea.setAttribute('required', 'required');
+                    textarea.setAttribute('placeholder', 'Remarks are mandatory for ' + select.value + ' status...');
+                } else {
+                    textarea.removeAttribute('required');
+                    textarea.setAttribute('placeholder', 'Remarks for customer...');
+                }
+            }
+
+            select.addEventListener('change', updateRequired);
+            updateRequired(); // Initial check
+        });
+    });
+</script>
