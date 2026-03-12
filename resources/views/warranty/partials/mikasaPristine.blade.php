@@ -185,7 +185,7 @@
                     the nearest dealer.</li>
                 <li>The warranty is only applicable to multi-layer parquet boards which are manufactured by Greenlam
                     Industries Limited.</li>
-                <li>The warranty is valid for 10 years for Atmos - 10mm multi-layer parquet from the date of purchase
+                <li>The warranty is valid for {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} for Pristine multi-layer parquet from the date of purchase
                     specified on the warranty certificate. Mikasa will remedy defectsfor which it is responsible as
                     specified above free of charge by repairing the defects&nbsp;or supplying a new product at its own
                     option. If the product sold cannot be manufactured any longer or is no longer in stock,&nbsp;Mikasa

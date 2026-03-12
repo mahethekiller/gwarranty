@@ -149,19 +149,14 @@
                                             <input type="number" class="form-control area-input"
                                                    name="products[{{ $index }}][area_sqft]" value="{{ $product->area_sqft }}" placeholder="Area" step="0.01" min="0">
                                         </td>
-
-                                        {{-- Handover Certificate --}}
-                                        <td width="12%" class="handover-col" style="display: none;">
-                                            <label class="form-label mb-1" style="font-size: 12px;">Handover Certificate</label>
-                                            <input type="file" class="form-control handover-input"
-                                                   name="products[{{ $index }}][handover_certificate]">
-                                            <small class="text-info d-block" style="font-size: 10px;">Max: 2MB</small>
-                                            <div class="handover-preview mt-1">
-                                                @if($product->handover_certificate)
-                                                    <a href="{{ Storage::url($product->handover_certificate) }}" target="_blank" class="btn btn-xs btn-info" style="font-size: 10px; padding: 2px 5px;">Current File</a>
-                                                @endif
-                                            </div>
+                                        {{-- Product Thickness --}}
+                                        <td width="10%" class="thickness-col" style="display: none;">
+                                            <label class="form-label mb-1" style="font-size: 12px;">Product Thickness</label>
+                                            <input type="text" class="form-control thickness-input"
+                                                   name="products[{{ $index }}][product_thickness]" value="{{ $product->product_thickness }}" placeholder="Thickness">
                                         </td>
+
+
 
                                         {{-- Invoice No. --}}
                                         <td width="10%" class="invoice-col" style="display: none;">
@@ -182,6 +177,18 @@
                                             <label class="form-label mb-1" style="font-size: 12px;">UoM</label>
                                             <input type="text" class="form-control uom-input"
                                                    name="products[{{ $index }}][uom]" value="{{ $product->uom }}" placeholder="UoM" readonly>
+                                        </td>
+                                        {{-- Handover Certificate --}}
+                                        <td width="12%" class="handover-col" style="display: none;">
+                                            <label class="form-label mb-1" style="font-size: 12px;">Handover Certificate</label>
+                                            <input type="file" class="form-control handover-input"
+                                                   name="products[{{ $index }}][handover_certificate]">
+                                            <small class="text-info d-block" style="font-size: 10px;">Max: 2MB</small>
+                                            <div class="handover-preview mt-1">
+                                                @if($product->handover_certificate)
+                                                    <a href="{{ Storage::url($product->handover_certificate) }}" target="_blank" class="btn btn-xs btn-info" style="font-size: 10px; padding: 2px 5px;">Current File</a>
+                                                @endif
+                                            </div>
                                         </td>
 
                                         {{-- Site Address --}}

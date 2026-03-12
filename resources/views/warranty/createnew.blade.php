@@ -153,14 +153,14 @@
                                                name="products[0][area_sqft]" placeholder="Area" step="0.01" min="0">
                                     </td>
 
-                                    {{-- Handover Certificate --}}
-                                    <td width="12%" class="handover-col" style="display: none;">
-                                        <label class="form-label mb-1" style="font-size: 12px;">Handover Certificate</label>
-                                        <input type="file" class="form-control handover-input"
-                                               name="products[0][handover_certificate]">
-                                        <small class="text-info d-block" style="font-size: 10px;">Max: 2MB</small>
-                                        <div class="handover-preview mt-1"></div>
+                                    {{-- Product Thickness --}}
+                                    <td width="10%" class="thickness-col" style="display: none;">
+                                        <label class="form-label mb-1" style="font-size: 12px;">Product Thickness</label>
+                                        <input type="text" class="form-control thickness-input"
+                                               name="products[0][product_thickness]" placeholder="Thickness">
                                     </td>
+
+
 
                                     {{-- Invoice No. --}}
                                     <td width="10%" class="invoice-col" style="display: none;">
@@ -183,6 +183,15 @@
                                                name="products[0][uom]" placeholder="UoM" readonly>
                                     </td>
 
+                                    {{-- Handover Certificate --}}
+                                    <td width="12%" class="handover-col" style="display: none;">
+                                        <label class="form-label mb-1" style="font-size: 12px;">Handover Certificate</label>
+                                        <input type="file" class="form-control handover-input"
+                                               name="products[0][handover_certificate]">
+                                        <small class="text-info d-block" style="font-size: 10px;">Max: 2MB</small>
+                                        <div class="handover-preview mt-1"></div>
+                                    </td>
+
                                     {{-- Site Address --}}
                                     <td width="12%" class="site-address-col" style="display: none;">
                                         <label class="form-label mb-1" style="font-size: 12px;">Site Address</label>
@@ -190,12 +199,7 @@
                                                   name="products[0][site_address]" placeholder="Site address" rows="2"></textarea>
                                     </td>
 
-                                    {{-- Product Thickness --}}
-                                    <td width="10%" class="thickness-col" style="display: none;">
-                                        <label class="form-label mb-1" style="font-size: 12px;">Product Thickness</label>
-                                        <input type="text" class="form-control thickness-input"
-                                               name="products[0][product_thickness]" placeholder="Thickness">
-                                    </td>
+
 
                                     {{-- Action --}}
                                     <td width="5%" style="vertical-align: bottom;">

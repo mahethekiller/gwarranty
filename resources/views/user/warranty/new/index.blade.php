@@ -31,7 +31,7 @@
                                     <th>Date Submitted</th>
                                     <th>Products</th>
                                     <th>Status</th>
-                                    <th>Admin Remarks</th>
+                                    <th>Remarks</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
