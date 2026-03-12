@@ -198,12 +198,7 @@
                                                       name="products[{{ $index }}][site_address]" placeholder="Site address" rows="2">{{ $product->site_address }}</textarea>
                                         </td>
 
-                                        {{-- Product Thickness --}}
-                                        <td width="10%" class="thickness-col" style="display: none;">
-                                            <label class="form-label mb-1" style="font-size: 12px;">Product Thickness</label>
-                                            <input type="text" class="form-control thickness-input"
-                                                   name="products[{{ $index }}][product_thickness]" value="{{ $product->product_thickness }}" placeholder="Thickness">
-                                        </td>
+
 
                                     @else
                                         {{-- READ-ONLY ROW FOR NON-MODIFY PRODUCTS --}}
