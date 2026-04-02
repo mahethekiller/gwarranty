@@ -54,6 +54,7 @@ $(document).ready(function () {
             products.forEach(function (product) {
                 rows += `
                     <tr>
+                        <td>${product.serial_number || "N/A"}</td>
                         <td>${product.product?.name || "N/A"}</td>
                         <td>${product.qty_purchased || "N/A"}</td>
                         <td>${product.application_type || "N/A"}</td>
@@ -99,7 +100,7 @@ $(document).ready(function () {
                 `;
             });
         } else {
-            rows = `<tr><td colspan="4" class="text-center">No Products Found</td></tr>`;
+            rows = `<tr><td colspan="8" class="text-center">No Products Found</td></tr>`;
         }
 
         // Insert rows into modal

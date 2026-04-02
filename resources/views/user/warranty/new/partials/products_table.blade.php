@@ -1,10 +1,11 @@
 @if(count($products) == 0)
     <tr>
-        <td colspan="3" class="text-center">No products found.</td>
+        <td colspan="4" class="text-center">No products found.</td>
     </tr>
 @else
     @foreach($products as $product)
     <tr>
+        <td>{{ $product->serial_number ?: 'N/A' }}</td>
         <td>
             {{ $product->productType->name }}
             @php

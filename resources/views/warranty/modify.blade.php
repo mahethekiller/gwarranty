@@ -123,6 +123,7 @@
                                                     <table class="table table-bordered table-striped mb-0">
                                                         <thead>
                                                             <tr>
+                                                                <th>S/N</th>
                                                                 <th>Product Name</th>
                                                                 <th>Quantity</th>
                                                                 <th>Application Type</th>

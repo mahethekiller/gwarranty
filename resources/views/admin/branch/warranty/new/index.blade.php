@@ -1,4 +1,17 @@
 <x-userdashboard-layout :pageTitle="$pageTitle" :pageDescription="$pageDescription" :pageScript="''">
+    @push('styles')
+    <style>
+        .grouped-row {
+            background-color: rgba(0, 123, 255, 0.02) !important;
+        }
+        .group-indicator {
+            border-left: 4px solid #007bff !important;
+        }
+        .group-indicator-sub {
+            border-left: 4px solid #dee2e6 !important;
+        }
+    </style>
+    @endpush
     <div class="col-md-12 col-xl-12">
         <div class="card">
             <div class="card-header">
@@ -19,15 +32,28 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php $prevInvoice = null; @endphp
                             @forelse($warranties as $warranty)
-                            <tr>
-                                <td>{{ $warranty->id }}</td>
+                                @php
+                                    $isGrouped = $prevInvoice === $warranty->invoice_number;
+                                    $prevInvoice = $warranty->invoice_number;
+                                @endphp
+                                <tr class="{{ $isGrouped ? 'grouped-row' : '' }}">
+                                    <td class="{{ $warranty->invoice_group_count > 1 ? ($isGrouped ? 'group-indicator-sub' : 'group-indicator') : '' }}">
+                                        {{ $warranty->id }}
+                                    </td>
                                 <td>
                                     {{ $warranty->dealer_name }}<br>
                                     <small>{{ $warranty->user->name ?? 'N/A' }}</small>
                                 </td>
                                 <td>
-                                    {{ $warranty->invoice_number }}<br>
+                                    {{ $warranty->invoice_number }}
+                                    @if($warranty->invoice_group_count > 1)
+                                        <span class="badge bg-warning text-dark border ms-1" title="Multiple registrations for this invoice">
+                                            <i class="fa fa-copy"></i> Existing Invoice
+                                        </span>
+                                    @endif
+                                    <br>
                                     <small class="text-muted">{{ $warranty->invoice_date ? $warranty->invoice_date->format('d M Y') : 'N/A' }}</small>
                                 </td>
                                 <td>

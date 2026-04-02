@@ -92,6 +92,7 @@
                                                     <table class="table table-bordered table-striped mb-0">
                                                         <thead>
                                                             <tr>
+                                                                <th>S/N</th>
                                                                 <th>Product</th>
                                                                 <th>Quantity</th>
                                                                 <th>Application Type</th>

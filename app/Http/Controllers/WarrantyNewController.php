@@ -7,6 +7,7 @@ use App\Models\ProductTypeVariant;
 use App\Models\WarrantyRegistrationNew;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class WarrantyNewController extends Controller
 {
@@ -62,15 +63,6 @@ class WarrantyNewController extends Controller
     {
         try {
             $validated = $this->validateWarrantyRequest($request);
-
-            // Check if invoice number already exists
-            $existingWarranty = WarrantyRegistrationNew::where('invoice_number', $request->invoice_number)->first();
-            if ($existingWarranty) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This invoice number has already been registered. Please use a different invoice number.',
-                ], 422);
-            }
 
             // Upload invoice file
             if (! $request->hasFile('upload_invoice')) {
@@ -128,7 +120,7 @@ class WarrantyNewController extends Controller
             'dealer_name'                => 'required|string|max:255',
             'dealer_state'               => 'required|string',
             'dealer_city'                => 'required|string',
-            'invoice_number'             => 'required|string|unique:warranty_registrations_new,invoice_number',
+            'invoice_number'             => 'required|string',
             'invoice_date'               => 'required|date',
             'upload_invoice'             => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
             'products'                   => 'required|array|min:1',
@@ -137,7 +129,7 @@ class WarrantyNewController extends Controller
 
         // Exclude current warranty from unique check for updates
         if ($excludeWarrantyId) {
-            $rules['invoice_number'] = 'required|string|unique:warranty_registrations_new,invoice_number,' . $excludeWarrantyId;
+            $rules['invoice_number'] = 'required|string';
             $rules['invoice_date']   = 'required|date';
             $rules['upload_invoice'] = 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048';
         }
@@ -178,6 +170,8 @@ class WarrantyNewController extends Controller
     // Process products
     private function processProducts($products, $warrantyId)
     {
+        $warranty = WarrantyRegistrationNew::find($warrantyId);
+
         foreach ($products as $productData) {
             $productType = ProductType::find($productData['product_type_id']);
             $config      = $this->productFieldConfig[$productType->name] ?? [];
@@ -203,6 +197,18 @@ class WarrantyNewController extends Controller
                 $uomValue = $config['auto_fill']['uom'] ?? null;
             }
 
+            // Generate Serial Number
+            $invNum = $productData['invoice_number'] ?? $warranty->invoice_number;
+            $invDate = $productData['invoice_date'] ?? $warranty->invoice_date;
+            $count = \App\Models\ProductDetail::where('invoice_number', $invNum)
+                ->orWhereHas('warrantyRegistration', function($q) use ($invNum) {
+                    $q->where('invoice_number', $invNum);
+                })->count();
+            $seq = str_pad($count + 1, 2, '0', STR_PAD_LEFT);
+            $dateFmt = $invDate ? \Carbon\Carbon::parse($invDate)->format('Ymd') : date('Ymd');
+            $typeStr = strtoupper(str_replace(' ', '', $productType->name));
+            $serialNumber = "{$dateFmt}-{$invNum}-{$typeStr}-{$seq}";
+
             // Create product detail
             ProductDetail::create([
                 'warranty_registration_id' => $warrantyId,
@@ -220,6 +226,7 @@ class WarrantyNewController extends Controller
                 'uom'                      => $uomValue,
                 'site_address'             => $productData['site_address'] ?? null,
                 'product_thickness'        => $productData['product_thickness'] ?? null,
+                'serial_number'            => $serialNumber,
             ]);
         }
     }
@@ -263,22 +270,46 @@ class WarrantyNewController extends Controller
         return $statesWithCities[$state] ?? [];
     }
 
-    // List all warranties for the authenticated user
     public function index()
     {
         $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
+            ->select('warranty_registrations_new.*')
+            ->addSelect([
+                'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('max(created_at)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->where('wr_inner.user_id', Auth::id()),
+                'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('count(*)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->where('wr_inner.user_id', Auth::id())
+            ])
+            ->orderBy('latest_in_group', 'desc')
+            ->orderBy('invoice_number', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('user.warranty.new.index', compact('warranties'));
     }
 
-    // List all certificates for new warranties
     public function certificates()
     {
         $warranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
             ->where('user_id', Auth::id())
+            ->select('warranty_registrations_new.*')
+            ->addSelect([
+                'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('max(created_at)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->where('wr_inner.user_id', Auth::id()),
+                'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('count(*)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->where('wr_inner.user_id', Auth::id())
+            ])
+            ->orderBy('latest_in_group', 'desc')
+            ->orderBy('invoice_number', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -311,7 +342,12 @@ class WarrantyNewController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('user.warranty.new.show', compact('warranty'));
+        $relatedWarranties = WarrantyRegistrationNew::where('invoice_number', $warranty->invoice_number)
+            ->where('user_id', Auth::id())
+            ->where('id', '!=', $warranty->id)
+            ->get();
+
+        return view('user.warranty.new.show', compact('warranty', 'relatedWarranties'));
     }
 
     // Edit warranty (only for modify status)
@@ -518,6 +554,7 @@ class WarrantyNewController extends Controller
 
         $warrantyProduct = (object)[
             'id' => $productDetail->id,
+            'serial_number' => $productDetail->serial_number,
             'product_type' => $mappedProductType,
             'qty_purchased' => $productDetail->total_quantity ?: $productDetail->quantity,
             'total_quantity' => $productDetail->total_quantity ?: $productDetail->quantity,

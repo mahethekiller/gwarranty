@@ -27,7 +27,8 @@ class ProductDetail extends Model
         'product_thickness',
         'status',
         'admin_remarks',
-        'total_quantity'
+        'total_quantity',
+        'serial_number'
     ];
 
     protected $casts = [

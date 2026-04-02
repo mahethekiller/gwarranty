@@ -1,4 +1,17 @@
 <x-userdashboard-layout :pageTitle="'Download Certificates (New)'" :pageDescription="'Download warranty certificates for your new registrations'">
+    @push('styles')
+    <style>
+        .grouped-row {
+            background-color: rgba(0, 123, 255, 0.02) !important;
+        }
+        .group-indicator {
+            border-left: 4px solid #007bff !important;
+        }
+        .group-indicator-sub {
+            border-left: 4px solid #dee2e6 !important;
+        }
+    </style>
+    @endpush
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -19,12 +32,26 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $prevInvoice = null; @endphp
                                 @forelse($warranties as $warranty)
-                                    <tr>
-                                        <td>{{ $warranty->created_at->format('d-M-Y') }}</td>
+                                    @php
+                                        $isGrouped = $prevInvoice === $warranty->invoice_number;
+                                        $prevInvoice = $warranty->invoice_number;
+                                    @endphp
+                                    <tr class="{{ $isGrouped ? 'grouped-row' : '' }}">
+                                        <td class="{{ $warranty->invoice_group_count > 1 ? ($isGrouped ? 'group-indicator-sub' : 'group-indicator') : '' }}">
+                                            {{ $warranty->created_at->format('d-M-Y') }}
+                                        </td>
                                         <td>{{ $warranty->dealer_name }}</td>
                                         <td>{{ $warranty->dealer_state }} > {{ $warranty->dealer_city }}</td>
-                                        <td>{{ $warranty->invoice_number }}</td>
+                                        <td>
+                                            {{ $warranty->invoice_number }}
+                                            @if($warranty->invoice_group_count > 1)
+                                                <span class="badge bg-warning text-dark border ms-1" title="Multiple registrations for this invoice">
+                                                    <i class="fa fa-copy"></i> Existing Invoice
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($warranty->invoice_file_path)
                                                 <a href="{{ Storage::url($warranty->invoice_file_path) }}" target="_blank" class="btn btn-sm btn-outline-info">
@@ -72,6 +99,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th>S/N</th>
                                     <th>Product Name</th>
                                     <th>Status</th>
                                     <th>Action</th>

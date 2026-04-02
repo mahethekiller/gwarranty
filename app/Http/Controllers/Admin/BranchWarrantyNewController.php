@@ -9,6 +9,7 @@ use App\Models\ProductDetail;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BranchWarrantyNewController extends Controller
@@ -25,11 +26,30 @@ class BranchWarrantyNewController extends Controller
 
         // Fetch warranties for these locations
         $warranties = WarrantyRegistrationNew::with(['user', 'productDetails'])
+            ->select('warranty_registrations_new.*')
             ->where(function ($query) use ($cities, $states) {
                 $query->whereIn('dealer_city', $cities)
                       ->orWhereIn('dealer_state', $states);
             })
-            ->latest()
+            ->addSelect([
+                'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('max(created_at)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->where(function ($q) use ($cities, $states) {
+                        $q->whereIn('dealer_city', $cities)
+                          ->orWhereIn('dealer_state', $states);
+                    }),
+                'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('count(*)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->where(function ($q) use ($cities, $states) {
+                        $q->whereIn('dealer_city', $cities)
+                          ->orWhereIn('dealer_state', $states);
+                    })
+            ])
+            ->orderBy('latest_in_group', 'desc')
+            ->orderBy('invoice_number', 'asc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('admin.branch.warranty.new.index', [
@@ -57,10 +77,15 @@ class BranchWarrantyNewController extends Controller
             })
             ->firstOrFail();
 
+        $relatedWarranties = WarrantyRegistrationNew::where('invoice_number', $warranty->invoice_number)
+            ->where('id', '!=', $warranty->id)
+            ->get();
+
         return view('admin.branch.warranty.new.edit', [
             'pageTitle' => 'Process Warranty',
             'pageDescription' => 'Update status and remarks',
-            'warranty' => $warranty
+            'warranty' => $warranty,
+            'relatedWarranties' => $relatedWarranties
         ]);
     }
 

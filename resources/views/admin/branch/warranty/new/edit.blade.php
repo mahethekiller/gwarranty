@@ -6,6 +6,22 @@
                 <a href="{{ route('branch.warranties.new.index') }}" class="btn btn-sm btn-secondary">Back</a>
             </div>
             <div class="card-body">
+                @if($relatedWarranties->isNotEmpty())
+                    <div class="alert alert-info border-primary mb-4">
+                        <h6 class="alert-heading text-primary"><i class="fa fa-info-circle me-1"></i> Shared Invoice Detected</h6>
+                        <p class="mb-0">There are <strong>{{ $relatedWarranties->count() }}</strong> other registrations for this invoice ({{ $warranty->invoice_number }}).</p>
+                        <hr class="my-2">
+                        <ul class="mb-0 small">
+                            @foreach($relatedWarranties as $related)
+                                <li>
+                                    <a href="{{ route('branch.warranties.new.edit', $related->id) }}" class="text-primary text-decoration-none">
+                                        Registration #{{ $related->id }} ({{ $related->created_at->format('d M Y') }}) - Status: {{ ucfirst($related->overall_status) }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 {{-- Warranty Details --}}
                 <div class="row mb-4">
@@ -50,6 +66,9 @@
                                     <tr>
                                         <td>
                                             <strong>{{ $product->productType->name }}</strong>
+                                            @if ($product->serial_number)
+                                                <br><span class="text-secondary"><strong>S/N:</strong> {{ $product->serial_number }}</span>
+                                            @endif
                                             @php
                                                 $variantDisp = $product->variant ?: ($product->productTypeVariant->variant_name ?? null);
                                                 $usageType = $product->productTypeVariant->usage_type ?? null;
@@ -125,7 +144,7 @@
                                         <td>
                                             <input type="number" class="form-control form-control-sm"
                                                 name="products[{{ $index }}][total_quantity]"
-                                                value="{{ $product->total_quantity ?? '' }}" min="1"
+                                                value="{{ $product->total_quantity ?? ($product->quantity ?? $product->no_of_boxes)  }}" min="1"
                                                 max="{{ $product->quantity ?? $product->no_of_boxes }}"
                                                 placeholder="Total Qty" required {{ $isLocked ? 'readonly' : '' }}>
                                             <small class="text-muted">Max: {{ $product->quantity ?? $product->no_of_boxes }}</small>

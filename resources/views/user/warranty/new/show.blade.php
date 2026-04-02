@@ -19,6 +19,41 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <!-- Related Warranties Alert -->
+                    @if($relatedWarranties->isNotEmpty())
+                        <div class="alert alert-info border-primary mb-4 p-3 shadow-sm rounded-lg" style="background-color: #f0f7ff;">
+                            <h6 class="alert-heading text-primary d-flex align-items-center mb-2">
+                                <i class="fa fa-info-circle me-2 fs-5"></i>
+                                <strong>Shared Invoice Detected</strong>
+                            </h6>
+                            <p class="mb-2 text-dark">We found <strong>{{ $relatedWarranties->count() }}</strong> other registrations in your account with the same invoice number ({{ $warranty->invoice_number }}).</p>
+                            <div class="list-group list-group-flush rounded-3 border">
+                                @foreach($relatedWarranties as $related)
+                                    <a href="{{ route('user.warranty.show', $related->id) }}" class="list-group-item list-group-item-action py-2 bg-white">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fa fa-file-text-o me-2 text-secondary"></i>
+                                                Registration #{{ $related->id }}
+                                                <span class="text-muted ms-2 small">({{ $related->created_at->format('d M Y') }})</span>
+                                            </div>
+                                            <div>
+                                                @if($related->overall_status === 'approved')
+                                                    <span class="badge bg-success rounded-pill px-2 py-1">Approved</span>
+                                                @elseif($related->overall_status === 'pending')
+                                                    <span class="badge bg-warning text-dark rounded-pill px-2 py-1">Pending</span>
+                                                @elseif($related->overall_status === 'rejected')
+                                                    <span class="badge bg-danger rounded-pill px-2 py-1">Rejected</span>
+                                                @elseif($related->overall_status === 'modify')
+                                                    <span class="badge bg-primary rounded-pill px-2 py-1">Modify Required</span>
+                                                @endif
+                                                <i class="fa fa-chevron-right ms-2 text-muted small"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                     <!-- Status Alert -->
                     @if($warranty->overall_status === 'modify')
                         <div class="alert alert-warning">
@@ -117,6 +152,9 @@
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
                                                     <div class="fw-bold text-primary">{{ $product->productType->name }}</div>
+                                                    @if ($product->serial_number)
+                                                        <div class="small text-secondary"><strong>S/N:</strong> {{ $product->serial_number }}</div>
+                                                    @endif
                                                     @php
                                                         $variantDisp = $product->variant ?: ($product->productTypeVariant->variant_name ?? '-');
                                                         $usageType = $product->productTypeVariant->usage_type ?? null;

@@ -212,6 +212,10 @@ p{    padding-left: 22px !important;}
                     <table>
                         <tbody>
                             <tr>
+                                <th>Serial No.:</th>
+                                <td>{{ $warrantyProduct->serial_number ?? 'N/A' }}</td>
+                            </tr>
+                            <tr>
                                 <th>Invoice No.:</th>
                                 <td>{{ $warrantyProduct->registration->invoice_number }}</td>
                             </tr>
