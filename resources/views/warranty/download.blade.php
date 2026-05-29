@@ -80,6 +80,7 @@
             @include('warranty.partials.sturdocertificate')
         @elseif ($warrantyProduct->product_type == 3)
             {{-- Mikasa ply  --}}
+            {{-- {{ $productName; }} --}}
             @if ($productName == 'Marine Blue Blockboard')
                 @include('warranty.partials.blackbord-marineblue')
             @elseif ($productName == 'Fire Guardian')
@@ -94,6 +95,10 @@
                 @include('warranty.partials.mrcertificate')
             @elseif ($productName == 'Sapphire')
                 @include('warranty.partials.sapphirecertificate')
+            @elseif ($productName == 'BWP Plus Plywood')
+                @include('warranty.partials.bwp-plus-plywood')
+            @elseif ($productName == 'BWP Plus Blockboard')
+                @include('warranty.partials.bwp-plus-blockboard')
             @endif
         @elseif ($warrantyProduct->product_type == 5)
             @include('warranty.partials.NewMika-FXcertificate')

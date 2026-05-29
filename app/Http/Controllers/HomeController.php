@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\WarrantyRegistrationNew;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -20,50 +22,41 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * User dashboard with live warranty stats.
      */
-    public function create()
+    public function userDashboard()
     {
-        //
+        $userId = Auth::id();
+
+        // Status counts
+        $total    = WarrantyRegistrationNew::where('user_id', $userId)->count();
+        $pending  = WarrantyRegistrationNew::where('user_id', $userId)->where('status', 'pending')->count();
+        $approved = WarrantyRegistrationNew::where('user_id', $userId)->where('status', 'approved')->count();
+        $rejected = WarrantyRegistrationNew::where('user_id', $userId)->where('status', 'rejected')->count();
+        $modify   = WarrantyRegistrationNew::where('user_id', $userId)->where('status', 'modify')->count();
+
+        // Recent 5 warranties with products
+        $recentWarranties = WarrantyRegistrationNew::with(['productDetails', 'productDetails.productType'])
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('dashboard.user', compact(
+            'total', 'pending', 'approved', 'rejected', 'modify', 'recentWarranties'
+        ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function create() {}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+    public function store(Request $request) {}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function show(string $id) {}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    public function edit(string $id) {}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function update(Request $request, string $id) {}
+
+    public function destroy(string $id) {}
 }
+

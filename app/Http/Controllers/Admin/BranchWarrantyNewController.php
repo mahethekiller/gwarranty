@@ -7,6 +7,8 @@ use App\Models\BranchEmail;
 use App\Models\WarrantyRegistrationNew;
 use App\Models\ProductDetail;
 use App\Models\ProductType;
+use App\Helpers\SMSHelper;
+use App\Helpers\MailHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +16,42 @@ use Illuminate\Support\Facades\Log;
 
 class BranchWarrantyNewController extends Controller
 {
+    /**
+     * Branch admin dashboard — scoped to the branch's cities/states.
+     */
+    public function branchDashboard()
+    {
+        $branchEmail = Auth::user()->email;
+        $cities      = BranchEmail::where('commercial_email', $branchEmail)->pluck('city')->toArray();
+        $states      = BranchEmail::where('commercial_email', $branchEmail)->pluck('state')->toArray();
+        $branchName  = BranchEmail::where('commercial_email', $branchEmail)->value('branch_name') ?? 'Your Branch';
+
+        // Wrap city/state in a grouped closure so status filters AND correctly
+        $baseQuery = fn() => WarrantyRegistrationNew::where(function ($q) use ($cities, $states) {
+            $q->whereIn('dealer_city', $cities)->orWhereIn('dealer_state', $states);
+        });
+
+        $total    = $baseQuery()->count();
+        $pending  = $baseQuery()->where('status', 'pending')->count();
+        $approved = $baseQuery()->where('status', 'approved')->count();
+        $rejected = $baseQuery()->where('status', 'rejected')->count();
+        $modify   = $baseQuery()->where('status', 'modify')->count();
+
+        // Recent 6 for the table
+        $recentWarranties = WarrantyRegistrationNew::with(['user', 'productDetails', 'productDetails.productType'])
+            ->where(function ($q) use ($cities, $states) {
+                $q->whereIn('dealer_city', $cities)->orWhereIn('dealer_state', $states);
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(6)
+            ->get();
+
+        return view('dashboard.branch', compact(
+            'total', 'pending', 'approved', 'rejected', 'modify',
+            'recentWarranties', 'branchName', 'cities', 'states'
+        ));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -166,6 +204,33 @@ class BranchWarrantyNewController extends Controller
         // However, if we need to filter by main status in DB, we should update the `status` column.
 
         $this->updateWarrantyStatus($warranty);
+
+        // Send SMS Notification based on new status (DLT-approved templates)
+        $user = $warranty->user;
+        if ($user && $user->phone_number) {
+            $status        = $warranty->status;
+            $serialNumbers = $warranty->productDetails()->pluck('serial_number')->filter()->implode(', ');
+            $requestId     = $serialNumbers ?: (string) $warranty->id;
+            if ($status === 'approved') {
+                SMSHelper::sendSMSApproved($user->phone_number, $requestId);
+            } elseif ($status === 'modify') {
+                SMSHelper::sendSMSModify($user->phone_number, $requestId);
+            } elseif ($status === 'rejected') {
+                SMSHelper::sendSMSRejected($user->phone_number, $requestId);
+            }
+        }
+
+        // Send Email Notification based on new status
+        if ($user && $user->email) {
+            $status = $warranty->status;
+            if ($status === 'approved') {
+                MailHelper::sendMailApprovedCustomer($user->email);
+            } elseif ($status === 'modify') {
+                MailHelper::sendMailCustomerModifyRequired($user->email);
+            } elseif ($status === 'rejected') {
+                MailHelper::sendMailRejectedCustomer($user->email);
+            }
+        }
 
         return redirect()->route('branch.warranties.new.index')->with('success', 'Warranty updated successfully.');
     }

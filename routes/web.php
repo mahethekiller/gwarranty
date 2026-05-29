@@ -9,6 +9,8 @@ use App\Http\Controllers\WarrantyController;
 use App\Http\Controllers\WarrantyNewController;
 use App\Services\ExchangeMailer;
 use App\Http\Controllers\Admin\BranchWarrantyNewController;
+use App\Http\Controllers\Admin\ProductTypeController;
+use App\Http\Controllers\Admin\ProductVariantController;
 use Illuminate\Support\Facades\Route;
 use Raju\EWSMail\ExchangeMailServer;
 
@@ -29,9 +31,8 @@ Route::post('/login/verify-otp', [OtpController::class, 'verifyLoginOtp'])->name
 
 // OTP Routes
 
-Route::get('/dashboard', function () {
-    return view('dashboard.user');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [\App\Http\Controllers\HomeController::class, 'userDashboard'])
+    ->middleware(['auth', 'verified'])->name('dashboard');
 
 // ALL ROLEs
 
@@ -56,6 +57,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
     Route::post('/admin/users/add', [UserManagement::class, 'store'])->name('admin.users.add');
 
+    // product types management
+    Route::get('/admin/product-types', [ProductTypeController::class, 'index'])->name('admin.product-types.index');
+    Route::post('/admin/product-types/add', [ProductTypeController::class, 'store'])->name('admin.product-types.add');
+    Route::get('/admin/product-type/{type}/edit', [ProductTypeController::class, 'edit'])->name('admin.product-types.edit');
+    Route::post('/admin/product-type/update/{type}', [ProductTypeController::class, 'update'])->name('admin.product-types.update');
+    Route::delete('/admin/product-type/delete/{type}', [ProductTypeController::class, 'destroy'])->name('admin.product-types.delete');
+
+    // product variants management
+    Route::get('/admin/product-variants', [ProductVariantController::class, 'index'])->name('admin.product-variants.index');
+    Route::post('/admin/product-variants/add', [ProductVariantController::class, 'store'])->name('admin.product-variants.add');
+    Route::get('/admin/product-variant/{variant}/edit', [ProductVariantController::class, 'edit'])->name('admin.product-variants.edit');
+    Route::post('/admin/product-variant/update/{variant}', [ProductVariantController::class, 'update'])->name('admin.product-variants.update');
+    Route::delete('/admin/product-variant/delete/{variant}', [ProductVariantController::class, 'destroy'])->name('admin.product-variants.delete');
+
 });
 
 // ADMIN ROLE
@@ -71,9 +86,7 @@ Route::middleware(['auth', 'role:branch_admin'])->group(function () {
 // USER ROLE
 
 Route::middleware(['auth', 'role:user', 'profile.updated'])->group(function () {
-    Route::get('/user/dashboard', function () {
-        return view('dashboard.user');
-    })->name('user.dashboard');
+    Route::get('/user/dashboard', [\App\Http\Controllers\HomeController::class, 'userDashboard'])->name('user.dashboard');
 
     Route::get('/user/warranty/create', [WarrantyController::class, 'create'])->name('user.warranty.create');
     Route::post('/user/warranty/store', [WarrantyController::class, 'store'])->name('user.warranty.store');
@@ -119,6 +132,10 @@ Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(func
     Route::get('/admin/dashboard', function () {
         return view('dashboard.admin');
     })->name('admin.dashboard');
+
+    // Branch admin dedicated dashboard
+    Route::get('/admin/branch-dashboard', [\App\Http\Controllers\Admin\BranchWarrantyNewController::class, 'branchDashboard'])
+        ->name('branch.dashboard');
 
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');

@@ -237,8 +237,12 @@ class OtpController extends Controller
         $otpRecord->delete();
         session()->forget('login_phone_number');
 
-        if ($user->hasRole('admin') || $user->hasRole('branch_admin')) {
+        if ($user->hasRole('admin')) {
             return response()->json(['success' => true, 'redirect' => route('admin.dashboard')]);
+        }
+
+        if ($user->hasRole('branch_admin') || $user->hasRole('country_admin')) {
+            return response()->json(['success' => true, 'redirect' => route('branch.dashboard')]);
         }
 
         return response()->json([

@@ -9,5 +9,5 @@
 
 
 
-        <h2>Welcome {{ auth()->user()->roles->first()->display_name }}</h2>
+        <h2>Welcome mm {{ auth()->user()->roles->first()->display_name }}</h2>
 </x-userdashboard-layout>

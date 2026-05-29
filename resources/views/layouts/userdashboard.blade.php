@@ -54,12 +54,12 @@
         </div>
     </div>
 
-    @if (Auth::user()->hasRole('admin') || Auth::user()->hasRole('branch_admin') || Auth::user()->hasRole('country_admin'))
+    @if (Auth::user()->hasRole('admin'))
         @include('layouts.partials.adminsidebar')
+    @elseif(Auth::user()->hasRole('branch_admin') || Auth::user()->hasRole('country_admin'))
+        @include('layouts.partials.branchadminsidebar')
     @elseif(Auth::user()->hasRole('user'))
         @include('layouts.partials.usersidebar')
-        {{-- @elseif(Auth::user()->hasRole('branch_admin'))
-        @include('layouts.partials.editorsidebar') --}}
     @endif
     <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
     <header class="pc-header pc-header-custom">

@@ -1,4 +1,4 @@
-<link type="text/css" href="https://www.greenlamindustries.com/fonts/stylesheet.css" rel="stylesheet">
+<link type="text/css" href="{{ asset('assets/fonts/stylesheet.css') }}" rel="stylesheet">
 
 
 <style>

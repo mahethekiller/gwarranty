@@ -5,6 +5,9 @@ use App\Models\ProductDetail;
 use App\Models\ProductType;
 use App\Models\ProductTypeVariant;
 use App\Models\WarrantyRegistrationNew;
+use App\Helpers\SMSHelper;
+use App\Helpers\MailHelper;
+use App\Models\BranchEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -89,6 +92,28 @@ class WarrantyNewController extends Controller
 
             // Process each product
             $this->processProducts($request->products, $warranty->id);
+
+            // Send SMS Notification (DLT template: Submitted)
+            $user = Auth::user();
+            if ($user && $user->phone_number) {
+                $serialNumbers = $warranty->productDetails()->pluck('serial_number')->filter()->implode(', ');
+                $requestId     = $serialNumbers ?: (string) $warranty->id;
+                SMSHelper::sendSMSSubmitted($user->phone_number, $requestId);
+            }
+
+            // Send Email Notification to Customer
+            // if ($user && $user->email) {
+            //     MailHelper::sendMaiCustomerRequestSubmit($user->email);
+            // }
+
+            // // Notify Branch Admins
+            // $branchEmails = BranchEmail::where('city', $request->dealer_city)
+            //     ->orWhere('state', $request->dealer_state)
+            //     ->get();
+
+            // foreach ($branchEmails as $branch) {
+            //     MailHelper::sendMailBranchNewRequest($branch->commercial_email, $branch->branch_name);
+            // }
 
             return response()->json([
                 'success' => true,
@@ -443,6 +468,19 @@ class WarrantyNewController extends Controller
                 // Also update main warranty status if needed, or let the accessor handle it.
                 // The accessor calculates based on product statuses.
              }
+
+            // Send SMS Notification (DLT template: Submitted / re-submitted after modify)
+            $user = Auth::user();
+            if ($user && $user->phone_number) {
+                $serialNumbers = $warranty->productDetails()->pluck('serial_number')->filter()->implode(', ');
+                $requestId     = $serialNumbers ?: (string) $warranty->id;
+                SMSHelper::sendSMSSubmitted($user->phone_number, $requestId);
+            }
+
+            // Send Email Notification to Customer
+            if ($user && $user->email) {
+                MailHelper::sendMaiCustomerRequestSubmit($user->email);
+            }
 
             return response()->json([
                 'success' => true,
