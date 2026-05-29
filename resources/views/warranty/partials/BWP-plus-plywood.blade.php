@@ -14,6 +14,8 @@
         max-width: 700px;
   margin: 0px auto;
   width: 100%;
+
+
   margin-top: 40px;
   margin-bottom: 40px;
 }
