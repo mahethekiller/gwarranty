@@ -38,6 +38,12 @@ class OTPHelper
         try {
             $response = Http::get($url, $params);
 
+            if ($response->successful()) {
+                Log::channel('sms')->info("OTP SMS sent to {$phone_number}. Response: " . $response->body());
+            } else {
+                Log::channel('sms')->warning("OTP SMS failed to {$phone_number}. Status: {$response->status()}. Response: " . $response->body());
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent for login',
@@ -46,7 +52,7 @@ class OTPHelper
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Error sending OTP at " . now()->format('Y-m-d H:i:s') . " for $phone_number:  " . $e->getMessage());
+            Log::channel('sms')->error("Error sending OTP at " . now()->format('Y-m-d H:i:s') . " for $phone_number:  " . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send OTP',

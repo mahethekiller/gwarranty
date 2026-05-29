@@ -119,12 +119,12 @@ class SMSHelper
             $response = Http::get(self::GATEWAY, $params);
 
             if ($response->successful()) {
-                Log::info("SMS sent to {$phoneNumber} (template: " . ($templateId ?? 'none') . "). Response: " . $response->body());
+                Log::channel('sms')->info("SMS sent to {$phoneNumber} (template: " . ($templateId ?? 'none') . "). Response: " . $response->body());
             } else {
-                Log::warning("SMS failed to {$phoneNumber}. Status: {$response->status()}. Response: " . $response->body());
+                Log::channel('sms')->warning("SMS failed to {$phoneNumber}. Status: {$response->status()}. Response: " . $response->body());
             }
         } catch (\Exception $e) {
-            Log::error("SMS exception for {$phoneNumber}: " . $e->getMessage());
+            Log::channel('sms')->error("SMS exception for {$phoneNumber}: " . $e->getMessage());
         }
     }
 }
