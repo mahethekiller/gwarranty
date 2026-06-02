@@ -155,7 +155,7 @@ p{    padding-left: 22px !important;}
                             style="border:0px; text-align: center;"
                         >
                             <div class="miassk-img-box">
-                                <img src="{{ asset('assets/images/BWP-Plus-Plywood.png') }}" alt="Mikasa Plywood">
+                                <img src="{{ asset('assets/images/2627-BWP-PLYWOOD.jpg') }}" alt="Mikasa Plywood">
                             </div>
                         </td>
                     </tr>
@@ -166,7 +166,7 @@ p{    padding-left: 22px !important;}
                 <div class="columns">
                     <div>
                         <section class="section">
-                                                      <p>Greenlam Industries Limited (the &ldquo;Company&rdquo;), the manufacturer/supplier of Mikasa Plywood (&ldquo;Product&rdquo;), offers {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty to end users (&ldquo;End User&rdquo;) on Mikasa Plywood Blockboard MR (the &ldquo;Product&rdquo;), which shall come into effect from the date of purchase of the Product by the End User.</p>
+                                                      <p>Greenlam Industries Limited (the &ldquo;Company&rdquo;), the manufacturer/supplier of Mikasa Plywood (&ldquo;Brand&rdquo;), offers {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty to end users (&ldquo;End User&rdquo;) on Mikasa plywood BWP+ Plywood  (the &ldquo;Product&rdquo;), which shall come into effect from the date of purchase of the Product by the End User.</p>
 
                         </section>
                         <section class="section">

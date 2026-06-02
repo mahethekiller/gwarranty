@@ -144,7 +144,7 @@
             <tbody>
                 <tr style="border:0px;">
                     <td width="33%" align="center" colspan="3" style="border:0px; text-align: center;"><img
-                            src="{{ asset('assets/images/blackbord-marine-blue.jpg') }}" /></td>
+                            src="{{ asset('assets/images/04112025Warranty-leaflets-BB-Marine-Blue_CTC.jpg') }}" /></td>
                 </tr>
 
             </tbody>

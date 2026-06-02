@@ -133,7 +133,7 @@
             <tbody>
                 <tr style="border:0px;">
                     <td width="33%" align="center" colspan="3" style="border:0px; text-align: center;"><img
-                            src="{{ asset('assets/images/sappire.png') }}" /></td>
+                            src="{{ asset('assets/images/29102025Warranty-leaflets-Sapphire_CTC.jpg') }}" /></td>
                 </tr>
 
             </tbody>

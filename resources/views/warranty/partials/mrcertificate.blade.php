@@ -136,7 +136,7 @@
             <tbody>
                 <tr style="border:0px;">
                     <td width="33%" align="center" colspan="3" style="border:0px; text-align: center;"><img
-                            src="{{ asset('assets/images/mr.jpg') }}" /></td>
+                            src="{{ asset('assets/images/04112025Warranty-leaflets-MR_CTC.jpg') }}" /></td>
                 </tr>
 
             </tbody>
@@ -149,7 +149,7 @@
             </ol>
             <p>(the &ldquo;Company&rdquo;), the manufacturer/supplier of Mikasa Plywood (&ldquo;Product&rdquo;), offers
                 a {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty to end users (&ldquo;End User&rdquo;) on Mikasa Plywood MR+
-                (&ldquo;Product&rdquo;/the &ldquo;Product&rdquo;), which shall come into effect from the date of
+                (&ldquo;the &ldquo;Product&rdquo;), which shall come into effect from the date of
                 purchase of the Product by the End User.</p>
 
             <ol start="2">

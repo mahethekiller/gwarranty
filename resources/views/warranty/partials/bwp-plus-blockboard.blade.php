@@ -127,7 +127,7 @@
                             style="border:0px; text-align: center;"
                         >
                             <div class="miassk-img-box">
-                                <img src="{{ asset('assets/images/BWP-Plus-Blockboard.jpg') }}" alt="Mikasa Plywood">
+                                <img src="{{ asset('assets/images/2627-BWP-BLOCKBOARD.jpg') }}" alt="Mikasa Plywood">
                             </div>
                         </td>
                     </tr>
@@ -138,7 +138,12 @@
                 <div class="columns">
                     <div>
                         <section class="section">
-                            <p>Greenlam Industries Limited (the &ldquo;Company&rdquo;), the manufacturer/supplier of Mikasa Plywood (&ldquo;Product&rdquo;), offers {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty to end users (&ldquo;End User&rdquo;) on Mikasa Plywood Blockboard MR (the &ldquo;Product&rdquo;), which shall come into effect from the date of purchase of the Product by the End User.</p>
+                            <p>
+                                Greenlam Industries Limited (the "Company"), the manufacturer/supplier of Mikasa
+                                Plywood ("Brand"), offers a {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty to end users ("End User") on Mikasa
+                                Plywood Blockboard BWP+ Plywood (the "Product"), which shall come into effect from
+                                the date of purchase of the Product by the End User.
+                            </p>
                         </section>
                         <section class="section">
                             <h2 class="section-head">
@@ -162,9 +167,9 @@
                             </h2>
                             <p>
                                 The liability of the company against the end user is limited to the extent of the
-                        replacement of the damaged portion by new sheet of the same or similar product. The
-                        company shall undertake any replacement upon satisfaction of the conditions stated in
-                        Clause 6.
+replacement of the damaged portion by new sheet of the same or similar product. The
+company shall undertake any replacement upon satisfaction of the conditions stated in
+Clause 6.
                             </p>
                         </section>
                         <section class="section">
@@ -175,23 +180,23 @@
                             <ul>
                                 <li>
                                     The end user shall inspect the product promptly upon delivery, and if there is any
-                           visible manufacturing defect in the product, that needs to be intimated to the company
-                           within 30 days from the date of delivery, without any workmanship.
+visible manufacturing defect in the product, that needs to be intimated to the company
+within 30 days from the date of delivery, without any workmanship.
                                 </li>
                                 <li>
                                     Any other manufacturing defect in the product shall be intimated by the end user to the
-                           company within 30 days from the date of notice of the defect relating to the product
-                           used.
+company within 30 days from the date of notice of the defect relating to the product
+used.
                                 </li>
                                 <li>
                                     Any failure in giving a written notice of claim, by the end user within the aforesaid
-                           timelines shall constitute a waiver by the end user of all claims in respect to such
-                           Product(s).
+timelines shall constitute a waiver by the end user of all claims in respect to such
+Product(s).
                                 </li>
                                 <li>
                                     The complainant shall file a written notice of claim with the company, along with all the
-                           necessary documents, including the purchase invoice, images of the defect in the
-                           product, etc.
+necessary documents, including the purchase invoice, images of the defect in the
+product, etc.
                                 </li>
                                 <li>
                                     The written notice of claim, along with the necessary documents, shall be sent by the
@@ -250,7 +255,7 @@
                             <ul>
                                 <li>
                                     Notwithstanding anything mentioned in these terms and conditions, the company
-                           provides a 20-year warranty for the product against manufacturing defects or insect
+                           provides a {{ str_replace('yrs', 'years', $warrantyProduct->warranty_years) }} warranty for the product against manufacturing defects or insect
                            attack, subject to the below-mentioned conditions and exclusions:
                                 </li>
                                 <ol class="roman-list">

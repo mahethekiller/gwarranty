@@ -120,7 +120,7 @@ p{    padding-left: 22px !important;}
         <table border="0" cellpadding="8" cellspacing="0" style="border:0px;">
 <tbody>
     <tr style="border:0px;">
-<td width="33%" align="center" colspan="3" style="border:0px; text-align: center;"><img src="{{ asset('assets/images/blackbord-mrplus.jpg') }}" /></td>
+<td width="33%" align="center" colspan="3" style="border:0px; text-align: center;"><img src="{{ asset('assets/images/04112025Warranty-leaflets-BB-MR_CTC.jpg') }}" /></td>
 </tr>
 
 </tbody>
