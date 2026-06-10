@@ -28,7 +28,9 @@
                                 <th>Location</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                @if(!auth()->user()->hasRole('admin'))
                                 <th>Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -73,11 +75,13 @@
                                     </span>
                                 </td>
                                 <td>{{ $warranty->created_at->format('d M Y') }}</td>
+                                @if(!auth()->user()->hasRole('admin'))
                                 <td>
                                     <a href="{{ route('branch.warranties.new.edit', $warranty->id) }}" class="btn btn-sm btn-info">
                                         <i class="fa fa-eye"></i> Process
                                     </a>
                                 </td>
+                                @endif
                             </tr>
                             @empty
                             <tr>

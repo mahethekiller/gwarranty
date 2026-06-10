@@ -53,6 +53,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // user management
     Route::get('/admin/users', [UserManagement::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/users/export', [UserManagement::class, 'exportCsv'])->name('admin.users.export');
     Route::get('/admin/user/{user}/edit', [UserManagement::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/user/update/{user}', [UserManagement::class, 'update'])->name('admin.users.update');
     Route::post('/admin/users/add', [UserManagement::class, 'store'])->name('admin.users.add');

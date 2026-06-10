@@ -165,5 +165,50 @@ class UserManagement extends Controller
             'exists' => $exists,
         ]);
     }
+    public function exportCsv()
+    {
+        $users = User::with('roles')->orderByDesc('id')->get();
+
+        $filename = "users_export_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['S. No.', 'Name', 'Role', 'Email', 'Phone', 'Product Type', 'Status', 'Created At'];
+
+        $callback = function() use($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($users as $key => $user) {
+                $roles = $user->roles->pluck('display_name')->implode(', ');
+                
+                $productIds = explode(',', \App\Models\UserProduct::where('user_id', $user->id)->value('product_id') ?? '');
+                $productName = \App\Models\Product::whereIn('id', $productIds)->pluck('name')->implode(', ');
+
+                $row = [
+                    $key + 1,
+                    $user->name,
+                    $roles,
+                    $user->email,
+                    $user->phone_number,
+                    $productName,
+                    ucfirst($user->status),
+                    $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : '',
+                ];
+
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 
 }

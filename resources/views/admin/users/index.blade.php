@@ -145,7 +145,10 @@
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <div class="col-md-12 col-xl-12">
-                                <h4 class="pb-1">User List</h4>
+                                <div class="d-flex justify-content-between align-items-center pb-2">
+                                    <h4 class="mb-0">User List</h4>
+                                    <a href="{{ route('admin.users.export') }}" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Export CSV</a>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped mb-0">
                                         <thead>
@@ -205,6 +208,10 @@
 
                                         </tbody>
                                     </table>
+                                </div>
+
+                                <div class="mt-3">
+                                    {{ $users->links() }}
                                 </div>
 
                             </div>

@@ -57,19 +57,22 @@ class BranchWarrantyNewController extends Controller
      */
     public function index()
     {
-        // Get branch admin's cities and states
-        $branchEmail = Auth::user()->email;
-        $cities = BranchEmail::where('commercial_email', $branchEmail)->pluck('city')->toArray();
-        $states = BranchEmail::where('commercial_email', $branchEmail)->pluck('state')->toArray();
+        $user = Auth::user();
+        $isAdmin = $user->hasRole('admin');
 
-        // Fetch warranties for these locations
-        $warranties = WarrantyRegistrationNew::with(['user', 'productDetails'])
-            ->select('warranty_registrations_new.*')
-            ->where(function ($query) use ($cities, $states) {
-                $query->whereIn('dealer_city', $cities)
-                      ->orWhereIn('dealer_state', $states);
-            })
-            ->addSelect([
+        $query = WarrantyRegistrationNew::with(['user', 'productDetails'])
+            ->select('warranty_registrations_new.*');
+
+        if (!$isAdmin) {
+            // Get branch admin's cities and states
+            $branchEmail = $user->email;
+            $cities = BranchEmail::where('commercial_email', $branchEmail)->pluck('city')->toArray();
+            $states = BranchEmail::where('commercial_email', $branchEmail)->pluck('state')->toArray();
+
+            $query->where(function ($q) use ($cities, $states) {
+                $q->whereIn('dealer_city', $cities)
+                  ->orWhereIn('dealer_state', $states);
+            })->addSelect([
                 'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('max(created_at)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
@@ -84,8 +87,19 @@ class BranchWarrantyNewController extends Controller
                         $q->whereIn('dealer_city', $cities)
                           ->orWhereIn('dealer_state', $states);
                     })
-            ])
-            ->orderBy('latest_in_group', 'desc')
+            ]);
+        } else {
+            $query->addSelect([
+                'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('max(created_at)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number'),
+                'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
+                    ->selectRaw('count(*)')
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+            ]);
+        }
+
+        $warranties = $query->orderBy('latest_in_group', 'desc')
             ->orderBy('invoice_number', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);

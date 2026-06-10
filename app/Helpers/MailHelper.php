@@ -26,7 +26,14 @@ class MailHelper
         <p>Thank you for your trust in Greenlam. We appreciate your association with us and look forward to serving you.</p>
         ';
 
-        return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+        try {
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
+        } catch (\Exception $e) {
+            Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
+            return false;
+        }
     }
     public static function sendMaiCustomerRequestSubmit($to)
     {
@@ -38,7 +45,9 @@ class MailHelper
         <p>Thank you for your trust in Greenlam. We appreciate your association with us and look forward to serving you.</p>
         ';
         try {
-            return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
         } catch (\Exception $e) {
             Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
             return false;
@@ -54,7 +63,9 @@ class MailHelper
         <p>Thank you for choosing Greenlam. We look forward to completing your warranty process soon.</p>
         ';
         try {
-            return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
         } catch (\Exception $e) {
             Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
             return false;
@@ -70,7 +81,9 @@ class MailHelper
         <p>Thank you for your understanding.</p>";
 
         try {
-            return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
         } catch (\Exception $e) {
             Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
             return false;
@@ -86,7 +99,9 @@ class MailHelper
         <p>Thank you for choosing Greenlam. We value your trust and look forward to serving you in the future.</p>
         ";
         try {
-            return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
         } catch (\Exception $e) {
             Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
             return false;
@@ -102,7 +117,9 @@ class MailHelper
         <a href='https://warranty.greenlamindustries.com/admin/'>Greenlam Warranty Portal</a></p>
         ";
         try {
-            return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
         } catch (\Exception $e) {
             Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
             return false;
@@ -118,7 +135,9 @@ class MailHelper
         <a href='https://warranty.greenlamindustries.com/admin/'>Greenlam Warranty Portal</a></p>
         ";
         try {
-            return ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            ExchangeMailServer::sendEmail(['name' => '', 'email' => $to], ['subject' => $subject, 'body' => $message]);
+            Log::info("EWS Mail Sent Successfully to $to - Subject: $subject");
+            return true;
         } catch (\Exception $e) {
             Log::error("EWS Mail Send Failed to $to:  " . $e->getMessage());
             return false;
