@@ -47,9 +47,7 @@ Route::middleware('auth', 'role:admin|user|branch_admin|country_admin')->group(f
 // ADMIN ROLE
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('dashboard.admin');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [\App\Http\Controllers\HomeController::class, 'adminDashboard'])->name('admin.dashboard');
 
     // user management
     Route::get('/admin/users', [UserManagement::class, 'index'])->name('admin.users.index');
@@ -130,9 +128,7 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 
 Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(function () {
 
-    Route::get('/admin/dashboard', function () {
-        return view('dashboard.admin');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [\App\Http\Controllers\HomeController::class, 'adminDashboard'])->name('admin.dashboard');
 
     // Branch admin dedicated dashboard
     Route::get('/admin/branch-dashboard', [\App\Http\Controllers\Admin\BranchWarrantyNewController::class, 'branchDashboard'])

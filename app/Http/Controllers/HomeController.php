@@ -47,16 +47,23 @@ class HomeController extends Controller
         ));
     }
 
-    public function create() {}
+    public function adminDashboard()
+    {
+        // Status counts for all system warranties
+        $total    = WarrantyRegistrationNew::count();
+        $pending  = WarrantyRegistrationNew::where('status', 'pending')->count();
+        $approved = WarrantyRegistrationNew::where('status', 'approved')->count();
+        $rejected = WarrantyRegistrationNew::where('status', 'rejected')->count();
+        $modify   = WarrantyRegistrationNew::where('status', 'modify')->count();
 
-    public function store(Request $request) {}
+        // Recent warranties for the table with pagination
+        $recentWarranties = WarrantyRegistrationNew::with(['user', 'productDetails', 'productDetails.productType'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-    public function show(string $id) {}
-
-    public function edit(string $id) {}
-
-    public function update(Request $request, string $id) {}
-
-    public function destroy(string $id) {}
+        return view('dashboard.admin', compact(
+            'total', 'pending', 'approved', 'rejected', 'modify', 'recentWarranties'
+        ));
+    }
 }
 
