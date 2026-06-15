@@ -14,8 +14,9 @@
     @endpush
     <div class="col-md-12 col-xl-12">
         <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">Branch Warranty Management</h4>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Branch Warranty Management</h4>
+                <a href="{{ route('branch.warranties.new.export') }}" class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Export CSV</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -26,6 +27,7 @@
                                 <th>Dealer</th>
                                 <th>Invoice Details</th>
                                 <th>Location</th>
+                                <th>Products</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 @if(!auth()->user()->hasRole('admin'))
@@ -62,6 +64,31 @@
                                     {{ $warranty->dealer_city }}, {{ $warranty->dealer_state }}
                                 </td>
                                 <td>
+                                    @foreach($warranty->productDetails as $p)
+                                        <div class="mb-2 pb-1 {{ !$loop->last ? 'border-bottom' : '' }}" style="font-size: 0.85rem; min-width: 250px;">
+                                            <div class="d-flex justify-content-between">
+                                                <span><strong>S/No:</strong> <code class="text-dark">{{ $p->serial_number ?? 'N/A' }}</code></span>
+                                                @php
+                                                    $pBadge = match($p->status) {
+                                                        'approved' => 'bg-success',
+                                                        'rejected' => 'bg-danger',
+                                                        'modify' => 'bg-warning text-dark',
+                                                        default => 'bg-primary'
+                                                    };
+                                                @endphp
+                                                <span class="badge {{ $pBadge }}" style="font-size: 0.7rem;">{{ ucfirst($p->status) }}</span>
+                                            </div>
+                                            <div><strong>Type:</strong> {{ $p->productType->name ?? 'N/A' }}</div>
+                                            <div><strong>Variant:</strong> {{ $p->variant ?? ($p->productTypeVariant->name ?? 'N/A') }}</div>
+                                            <div>
+                                                <strong>Qty:</strong> {{ $p->quantity ?? ($p->total_quantity ?? 0) }} {{ $p->uom ?? '' }}
+                                                @if($p->no_of_boxes) <span class="text-muted">({{ $p->no_of_boxes }} boxes)</span> @endif
+                                                @if($p->area_sqft) <span class="text-muted">({{ $p->area_sqft }} sqft)</span> @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </td>
+                                <td>
                                     @php
                                         $badgeClass = match($warranty->overall_status) {
                                             'approved' => 'bg-success',
@@ -85,7 +112,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center">No warranties found for your branch.</td>
+                                <td colspan="8" class="text-center">No warranties found for your branch.</td>
                             </tr>
                             @endforelse
                         </tbody>

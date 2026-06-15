@@ -150,6 +150,7 @@ Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(func
 
     // New Warranty System - Branch Admin Routes
     Route::get('/admin/warranties-new', [BranchWarrantyNewController::class, 'index'])->name('branch.warranties.new.index');
+    Route::get('/admin/warranties-new/export', [BranchWarrantyNewController::class, 'exportCsv'])->name('branch.warranties.new.export');
     Route::get('/admin/warranty-new/edit/{id}', [BranchWarrantyNewController::class, 'edit'])->name('branch.warranties.new.edit');
     Route::post('/admin/warranty-new/update/{id}', [BranchWarrantyNewController::class, 'update'])->name('branch.warranties.new.update');
 

@@ -112,6 +112,134 @@ class BranchWarrantyNewController extends Controller
     }
 
     /**
+     * Export branch warranties to CSV.
+     */
+    public function exportCsv()
+    {
+        $user = Auth::user();
+        $isAdmin = $user->hasRole('admin');
+
+        $query = WarrantyRegistrationNew::with(['user', 'productDetails', 'productDetails.productType', 'productDetails.productTypeVariant'])
+            ->orderBy('created_at', 'desc');
+
+        if (!$isAdmin) {
+            // Get branch admin's cities and states
+            $branchEmail = $user->email;
+            $cities = BranchEmail::where('commercial_email', $branchEmail)->pluck('city')->toArray();
+            $states = BranchEmail::where('commercial_email', $branchEmail)->pluck('state')->toArray();
+
+            $query->where(function ($q) use ($cities, $states) {
+                $q->whereIn('dealer_city', $cities)
+                  ->orWhereIn('dealer_state', $states);
+            });
+        }
+
+        $warranties = $query->get();
+
+        $filename = "warranties_export_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = [
+            'S. No.', 
+            'Warranty ID', 
+            'Customer Name', 
+            'Customer Phone', 
+            'Customer Email', 
+            'Dealer Name', 
+            'Dealer City', 
+            'Dealer State', 
+            'Invoice Number', 
+            'Invoice Date', 
+            'Product Type', 
+            'Variant', 
+            'Serial Number', 
+            'No of Boxes', 
+            'Quantity', 
+            'Area (Sq Ft)', 
+            'Total Quantity', 
+            'Product Status', 
+            'Admin Remarks', 
+            'Overall Status',
+            'Created At'
+        ];
+
+        $callback = function() use($warranties, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            $sNo = 1;
+            foreach ($warranties as $warranty) {
+                $overallStatus = ucfirst($warranty->overall_status);
+                // If there are no products, write at least one row
+                if ($warranty->productDetails->isEmpty()) {
+                    $row = [
+                        $sNo++,
+                        $warranty->id,
+                        $warranty->user->name ?? 'N/A',
+                        $warranty->user->phone_number ?? 'N/A',
+                        $warranty->user->email ?? 'N/A',
+                        $warranty->dealer_name,
+                        $warranty->dealer_city,
+                        $warranty->dealer_state,
+                        $warranty->invoice_number,
+                        $warranty->invoice_date ? $warranty->invoice_date->format('Y-m-d') : 'N/A',
+                        'N/A',
+                        'N/A',
+                        'N/A',
+                        '0',
+                        '0',
+                        '0',
+                        '0',
+                        'N/A',
+                        $warranty->admin_remarks ?? '',
+                        $overallStatus,
+                        $warranty->created_at ? $warranty->created_at->format('Y-m-d H:i:s') : '',
+                    ];
+                    fputcsv($file, $row);
+                } else {
+                    foreach ($warranty->productDetails as $detail) {
+                        $row = [
+                            $sNo++,
+                            $warranty->id,
+                            $warranty->user->name ?? 'N/A',
+                            $warranty->user->phone_number ?? 'N/A',
+                            $warranty->user->email ?? 'N/A',
+                            $warranty->dealer_name,
+                            $warranty->dealer_city,
+                            $warranty->dealer_state,
+                            $warranty->invoice_number,
+                            $warranty->invoice_date ? $warranty->invoice_date->format('Y-m-d') : 'N/A',
+                            $detail->productType->name ?? 'N/A',
+                            $detail->variant ?? ($detail->productTypeVariant->name ?? 'N/A'),
+                            $detail->serial_number ?? 'N/A',
+                            $detail->no_of_boxes ?? '0',
+                            $detail->quantity ?? '0',
+                            $detail->area_sqft ?? '0',
+                            $detail->total_quantity ?? '0',
+                            ucfirst($detail->status),
+                            $detail->admin_remarks ?? '',
+                            $overallStatus,
+                            $warranty->created_at ? $warranty->created_at->format('Y-m-d H:i:s') : '',
+                        ];
+                        fputcsv($file, $row);
+                    }
+                }
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
