@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\BranchWarrantyNewController;
 use App\Http\Controllers\Admin\ProductTypeController;
 use App\Http\Controllers\Admin\ProductVariantController;
 use Illuminate\Support\Facades\Route;
-use Raju\EWSMail\ExchangeMailServer;
+use App\Helpers\MailHelper;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/get-cities/{state}', [ProfileController::class, 'getCitiesAjax']);
@@ -160,14 +160,16 @@ Route::middleware(['auth', 'role:admin|branch_admin|country_admin'])->group(func
 
 
 
-Route::get('/test-ews', function () {
+Route::get('/test-mail', function () {
     try {
-        $sent = ExchangeMailServer::sendEmail(
-            ['name' => 'Raju at LHG', 'email' => 'mahendra@i2k2.com'],
-            ['subject' => 'Mail From Package', 'body' => 'Message Body']
+        $to = request('to', 'mahendra@i2k2.com');
+        $sent = MailHelper::sendMail(
+            $to,
+            'PHPMailer SMTP Test Mail',
+            '<p>This is a test email sent using the new PHPMailer SMTP setup.</p>'
         );
 
-        return 'Mail sent successfully! (Return value: ' . var_export($sent, true) . ')';
+        return 'Mail sent ' . ($sent ? 'successfully!' : 'failed! Check storage/logs/laravel.log for details.');
     } catch (\Throwable $e) {
         return 'Error: ' . $e->getMessage();
     }
