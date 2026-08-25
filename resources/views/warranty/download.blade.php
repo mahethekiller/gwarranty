@@ -110,6 +110,8 @@
             @elseif ($productName == 'Pristine (15 mm)')
                 @include('warranty.partials.mikasaPristine')
             @endif
+        @elseif ($warrantyProduct->product_type == 7 || (isset($warrantyProduct->product->name) && $warrantyProduct->product->name == 'Greenlam HMR') || $productName == 'Greenlam HMR' || (isset($warrantyProduct->variant_name) && in_array($warrantyProduct->variant_name, ['Prelam Chipboard', 'Plain chipboard'])))
+            @include('warranty.partials.hmrcertificate')
         @endif
 
     </div>
