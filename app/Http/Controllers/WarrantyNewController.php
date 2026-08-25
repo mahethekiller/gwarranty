@@ -21,6 +21,11 @@ class WarrantyNewController extends Controller
             'fields'    => ['variant', 'quantity'],
             'auto_fill' => ['uom' => 'PCS'],
         ],
+        'Greenlam HMR'    => [
+            'required'  => ['variant', 'quantity'],
+            'fields'    => ['variant', 'quantity'],
+            'auto_fill' => ['uom' => 'PCS'],
+        ],
         'Greenlam Clads'  => [
             'required'  => ['product_name_design', 'quantity'],
             'fields'    => ['product_name_design', 'quantity'],

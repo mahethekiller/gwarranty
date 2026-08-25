@@ -108,15 +108,16 @@ $(document).ready(function () {
                     // Check required fields based on product type
                     // Reusing logic from create JS
                      switch(productTypeName) {
+                        case 'Greenlam HMR':
                         case 'Mikasa Ply':
                             let variantSelectPly = $(this).find('.variant-select').val();
                             let variantInputPly = $(this).find('.variant-input').val();
                             if (!variantSelectPly && !variantInputPly) {
-                                errorMessages.push(`Product ${index + 1}: Variant is required for Mikasa Ply`);
+                                errorMessages.push(`Product ${index + 1}: Variant is required for ${productTypeName}`);
                                 isValid = false;
                             }
                             if (!$(this).find('.quantity-input').val()) {
-                                errorMessages.push(`Product ${index + 1}: Quantity is required for Mikasa Ply`);
+                                errorMessages.push(`Product ${index + 1}: Quantity is required for ${productTypeName}`);
                                 isValid = false;
                             }
                             break;
@@ -270,6 +271,7 @@ $(document).ready(function () {
     function autoFillUoM(row, productTypeName) {
         let uomInput = row.find('.uom-input');
         switch(productTypeName) {
+            case 'Greenlam HMR':
             case 'Mikasa Ply':
             case 'Greenlam Clads':
             case 'MikasaFx':
@@ -310,6 +312,7 @@ $(document).ready(function () {
         // This relies on class names which is safer.
 
         switch (productTypeName) {
+            case 'Greenlam HMR':
             case 'Mikasa Ply':
                 showFields(row, ['variant-col', 'quantity-col', 'uom-col']);
                 row.find('.variant-select').closest('td').show();

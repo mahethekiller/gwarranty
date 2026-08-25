@@ -131,7 +131,7 @@ $(document).ready(function () {
             // Show variant input if no variant selected from dropdown
             // (only for product types that need manual variant input)
             let productTypeName = $(this).closest('tr').find('.product-type option:selected').text();
-            if (productTypeName === 'Mikasa Ply' || productTypeName === 'Mikasa Floors') {
+            if (productTypeName === 'Mikasa Ply' || productTypeName === 'Mikasa Floors' || productTypeName === 'Greenlam HMR') {
                 variantInput.show();
             }
         }
@@ -263,15 +263,16 @@ $(document).ready(function () {
             if (productTypeName) {
                 // Check required fields based on product type
                 switch(productTypeName) {
+                    case 'Greenlam HMR':
                     case 'Mikasa Ply':
                         let variantSelectPly = $(this).find('.variant-select').val();
                         let variantInputPly = $(this).find('.variant-input').val();
                         if (!variantSelectPly && !variantInputPly) {
-                            errorMessages.push(`Row ${index + 1}: Variant is required for Mikasa Ply`);
+                            errorMessages.push(`Row ${index + 1}: Variant is required for ${productTypeName}`);
                             isValid = false;
                         }
                         if (!$(this).find('.quantity-input').val()) {
-                            errorMessages.push(`Row ${index + 1}: Quantity is required for Mikasa Ply`);
+                            errorMessages.push(`Row ${index + 1}: Quantity is required for ${productTypeName}`);
                             isValid = false;
                         }
                         break;
@@ -525,6 +526,7 @@ function autoFillUoM(row, productTypeName) {
     let uomInput = row.find('.uom-input');
 
     switch(productTypeName) {
+        case 'Greenlam HMR':
         case 'Mikasa Ply':
         case 'Greenlam Clads':
         case 'MikasaFx':
@@ -549,6 +551,7 @@ function updateRowFields(row, productTypeName) {
 
     // Apply field visibility based on product type
     switch (productTypeName) {
+        case 'Greenlam HMR':
         case 'Mikasa Ply':
             showFields(row, ['variant-col', 'quantity-col', 'uom-col']);
             row.find('.variant-select').closest('td').show();
