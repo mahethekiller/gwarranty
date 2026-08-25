@@ -9,7 +9,7 @@ class ProductType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'fields', 'sort_order', 'is_active'];
+    protected $fillable = ['name', 'slug', 'fields', 'sort_order', 'is_active'];
 
     protected $casts = [
         'fields' => 'array',
