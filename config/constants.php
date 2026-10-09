@@ -31,6 +31,10 @@ return [
             'name'     => 'Sapphire',
             'warranty' => 'Lifetime',
         ],
+        [
+            'name'     => 'Max',
+            'warranty' => '15 yrs',
+        ],
     ],
 
     'states'              => [

@@ -99,6 +99,8 @@
                 @include('warranty.partials.bwp-plus-plywood')
             @elseif ($productName == 'BWP Plus Blockboard')
                 @include('warranty.partials.bwp-plus-blockboard')
+            @elseif ($productName == 'Max' || $productName == 'Mikasa Plywood Max' || $productName == 'Plywood Max' || stripos($productName, 'Max') !== false)
+                @include('warranty.partials.plywoodmax')
             @endif
         @elseif ($warrantyProduct->product_type == 5)
             @include('warranty.partials.NewMika-FXcertificate')

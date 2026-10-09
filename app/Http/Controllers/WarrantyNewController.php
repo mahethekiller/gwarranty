@@ -637,6 +637,10 @@ class WarrantyNewController extends Controller
             } elseif (stripos($productName, 'Pristine') !== false) {
                 $productName = 'Pristine (15 mm)';
             }
+        } elseif ($mappedProductType == 3) {
+            if (stripos($productName, 'Max') !== false) {
+                $productName = 'Max';
+            }
         }
 
         // Logo Logic matching WarrantyController
