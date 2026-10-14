@@ -76,6 +76,8 @@ class BranchWarrantyNewController extends Controller
                 'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('max(created_at)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
                     ->where(function ($q) use ($cities, $states) {
                         $q->whereIn('dealer_city', $cities)
                           ->orWhereIn('dealer_state', $states);
@@ -83,6 +85,8 @@ class BranchWarrantyNewController extends Controller
                 'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('count(*)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
                     ->where(function ($q) use ($cities, $states) {
                         $q->whereIn('dealer_city', $cities)
                           ->orWhereIn('dealer_state', $states);
@@ -92,15 +96,21 @@ class BranchWarrantyNewController extends Controller
             $query->addSelect([
                 'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('max(created_at)')
-                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number'),
+                    ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state'),
                 'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('count(*)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
             ]);
         }
 
         $warranties = $query->orderBy('latest_in_group', 'desc')
             ->orderBy('invoice_number', 'asc')
+            ->orderBy('invoice_date', 'asc')
+            ->orderBy('dealer_state', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -258,6 +268,8 @@ class BranchWarrantyNewController extends Controller
             ->firstOrFail();
 
         $relatedWarranties = WarrantyRegistrationNew::where('invoice_number', $warranty->invoice_number)
+            ->where('invoice_date', $warranty->invoice_date)
+            ->where('dealer_state', $warranty->dealer_state)
             ->where('id', '!=', $warranty->id)
             ->get();
 

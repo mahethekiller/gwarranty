@@ -9,7 +9,7 @@
                 @if($relatedWarranties->isNotEmpty())
                     <div class="alert alert-info border-primary mb-4">
                         <h6 class="alert-heading text-primary"><i class="fa fa-info-circle me-1"></i> Shared Invoice Detected</h6>
-                        <p class="mb-0">There are <strong>{{ $relatedWarranties->count() }}</strong> other registrations for this invoice ({{ $warranty->invoice_number }}).</p>
+                        <p class="mb-0">There are <strong>{{ $relatedWarranties->count() }}</strong> other registrations for this invoice (Invoice #{{ $warranty->invoice_number }}, {{ $warranty->invoice_date?->format('d M Y') ?? 'N/A' }}, {{ $warranty->dealer_state }}).</p>
                         <hr class="my-2">
                         <ul class="mb-0 small">
                             @foreach($relatedWarranties as $related)

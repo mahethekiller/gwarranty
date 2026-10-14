@@ -32,11 +32,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $prevInvoice = null; @endphp
+                                @php $prevGroupKey = null; @endphp
                                 @forelse($warranties as $warranty)
                                     @php
-                                        $isGrouped = $prevInvoice === $warranty->invoice_number;
-                                        $prevInvoice = $warranty->invoice_number;
+                                        $groupKey = $warranty->invoice_number . '|' . ($warranty->invoice_date?->format('Y-m-d') ?? '') . '|' . $warranty->dealer_state;
+                                        $isGrouped = $prevGroupKey === $groupKey;
+                                        $prevGroupKey = $groupKey;
                                     @endphp
                                     <tr class="{{ $isGrouped ? 'grouped-row' : '' }}">
                                         <td class="{{ $warranty->invoice_group_count > 1 ? ($isGrouped ? 'group-indicator-sub' : 'group-indicator') : '' }}">

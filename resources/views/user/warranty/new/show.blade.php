@@ -26,7 +26,7 @@
                                 <i class="fa fa-info-circle me-2 fs-5"></i>
                                 <strong>Shared Invoice Detected</strong>
                             </h6>
-                            <p class="mb-2 text-dark">We found <strong>{{ $relatedWarranties->count() }}</strong> other registrations in your account with the same invoice number ({{ $warranty->invoice_number }}).</p>
+                            <p class="mb-2 text-dark">We found <strong>{{ $relatedWarranties->count() }}</strong> other registrations in your account with the same invoice details (Invoice #{{ $warranty->invoice_number }}, {{ $warranty->invoice_date?->format('d M Y') ?? 'N/A' }}, {{ $warranty->dealer_state }}).</p>
                             <div class="list-group list-group-flush rounded-3 border">
                                 @foreach($relatedWarranties as $related)
                                     <a href="{{ route('user.warranty.show', $related->id) }}" class="list-group-item list-group-item-action py-2 bg-white">

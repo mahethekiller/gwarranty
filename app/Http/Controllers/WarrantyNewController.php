@@ -230,9 +230,15 @@ class WarrantyNewController extends Controller
             // Generate Serial Number
             $invNum = $productData['invoice_number'] ?? $warranty->invoice_number;
             $invDate = $productData['invoice_date'] ?? $warranty->invoice_date;
-            $count = \App\Models\ProductDetail::where('invoice_number', $invNum)
-                ->orWhereHas('warrantyRegistration', function($q) use ($invNum) {
-                    $q->where('invoice_number', $invNum);
+            $dealerState = $warranty->dealer_state;
+            $count = \App\Models\ProductDetail::where(function($query) use ($invNum, $invDate) {
+                    $query->where('invoice_number', $invNum)
+                        ->where('invoice_date', $invDate);
+                })
+                ->orWhereHas('warrantyRegistration', function($q) use ($invNum, $invDate, $dealerState) {
+                    $q->where('invoice_number', $invNum)
+                      ->where('invoice_date', $invDate)
+                      ->where('dealer_state', $dealerState);
                 })->count();
             $seq = str_pad($count + 1, 2, '0', STR_PAD_LEFT);
             $dateFmt = $invDate ? \Carbon\Carbon::parse($invDate)->format('Ymd') : date('Ymd');
@@ -309,14 +315,20 @@ class WarrantyNewController extends Controller
                 'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('max(created_at)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
                     ->where('wr_inner.user_id', Auth::id()),
                 'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('count(*)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
                     ->where('wr_inner.user_id', Auth::id())
             ])
             ->orderBy('latest_in_group', 'desc')
             ->orderBy('invoice_number', 'asc')
+            ->orderBy('invoice_date', 'asc')
+            ->orderBy('dealer_state', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -332,14 +344,20 @@ class WarrantyNewController extends Controller
                 'latest_in_group' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('max(created_at)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
                     ->where('wr_inner.user_id', Auth::id()),
                 'invoice_group_count' => DB::table('warranty_registrations_new as wr_inner')
                     ->selectRaw('count(*)')
                     ->whereColumn('wr_inner.invoice_number', 'warranty_registrations_new.invoice_number')
+                    ->whereColumn('wr_inner.invoice_date', 'warranty_registrations_new.invoice_date')
+                    ->whereColumn('wr_inner.dealer_state', 'warranty_registrations_new.dealer_state')
                     ->where('wr_inner.user_id', Auth::id())
             ])
             ->orderBy('latest_in_group', 'desc')
             ->orderBy('invoice_number', 'asc')
+            ->orderBy('invoice_date', 'asc')
+            ->orderBy('dealer_state', 'asc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -373,6 +391,8 @@ class WarrantyNewController extends Controller
             ->firstOrFail();
 
         $relatedWarranties = WarrantyRegistrationNew::where('invoice_number', $warranty->invoice_number)
+            ->where('invoice_date', $warranty->invoice_date)
+            ->where('dealer_state', $warranty->dealer_state)
             ->where('user_id', Auth::id())
             ->where('id', '!=', $warranty->id)
             ->get();

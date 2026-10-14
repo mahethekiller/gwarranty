@@ -223,13 +223,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $prevInvoice = null; @endphp
+                        @php $prevGroupKey = null; @endphp
                         @forelse($warranties as $warranty)
                             @php
-                                $ovStatus  = $warranty->overall_status;
-                                $isGrouped = $prevInvoice === $warranty->invoice_number;
-                                $prevInvoice = $warranty->invoice_number;
-                                $rowClass  = match($ovStatus) {
+                                $ovStatus     = $warranty->overall_status;
+                                $groupKey     = $warranty->invoice_number . '|' . ($warranty->invoice_date?->format('Y-m-d') ?? '') . '|' . $warranty->dealer_state;
+                                $isGrouped    = $prevGroupKey === $groupKey;
+                                $prevGroupKey = $groupKey;
+                                $rowClass     = match($ovStatus) {
                                     'modify'   => 'row-modify',
                                     'rejected' => 'row-rejected',
                                     'approved' => 'row-approved',
